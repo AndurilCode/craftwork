@@ -8,18 +8,20 @@ Each skill lives in its own folder and is self-contained: a `SKILL.md` with a tr
 
 ## Reasoning Skills
 
-Twelve frameworks organized by what kind of thinking is needed.
+Nineteen frameworks across six thinking categories.
 
 ### Understand the System
 
 - [`systems-thinking`](skills/systems-thinking/SKILL.md) — Maps stocks, flows, feedback loops, and archetypes to find where a system structurally works and where it breaks down.
 - [`first-principles-thinking`](skills/first-principles-thinking/SKILL.md) — Strips away conventions down to fundamental truths and rebuilds from scratch. Use when the frame itself might be wrong.
 - [`cynefin-framework`](skills/cynefin-framework/SKILL.md) — Classifies the problem domain (Clear / Complicated / Complex / Chaotic) before choosing an approach. Prevents applying the wrong solution type.
+- [`epistemic-mapping`](skills/epistemic-mapping/SKILL.md) — Maps what you know, believe, and don't know before reasoning. Surfaces unknown unknowns, dangerous assumptions, and what would change your mind.
 
 ### Find What's Broken
 
 - [`theory-of-constraints`](skills/theory-of-constraints/SKILL.md) — Identifies the single bottleneck limiting throughput. Optimizing anything else is waste.
 - [`five-whys-root-cause`](skills/five-whys-root-cause/SKILL.md) — Drills through symptoms to structural root causes. Stops fixes that don't hold.
+- [`causal-inference`](skills/causal-inference/SKILL.md) — Distinguishes causation from correlation when interpreting metrics, A/B tests, and system behavior. Surfaces confounders and counterfactuals.
 - [`cognitive-bias-detection`](skills/cognitive-bias-detection/SKILL.md) — Audits the reasoning itself for systematic distortions: confirmation bias, sunk cost, anchoring, groupthink, and more.
 
 ### Stress-Test and Attack
@@ -31,26 +33,37 @@ Twelve frameworks organized by what kind of thinking is needed.
 ### Navigate Uncertainty and People
 
 - [`probabilistic-thinking`](skills/probabilistic-thinking/SKILL.md) — Applies base rates, Bayesian updating, and expected value to reason under uncertainty.
+- [`fermi-estimation`](skills/fermi-estimation/SKILL.md) — Estimates unknown quantities by decomposition from first principles. Useful when data is unavailable and a decision can't wait.
 - [`scenario-planning`](skills/scenario-planning/SKILL.md) — Maps plausible futures across key uncertainties and stress-tests strategy against each.
 - [`stakeholder-power-mapping`](skills/stakeholder-power-mapping/SKILL.md) — Maps who has power and interest, surfaces informal influence networks, designs engagement strategies.
 
 ### Generate New Options
 
-- [`lateral-thinking`](skills/lateral-thinking/SKILL.md) — Deliberately escapes dominant patterns to generate non-obvious alternatives. Use when analytical thinking has hit a ceiling and all solutions feel like variations of the same idea.
+- [`lateral-thinking`](skills/lateral-thinking/SKILL.md) — Deliberately escapes dominant patterns to generate non-obvious alternatives. Use when analytical thinking has hit a ceiling.
+- [`analogical-thinking`](skills/analogical-thinking/SKILL.md) — Finds structural analogues in other domains and transfers solution patterns. Don't reinvent what's been solved elsewhere under a different name.
+
+### Decide and Learn
+
+- [`decision-synthesis`](skills/decision-synthesis/SKILL.md) — Bridges analysis to action using weighted criteria and structured trade-off evaluation. The convergence layer after running other frameworks.
+- [`retrospective-counterfactual`](skills/retrospective-counterfactual/SKILL.md) — Reconstructs what actually caused a past outcome and what would have happened differently. Post-mortems, incident reviews, and decision quality assessment.
 
 ---
 
 ## Chaining Skills
 
-Skills are designed to be composed. A few sequences that work well together:
+Skills are designed to be composed. Common sequences:
 
-**Evaluating something that exists** → Cynefin → Systems Thinking → Theory of Constraints → 5 Whys
+**Evaluating something that exists** → Cynefin → Systems Thinking → Theory of Constraints → 5 Whys → Causal Inference
 
-**Validating a plan before committing** → First Principles → Inversion/Pre-mortem → Second-Order Thinking → Cognitive Bias Detection
+**Validating a plan before committing** → Epistemic Mapping → First Principles → Inversion/Pre-mortem → Second-Order → Cognitive Bias Detection → Decision Synthesis
 
-**Making a high-stakes decision** → Scenario Planning → Probabilistic Thinking → Red Teaming → Stakeholder Mapping
+**Making a high-stakes decision** → Scenario Planning → Probabilistic Thinking → Fermi Estimation → Red Teaming → Stakeholder Mapping → Decision Synthesis
 
-**Diagnosing a recurring problem** → 5 Whys → Systems Thinking → Cognitive Bias Detection
+**Stuck with no good options** → Epistemic Mapping → Lateral Thinking → Analogical Thinking → First Principles
+
+**Diagnosing a recurring problem** → 5 Whys → Causal Inference → Systems Thinking → Cognitive Bias Detection
+
+**After something goes wrong** → Retrospective/Counterfactual → 5 Whys → Epistemic Mapping → Decision Synthesis
 
 ---
 
@@ -58,20 +71,32 @@ Skills are designed to be composed. A few sequences that work well together:
 
 ```
 skills/
+├── analogical-thinking/
+├── causal-inference/
 ├── cognitive-bias-detection/
 ├── cynefin-framework/
+├── decision-synthesis/
+├── epistemic-mapping/
+├── fermi-estimation/
 ├── first-principles-thinking/
 ├── five-whys-root-cause/
 ├── inversion-premortem/
+├── lateral-thinking/
 ├── probabilistic-thinking/
 ├── red-teaming/
+├── retrospective-counterfactual/
 ├── scenario-planning/
 ├── second-order-thinking/
 ├── stakeholder-power-mapping/
 ├── systems-thinking/
-├── theory-of-constraints/
-└── lateral-thinking/
+└── theory-of-constraints/
     └── SKILL.md
 ```
 
 Each `SKILL.md` has a YAML frontmatter `description` field — this is what Claude reads to decide whether to consult the skill for a given query.
+
+---
+
+## Orchestration
+
+- [`reasoning-orchestrator`](skills/reasoning-orchestrator/SKILL.md) — The entry point for the collection. Triages the situation, selects the right skill(s), sequences them, and routes between them based on what each run surfaces. Start here when unsure which framework to apply.
