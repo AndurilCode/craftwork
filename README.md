@@ -8,7 +8,7 @@ Each skill lives in its own folder and is self-contained: a `SKILL.md` with a tr
 
 ## Reasoning Skills
 
-Nineteen frameworks across six thinking categories.
+Twenty frameworks across six thinking categories.
 
 ### Understand the System
 
@@ -45,6 +45,7 @@ Nineteen frameworks across six thinking categories.
 ### Decide and Learn
 
 - [`decision-synthesis`](skills/decision-synthesis/SKILL.md) — Bridges analysis to action using weighted criteria and structured trade-off evaluation. The convergence layer after running other frameworks.
+- [`decision-intelligence`](skills/decision-intelligence/SKILL.md) — Applies six probabilistic models (Expected Value, Base Rate, Sunk Cost, Bayesian Thinking, Survivorship Bias, Kelly Criterion) mandatorily and in sequence to any decision with quantifiable stakes. Produces explicit calculations and a synthesized recommendation with confidence level.
 - [`retrospective-counterfactual`](skills/retrospective-counterfactual/SKILL.md) — Reconstructs what actually caused a past outcome and what would have happened differently. Post-mortems, incident reviews, and decision quality assessment.
 
 ---
