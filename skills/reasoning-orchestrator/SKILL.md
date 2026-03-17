@@ -30,6 +30,7 @@ Classify the situation across these dimensions and write the classification out 
 **Primary obstacle**:
 - Don't understand the system → diagnostic track
 - Understand it, stuck on solutions → generative track
+- Need novel ideas or creative output → creative track
 - Have solutions, need to choose → convergence track
 - Something went wrong → retrospective track
 - About to commit to something → adversarial track
@@ -47,6 +48,8 @@ Obstacle: [label] → [track]
 Domain: [label]
 ```
 
+**Distinguishing generative from creative track**: The generative track applies when you have a *defined problem* and all solutions feel the same — it escapes dominant patterns via lateral-thinking, analogical-thinking, and first-principles-thinking. The creative track applies when the *deliverable is an idea itself* — names, concepts, angles, metaphors, narratives, marketing hooks, product ideas, extensions — and you need novelty through frame collision, not pattern escape. If the user says "brainstorm", "give me ideas for", "what's a fresh angle", "surprise me", or the desired output is creative rather than analytical → creative track. When both tracks apply (stuck on a problem AND need novel framing), run both: P2 ∥ bisociative-creativity.
+
 ---
 
 ### STEP 2 — Build the Execution Plan (do this yourself, no skill file needed)
@@ -61,6 +64,8 @@ Using the triage output and the routing table below, produce a numbered executio
 | Don't understand the system / why it's failing | PARALLEL: systems-thinking ∥ theory-of-constraints ∥ causal-inference → SEQUENTIAL: five-whys-root-cause → decision-synthesis |
 | Plan / design needs validation | PARALLEL: inversion-premortem ∥ red-teaming ∥ second-order-thinking → SEQUENTIAL: cognitive-bias-detection → decision-synthesis |
 | Stuck, all solutions feel the same | SEQUENTIAL: epistemic-mapping → PARALLEL: lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking → SEQUENTIAL: inversion-premortem → decision-synthesis |
+| Need novel ideas or creative output | SEQUENTIAL: bisociative-creativity → SEQUENTIAL: inversion-premortem (stress-test top sparks) |
+| Stuck AND need creative framing | SEQUENTIAL: epistemic-mapping → PARALLEL: lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking ∥ bisociative-creativity → SEQUENTIAL: inversion-premortem → decision-synthesis |
 | Need to decide between options (comparing A vs B vs C) | PARALLEL: scenario-planning ∥ probabilistic-thinking ∥ fermi-estimation → decision-synthesis |
 | Single decision, estimable odds, bias likely active (sunk cost / survivorship / gut vs math) | SEQUENTIAL: decision-intelligence → decision-synthesis |
 | Financial bet or investment sizing | SEQUENTIAL: decision-intelligence (Kelly Criterion — only skill covering position sizing) |
@@ -147,15 +152,18 @@ Recommended action: [what to do now]
 
 ## Parallelization Reference
 
-These five clusters are the canonical parallel groups. Skills within a cluster apply independent lenses and never depend on each other's output.
+These six clusters are the canonical parallel groups. Skills within a cluster apply independent lenses and never depend on each other's output.
 
 | Pattern | Skills | Use when |
 |---------|--------|---------|
 | P1 — Adversarial | inversion-premortem ∥ red-teaming ∥ second-order-thinking | Validating a plan before commitment |
 | P2 — Generative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking | Stuck, need new options |
+| P2+ — Generative + Creative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking ∥ bisociative-creativity | Stuck AND need genuinely novel framing (combine when both tracks apply) |
 | P3 — Diagnostic | systems-thinking ∥ theory-of-constraints ∥ causal-inference | System is failing, need to understand why |
 | P4 — Uncertainty | scenario-planning ∥ probabilistic-thinking ∥ fermi-estimation | Decision needs quantification |
 | P5 — Meta-cognitive | epistemic-mapping ∥ cognitive-bias-detection ∥ cynefin-framework | Clean the reasoning environment first |
+
+**Note on bisociative-creativity**: When the creative track is the *primary* track (deliverable is an idea), run bisociative-creativity as a standalone sequential step — it has its own three-phase engine and doesn't need parallel lenses. Use P2+ only when the generative and creative tracks overlap (stuck on a problem AND need novel framing). Bisociative-creativity produces raw sparks; follow with inversion-premortem to stress-test the best ones.
 
 ---
 
@@ -173,6 +181,10 @@ After completing any step, use this table to adjust the plan if findings warrant
 | five-whys-root-cause | Multiple root causes | decision-synthesis (sequential, to prioritize) |
 | adversarial panel (P1) | High-severity risks | cognitive-bias-detection on the risk analysis (sequential) |
 | generative panel (P2) | All options weak | epistemic-mapping — frame may be wrong (sequential, restart) |
+| generative panel (P2) | Options incremental, not novel enough | bisociative-creativity (sequential) — collide with distant frames to escape incrementalism |
+| bisociative-creativity | Strong sparks produced | inversion-premortem to stress-test top 2–3 sparks (sequential) |
+| bisociative-creativity | All collisions produced only kernels, no live sparks | Re-run with more distant frames, or lateral-thinking to escape the seed domain framing (sequential) |
+| bisociative-creativity | Sparks validated, need to choose between them | decision-synthesis (sequential) |
 | uncertainty panel (P4) | High uncertainty persists | inversion-premortem on worst-case scenario (sequential) |
 | decision-synthesis | Key assumption too uncertain | epistemic-mapping → validate before committing |
 | decision-intelligence | Probability estimates feel shaky | fermi-estimation ∥ probabilistic-thinking first, then re-run |
@@ -199,9 +211,10 @@ After completing any step, use this table to adjust the plan if findings warrant
 | fermi-estimation | skills/fermi-estimation/SKILL.md | probabilistic-thinking, scenario-planning |
 | scenario-planning | skills/scenario-planning/SKILL.md | probabilistic-thinking, fermi-estimation |
 | stakeholder-power-mapping | skills/stakeholder-power-mapping/SKILL.md | second-order-thinking, causal-inference |
-| lateral-thinking | skills/lateral-thinking/SKILL.md | analogical-thinking, first-principles-thinking |
-| analogical-thinking | skills/analogical-thinking/SKILL.md | lateral-thinking, first-principles-thinking |
-| first-principles-thinking | skills/first-principles-thinking/SKILL.md | lateral-thinking, analogical-thinking |
+| lateral-thinking | skills/lateral-thinking/SKILL.md | analogical-thinking, first-principles-thinking, bisociative-creativity |
+| analogical-thinking | skills/analogical-thinking/SKILL.md | lateral-thinking, first-principles-thinking, bisociative-creativity |
+| first-principles-thinking | skills/first-principles-thinking/SKILL.md | lateral-thinking, analogical-thinking, bisociative-creativity |
+| bisociative-creativity | skills/bisociative-creativity/SKILL.md | lateral-thinking, analogical-thinking, first-principles-thinking (P2+ only); runs standalone for creative track |
 | decision-synthesis | skills/decision-synthesis/SKILL.md | runs after all others |
 | decision-intelligence | skills/decision-intelligence/SKILL.md | probabilistic-thinking, fermi-estimation, scenario-planning |
 | retrospective-counterfactual | skills/retrospective-counterfactual/SKILL.md | five-whys-root-cause, causal-inference |
