@@ -16,7 +16,7 @@ Patterns to detect during evaluation that indicate a harness is underperforming 
 
 **Root cause**: The harness author assumed more context = better results. In practice, irrelevant context competes for attention and can push out relevant information.
 
-**Fix**: Identify which sections of the harness the agent actually used (check transcripts). Keep those, prune the rest. Consider scoped resolution (.ctx pattern) — deliver only the context relevant to the current task.
+**Fix**: Identify which sections of the harness the agent actually used (check transcripts). Keep those, prune the rest. Consider scoped delivery — only load context relevant to the current task rather than dumping everything.
 
 ---
 
@@ -31,7 +31,7 @@ Patterns to detect during evaluation that indicate a harness is underperforming 
 
 **Root cause**: Context files were written once and never updated. No freshness management.
 
-**Fix**: Add timestamps to context sections. Implement a freshness check (e.g., `max_age` in .ctx files). Prioritize recently-updated context over old context.
+**Fix**: Add timestamps to context sections. Implement a freshness check (e.g., a `max_age` field or date marker per section). Prioritize recently-updated context over old context.
 
 ---
 

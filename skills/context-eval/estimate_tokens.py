@@ -3,8 +3,8 @@
 Estimate the token count of a context harness file or directory.
 
 Usage:
-    python estimate_tokens.py /path/to/AGENTS.md
-    python estimate_tokens.py /path/to/skill-directory/
+    python estimate_tokens.py /path/to/harness-file.md
+    python estimate_tokens.py /path/to/harness-directory/
 
 Uses the approximation of ~4 characters per token (accurate within ~15%
 for English text, which is sufficient for benefit-per-kilotoken calculations).
@@ -17,8 +17,8 @@ from pathlib import Path
 CONTEXT_EXTENSIONS = {
     ".md", ".txt", ".yaml", ".yml", ".json", ".toml",
     ".py", ".js", ".ts", ".sh", ".bash",
-    ".xml", ".html", ".css",
-    ".ctx", ".skill",
+    ".xml", ".html", ".css", ".cfg", ".ini", ".conf",
+    ".rst", ".adoc",
 }
 
 CHARS_PER_TOKEN = 4.0  # Approximate; good enough for estimation
