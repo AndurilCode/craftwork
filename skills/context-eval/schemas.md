@@ -10,9 +10,9 @@ Defines the evaluation suite for a context harness. Located at `evals/evals.json
 
 ```json
 {
-  "harness_name": "payment-service-agents-md",
-  "harness_type": "agents-md",
-  "harness_path": "/path/to/AGENTS.md",
+  "harness_name": "payment-service-guidelines",
+  "harness_type": "service documentation",
+  "harness_path": "/path/to/harness",
   "harness_token_estimate": 1500,
   "evals": [
     {
@@ -22,7 +22,7 @@ Defines the evaluation suite for a context harness. Located at `evals/evals.json
       "files": ["evals/files/sample-input.json"],
       "assertions": [
         "The output includes the retry backoff schedule",
-        "The agent referenced the Stripe webhook handler correctly"
+        "The agent referenced the webhook handler correctly"
       ]
     }
   ]
@@ -31,7 +31,7 @@ Defines the evaluation suite for a context harness. Located at `evals/evals.json
 
 **Fields:**
 - `harness_name`: Identifier for the context artifact
-- `harness_type`: One of: `skill`, `agents-md`, `claude-md`, `ctx-file`, `system-prompt`, `mcp-config`, `rag`, `few-shot`, `custom-instructions`, `other`
+- `harness_type`: Free-form descriptive string inferred during exploration (e.g., "project coding guidelines", "service documentation", "retrieval pipeline")
 - `harness_path`: Path to the artifact being evaluated
 - `harness_token_estimate`: Approximate token count of the context artifact
 - `evals[].id`: Unique integer identifier
@@ -51,10 +51,10 @@ Per-eval metadata. Located at `<workspace>/iteration-N/eval-<name>/eval_metadata
   "eval_id": 1,
   "eval_name": "payment-handoff-doc",
   "prompt": "The task prompt",
-  "harness_path": "/path/to/AGENTS.md",
+  "harness_path": "/path/to/harness",
   "assertions": [
     "The document includes the retry backoff schedule",
-    "The agent referenced the Stripe webhook handler correctly"
+    "The agent referenced the webhook handler correctly"
   ]
 }
 ```
@@ -90,7 +90,7 @@ Output from the grader. Located at `<run-dir>/grading.json`.
     "benefit": 0.40
   },
   "behavioral_observations": {
-    "approach_difference": "With-harness agent went directly to the Stripe handler; without-harness explored three different files first",
+    "approach_difference": "With-harness agent went directly to the target handler; without-harness explored three different files first",
     "precision_difference": "With-harness used exact function names; without-harness used generic descriptions",
     "efficiency_difference": "With-harness: 8 tool calls. Without-harness: 14 tool calls."
   },
@@ -131,8 +131,8 @@ The final evaluation report. Located at `<workspace>/context_eval_report.json`.
 ```json
 {
   "metadata": {
-    "harness_name": "payment-service-agents-md",
-    "harness_type": "agents-md",
+    "harness_name": "payment-service-guidelines",
+    "harness_type": "service documentation",
     "harness_token_cost": 1500,
     "timestamp": "2026-03-18T10:30:00Z",
     "num_evals": 5,
@@ -169,7 +169,7 @@ The final evaluation report. Located at `<workspace>/context_eval_report.json`.
   ],
   "diagnosis": {
     "verdict": "EFFECTIVE",
-    "reasoning": "The AGENTS.md improved pass rates by 45% with strong discrimination on domain-specific assertions. The token cost (1500) is justified by the benefit.",
+    "reasoning": "The harness improved pass rates by 45% with strong discrimination on domain-specific assertions. The token cost (1500) is justified by the benefit.",
     "non_discriminating_assertions": ["The output is a markdown file"],
     "highest_impact_areas": ["Domain-specific terminology", "Architecture accuracy"],
     "wasted_context": ["The section on deployment history didn't influence any eval"],
@@ -195,7 +195,7 @@ Tracks improvement progression across iterations. Located at workspace root.
 
 ```json
 {
-  "harness_name": "payment-service-agents-md",
+  "harness_name": "payment-service-guidelines",
   "started_at": "2026-03-18T10:30:00Z",
   "iterations": [
     {
