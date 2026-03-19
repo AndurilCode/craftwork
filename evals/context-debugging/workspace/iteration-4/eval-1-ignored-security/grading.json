@@ -1,0 +1,57 @@
+{
+  "assertions": [
+    {
+      "text": "Verifies actual assembled context before diagnosing (Step 0)",
+      "with_harness": {"passed": true, "evidence": "dump the full assembled context that the model actually receives. Confirm the security checklist is present and intact"},
+      "without_harness": {"passed": false, "evidence": "No mention of logging or verifying actual context"},
+      "discrimination": "discriminating"
+    },
+    {
+      "text": "Identifies BURIED CONTEXT as a category",
+      "with_harness": {"passed": true, "evidence": "sandwiched between style rules and examples — classic buried context"},
+      "without_harness": {"passed": true, "evidence": "Lost in the Middle Problem... middle gets less attention"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Checks for CONFLICTING CONTEXT — examples omit security (emergent interaction)",
+      "with_harness": {"passed": true, "evidence": "examples contradict the checklist not by saying ignore security but by omitting security entirely"},
+      "without_harness": {"passed": true, "evidence": "Lack of few-shot examples demonstrating security review behavior"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Checks multiple co-occurring categories systematically",
+      "with_harness": {"passed": true, "evidence": "Full table marking all 7 categories; explicit BURIED CONTEXT + CONFLICTING (compound failure)"},
+      "without_harness": {"passed": false, "evidence": "Lists 5 independent hypotheses without systematic triage or compound diagnosis"},
+      "discrimination": "discriminating"
+    },
+    {
+      "text": "Provides concrete quick fix under 10 minutes",
+      "with_harness": {"passed": true, "evidence": "Move to end... Strip to just checklist + vulnerable snippet"},
+      "without_harness": {"passed": true, "evidence": "Move security checklist to end... Add few-shot example"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Provides concrete test to verify the diagnosis",
+      "with_harness": {"passed": true, "evidence": "Strip the prompt to just the security checklist and a vulnerable code snippet. If the model flags the SQL injection, the diagnosis is confirmed"},
+      "without_harness": {"passed": false, "evidence": "Test with your SQL injection example after each change — vague, no isolation protocol"},
+      "discrimination": "discriminating"
+    }
+  ],
+  "summary": {
+    "with_harness": {"passed": 6, "failed": 0, "total": 6, "pass_rate": 1.00},
+    "without_harness": {"passed": 3, "failed": 3, "total": 6, "pass_rate": 0.50},
+    "discriminating_assertions": 3,
+    "non_discriminating_assertions": 3,
+    "inverse_assertions": 0,
+    "benefit": 0.50
+  },
+  "behavioral_observations": {
+    "approach_difference": "WITH follows structured triage (Step 0 → Observe → Classify table). WITHOUT uses ad-hoc numbered hypotheses.",
+    "precision_difference": "WITH uses category names (BURIED, CONFLICTING) and labels compound failure explicitly.",
+    "quality_difference": "Both identify the core issues; WITH adds structure and verification protocol."
+  },
+  "assertion_feedback": {
+    "suggestions": [],
+    "overall": "Assertions are well-targeted. 3 discriminating out of 6 is a good ratio."
+  }
+}

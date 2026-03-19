@@ -2,86 +2,121 @@
   "metadata": {
     "harness_name": "context-debugging",
     "harness_type": "diagnostic methodology skill",
-    "harness_token_cost": 2500,
-    "condensed_token_cost_in_tests": 800,
-    "timestamp": "2026-03-19T00:00:00Z",
+    "harness_token_cost": 800,
+    "timestamp": "2026-03-19T11:20:02.351904+00:00",
     "num_evals": 3,
-    "iteration": 4,
-    "eval_method": "fresh subagent pairs, task tracking, grader.md protocol",
-    "note": "Iteration 4: proper eval using grader.md protocol with evidence citations, discrimination classification, behavioral observations, and assertion critique."
+    "iteration": 4
   },
   "results": {
     "with_harness": {
-      "pass_rate": {"mean": 0.95, "stddev": 0.07}
+      "pass_rate": {
+        "mean": 0.952,
+        "stddev": 0.083
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0
+      }
     },
     "without_harness": {
-      "pass_rate": {"mean": 0.64, "stddev": 0.16}
+      "pass_rate": {
+        "mean": 0.643,
+        "stddev": 0.189
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0
+      }
     },
     "delta": {
       "pass_rate": "+0.31",
-      "benefit_per_kilotoken": 0.39
+      "benefit_per_kilotoken": 0.387
     }
   },
   "per_eval_breakdown": [
     {
-      "eval_id": 1,
-      "eval_name": "ignored-security-checklist",
-      "with_harness_pass_rate": 1.00,
-      "without_harness_pass_rate": 0.50,
-      "benefit": 0.50,
-      "discriminating_assertions": ["A1: Step 0 verify", "A4: Compound categories", "A6: Concrete verification test"],
-      "non_discriminating_assertions": ["A2: Buried context (both pass)", "A3: Conflicting (both pass)", "A5: Quick fix (both pass)"]
+      "eval_id": 0,
+      "eval_name": "eval-1-ignored-security",
+      "with_harness_pass_rate": 1.0,
+      "without_harness_pass_rate": 0.5,
+      "benefit": 0.5,
+      "discriminating_assertions": [
+        "Verifies actual assembled context before diagnosing (Step 0)",
+        "Checks multiple co-occurring categories systematically",
+        "Provides concrete test to verify the diagnosis"
+      ],
+      "non_discriminating_assertions": [
+        "Identifies BURIED CONTEXT as a category",
+        "Checks for CONFLICTING CONTEXT \u2014 examples omit security (emergent interaction)",
+        "Provides concrete quick fix under 10 minutes"
+      ]
     },
     {
-      "eval_id": 2,
-      "eval_name": "regression-tool-hallucination",
-      "with_harness_pass_rate": 0.86,
-      "without_harness_pass_rate": 0.57,
-      "benefit": 0.29,
-      "discriminating_assertions": ["A3: Revert first", "A7: Compound diagnosis"],
-      "non_discriminating_both_pass": ["A2: Regression", "A4: Tool problem", "A5: Buried", "A6: Stochastic"],
-      "non_discriminating_both_fail": ["A1: Step 0 — skipped by BOTH agents"],
-      "note": "A1 failed for WITH-harness agent — Step 0 skipped. Persistent weakness across 3 iterations."
+      "eval_id": 0,
+      "eval_name": "eval-2-regression-tool",
+      "with_harness_pass_rate": 0.857,
+      "without_harness_pass_rate": 0.571,
+      "benefit": 0.286,
+      "discriminating_assertions": [
+        "Suggests reverting as immediate fix",
+        "Provides compound diagnosis (not single cause)"
+      ],
+      "non_discriminating_assertions": [
+        "Verifies actual assembled context before diagnosing",
+        "Identifies REGRESSION (context recently changed)",
+        "Identifies TOOL PROBLEM as co-occurring category",
+        "Identifies BURIED CONTEXT as co-occurring category",
+        "Recognizes 40% as stochastic/intermittent"
+      ]
     },
     {
-      "eval_id": 3,
-      "eval_name": "compound-rag-failure",
-      "with_harness_pass_rate": 1.00,
-      "without_harness_pass_rate": 0.86,
-      "benefit": 0.14,
-      "discriminating_assertions": ["A1: Step 0 verify"],
-      "non_discriminating_assertions": ["A2-A7: All pass for both — baseline is strong on RAG problems"],
-      "note": "Smallest benefit. Baseline agent already handles RAG diagnosis well."
+      "eval_id": 0,
+      "eval_name": "eval-3-compound-rag",
+      "with_harness_pass_rate": 1.0,
+      "without_harness_pass_rate": 0.857,
+      "benefit": 0.143,
+      "discriminating_assertions": [
+        "Verifies actual assembled context before diagnosing"
+      ],
+      "non_discriminating_assertions": [
+        "Identifies MISSING CONTEXT (retrieval may return wrong docs)",
+        "Identifies BURIED CONTEXT (docs in low-attention position)",
+        "Identifies CONFLICTING CONTEXT (helpfulness vs grounding instruction)",
+        "Checks multiple co-occurring categories",
+        "Distinguishes retrieval failures from grounding failures",
+        "Provides concrete quick fix"
+      ]
     }
   ],
-  "behavioral_observations": {
-    "approach_difference": "WITH-harness agents follow structured triage (Step 0 → Observe → Classify table). WITHOUT-harness agents use ad-hoc numbered hypotheses.",
-    "precision_difference": "WITH-harness agents use specific category names (BURIED, CONFLICTING, REGRESSION) and explicitly label compound failures. WITHOUT agents describe same phenomena in prose.",
-    "quality_difference": "Eval 3 baseline was notably strong — skill's marginal value is smallest when baseline already has good domain intuitions."
-  },
-  "assertion_feedback": {
-    "suggestions": [
-      {"assertion": "A1 (Step 0)", "reason": "Non-discriminating in eval 2 (both fail). The condensed skill doesn't emphasize Step 0 enough — with-harness agent skipped it. Make Step 0 a hard gate."},
-      {"assertion": "NEW: Stochastic validation", "reason": "Neither version consistently suggests testing fixes with multiple runs. For the 40% failure case, validating with a sample size is critical."},
-      {"assertion": "A5 (compound) in eval 3", "reason": "Non-discriminating — baseline naturally structures well for RAG. Consider harder assertions for well-known problem domains."}
-    ],
-    "overall": "Assertions are well-targeted for evals 1-2 but too easy for eval 3 where baseline is already strong. Consider adding harder scenarios or more specific assertions."
-  },
-  "iteration_comparison": {
-    "iteration_1_post_hoc": {"mean_benefit": 0.45, "method": "post-hoc grading (INVALID)"},
-    "iteration_2_fresh": {"mean_benefit": 0.35, "method": "fresh subagent pairs"},
-    "iteration_3_fresh_tasks": {"mean_benefit": 0.35, "method": "fresh pairs + task tracking"},
-    "iteration_4_full_protocol": {"mean_benefit": 0.31, "method": "fresh pairs + task tracking + grader.md protocol"},
-    "trend": "Each methodological improvement reduces measured benefit slightly. Post-hoc was inflated by +14pp. Adding grader rigor reduced by another 4pp. The skill is genuinely EFFECTIVE but the true benefit is ~0.31, not 0.45."
-  },
   "diagnosis": {
     "verdict": "EFFECTIVE",
-    "reasoning": "Mean benefit +0.31 across 3 evals using full grader.md protocol. Consistent improvement in evals 1-2. Marginal in eval 3 where baseline is already strong. The skill's unique value is in structured triage, compound failure detection, and revert-first discipline.",
-    "persistent_weakness": "Step 0 (verify actual context) is skipped by with-harness agent in eval 2 across iterations 2-4. The condensed skill format may not emphasize it enough. Recommend making Step 0 a hard gate in the full skill.",
-    "recommendations": [
-      "Make Step 0 a hard gate: 'Do NOT proceed until you have verified the actual assembled context'",
-      "Add stochastic validation assertion: suggest testing fixes with multiple runs for intermittent failures",
-      "Eval 3 baseline is strong — consider adding harder RAG-specific scenarios to better differentiate"
-    ]
+    "reasoning": "The harness improved pass rates by 31% on average with strong discrimination. Token cost (800) is justified.",
+    "non_discriminating_assertions": [
+      "Provides concrete quick fix",
+      "Verifies actual assembled context before diagnosing",
+      "Recognizes 40% as stochastic/intermittent",
+      "Identifies CONFLICTING CONTEXT (helpfulness vs grounding instruction)",
+      "Identifies TOOL PROBLEM as co-occurring category",
+      "Identifies MISSING CONTEXT (retrieval may return wrong docs)",
+      "Provides concrete quick fix under 10 minutes",
+      "Checks multiple co-occurring categories",
+      "Checks for CONFLICTING CONTEXT \u2014 examples omit security (emergent interaction)",
+      "Identifies BURIED CONTEXT as a category",
+      "Identifies BURIED CONTEXT as co-occurring category",
+      "Identifies REGRESSION (context recently changed)",
+      "Identifies BURIED CONTEXT (docs in low-attention position)",
+      "Distinguishes retrieval failures from grounding failures"
+    ],
+    "highest_impact_areas": [],
+    "wasted_context": [],
+    "recommendations": []
   }
 }

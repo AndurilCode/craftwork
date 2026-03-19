@@ -1,0 +1,66 @@
+{
+  "assertions": [
+    {
+      "text": "Verifies actual assembled context before diagnosing",
+      "with_harness": {"passed": true, "evidence": "Log the full assembled prompt sent to the model. Dump the raw API request body"},
+      "without_harness": {"passed": false, "evidence": "No mention of logging or verifying actual prompt"},
+      "discrimination": "discriminating"
+    },
+    {
+      "text": "Identifies MISSING CONTEXT (retrieval may return wrong docs)",
+      "with_harness": {"passed": true, "evidence": "retrieval failure masquerading as a generation failure"},
+      "without_harness": {"passed": true, "evidence": "Many hallucination issues are actually retrieval failures"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Identifies BURIED CONTEXT (docs in low-attention position)",
+      "with_harness": {"passed": true, "evidence": "docs likely buried in the middle... lost in the middle effect"},
+      "without_harness": {"passed": true, "evidence": "Attention dilution... lost in the middle"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Identifies CONFLICTING CONTEXT (helpfulness vs grounding instruction)",
+      "with_harness": {"passed": true, "evidence": "tension between general helpfulness and grounding constraint... emergent conflicts"},
+      "without_harness": {"passed": true, "evidence": "be helpful and comprehensive alongside only use provided documents"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Checks multiple co-occurring categories",
+      "with_harness": {"passed": true, "evidence": "Full table; explicit Compound Failure: BURIED + CONFLICTING + MISSING"},
+      "without_harness": {"passed": true, "evidence": "Structured into 5 numbered diagnostic sections"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Distinguishes retrieval failures from grounding failures",
+      "with_harness": {"passed": true, "evidence": "retrieval failure masquerading as generation failure + manual check protocol"},
+      "without_harness": {"passed": true, "evidence": "Quick diagnostic test separating retrieval from generation quality"},
+      "discrimination": "non_discriminating_both_pass"
+    },
+    {
+      "text": "Provides concrete quick fix",
+      "with_harness": {"passed": true, "evidence": "Place documents last, explicit delimiters, replace vague grounding instruction with specific operational one"},
+      "without_harness": {"passed": true, "evidence": "Move documents out of system prompt, require citations, add refusal instruction"},
+      "discrimination": "non_discriminating_both_pass"
+    }
+  ],
+  "summary": {
+    "with_harness": {"passed": 7, "failed": 0, "total": 7, "pass_rate": 1.00},
+    "without_harness": {"passed": 6, "failed": 1, "total": 7, "pass_rate": 0.857},
+    "discriminating_assertions": 1,
+    "non_discriminating_assertions": 6,
+    "inverse_assertions": 0,
+    "benefit": 0.143
+  },
+  "behavioral_observations": {
+    "approach_difference": "WITH follows structured Step 0/1/2 triage. WITHOUT uses domain-expert ad-hoc analysis.",
+    "precision_difference": "WITH uses explicit category labels and compound diagnosis. WITHOUT describes same issues in prose.",
+    "quality_difference": "Baseline is very strong on RAG problems — nearly indistinguishable from with-harness quality. Only Step 0 differentiates."
+  },
+  "assertion_feedback": {
+    "suggestions": [
+      {"assertion": "All A2-A7", "reason": "Non-discriminating — baseline already handles RAG diagnosis well. Need harder assertions."},
+      {"assertion": "NEW: Instruction-to-evidence ratio analysis", "reason": "Neither version checks whether the system prompt has too many instructions relative to document tokens."}
+    ],
+    "overall": "Only 1 discriminating assertion out of 7. Baseline is too strong for these assertions. Consider harder RAG-specific scenarios."
+  }
+}
