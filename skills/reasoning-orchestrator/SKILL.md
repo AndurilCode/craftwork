@@ -152,69 +152,38 @@ Recommended action: [what to do now]
 
 ## Parallelization Reference
 
-These six clusters are the canonical parallel groups. Skills within a cluster apply independent lenses and never depend on each other's output.
+Canonical parallel clusters. Skills within a cluster apply independent lenses and never depend on each other's output.
 
-| Pattern | Skills | Use when |
-|---------|--------|---------|
-| P1 — Adversarial | inversion-premortem ∥ red-teaming ∥ second-order-thinking | Validating a plan before commitment |
-| P2 — Generative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking | Stuck, need new options |
-| P2+ — Generative + Creative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking ∥ bisociative-creativity | Stuck AND need genuinely novel framing (combine when both tracks apply) |
-| P3 — Diagnostic | systems-thinking ∥ theory-of-constraints ∥ causal-inference | System is failing, need to understand why |
-| P4 — Uncertainty | scenario-planning ∥ probabilistic-thinking ∥ fermi-estimation | Decision needs quantification |
-| P5 — Meta-cognitive | epistemic-mapping ∥ cognitive-bias-detection ∥ cynefin-framework | Clean the reasoning environment first |
+| Pattern | Skills |
+|---------|--------|
+| P1 — Adversarial | inversion-premortem ∥ red-teaming ∥ second-order-thinking |
+| P2 — Generative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking |
+| P2+ — Generative + Creative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking ∥ bisociative-creativity |
+| P3 — Diagnostic | systems-thinking ∥ theory-of-constraints ∥ causal-inference |
+| P4 — Uncertainty | scenario-planning ∥ probabilistic-thinking ∥ fermi-estimation |
+| P5 — Meta-cognitive | epistemic-mapping ∥ cognitive-bias-detection ∥ cynefin-framework |
 
-**Note on bisociative-creativity**: When the creative track is the *primary* track (deliverable is an idea), run bisociative-creativity as a standalone sequential step — it has its own three-phase engine and doesn't need parallel lenses. Use P2+ only when the generative and creative tracks overlap (stuck on a problem AND need novel framing). Bisociative-creativity produces raw sparks; follow with inversion-premortem to stress-test the best ones.
+**Note on bisociative-creativity**: When the creative track is the *primary* track (deliverable is an idea), run bisociative-creativity as a standalone sequential step. Use P2+ only when generative and creative tracks overlap. Follow with inversion-premortem to stress-test top sparks.
 
 ---
 
 ## Post-Step Routing Reference
 
-After completing any step, use this table to adjust the plan if findings warrant it:
+After completing any step, use this table to adjust the plan if findings warrant it. Only non-obvious redirects are listed — obvious escalations (e.g., bottleneck → theory-of-constraints) should be applied naturally.
 
 | Completed skill | Finding | Adjust plan to include |
 |----------------|---------|----------------------|
 | epistemic-mapping | Dangerous assumptions found | first-principles-thinking (sequential, next) |
 | cynefin-framework | Domain = Complex | lateral-thinking ∥ scenario-planning (parallel) instead of structured analysis |
 | cynefin-framework | Domain = Chaotic | Act immediately; retrospective-counterfactual after stabilization |
-| systems-thinking | Bottleneck identified | theory-of-constraints (sequential) |
-| five-whys-root-cause | Root cause is causal claim | causal-inference (sequential) |
-| five-whys-root-cause | Multiple root causes | decision-synthesis (sequential, to prioritize) |
 | adversarial panel (P1) | High-severity risks | cognitive-bias-detection on the risk analysis (sequential) |
 | generative panel (P2) | All options weak | epistemic-mapping — frame may be wrong (sequential, restart) |
-| generative panel (P2) | Options incremental, not novel enough | bisociative-creativity (sequential) — collide with distant frames to escape incrementalism |
+| generative panel (P2) | Options incremental, not novel enough | bisociative-creativity (sequential) — collide with distant frames |
 | bisociative-creativity | Strong sparks produced | inversion-premortem to stress-test top 2–3 sparks (sequential) |
-| bisociative-creativity | All collisions produced only kernels, no live sparks | Re-run with more distant frames, or lateral-thinking to escape the seed domain framing (sequential) |
-| bisociative-creativity | Sparks validated, need to choose between them | decision-synthesis (sequential) |
+| bisociative-creativity | Only kernels, no live sparks | Re-run with more distant frames, or lateral-thinking (sequential) |
 | uncertainty panel (P4) | High uncertainty persists | inversion-premortem on worst-case scenario (sequential) |
 | decision-synthesis | Key assumption too uncertain | epistemic-mapping → validate before committing |
-| decision-intelligence | Probability estimates feel shaky | fermi-estimation ∥ probabilistic-thinking first, then re-run |
-| decision-intelligence | Decision confirmed, options remain open | decision-synthesis to land the final call |
-| retrospective-counterfactual | Systemic cause found | systems-thinking ∥ five-whys-root-cause (parallel) |
 
 ---
 
-## Skill Registry
-
-| Skill | File path | Parallelizes with |
-|-------|-----------|------------------|
-| epistemic-mapping | skills/epistemic-mapping/SKILL.md | cynefin-framework, cognitive-bias-detection |
-| cynefin-framework | skills/cynefin-framework/SKILL.md | epistemic-mapping, cognitive-bias-detection |
-| systems-thinking | skills/systems-thinking/SKILL.md | theory-of-constraints, causal-inference |
-| theory-of-constraints | skills/theory-of-constraints/SKILL.md | systems-thinking, causal-inference |
-| five-whys-root-cause | skills/five-whys-root-cause/SKILL.md | causal-inference |
-| causal-inference | skills/causal-inference/SKILL.md | systems-thinking, five-whys-root-cause |
-| cognitive-bias-detection | skills/cognitive-bias-detection/SKILL.md | epistemic-mapping, cynefin-framework |
-| inversion-premortem | skills/inversion-premortem/SKILL.md | red-teaming, second-order-thinking |
-| red-teaming | skills/red-teaming/SKILL.md | inversion-premortem, second-order-thinking |
-| second-order-thinking | skills/second-order-thinking/SKILL.md | inversion-premortem, red-teaming |
-| probabilistic-thinking | skills/probabilistic-thinking/SKILL.md | scenario-planning, fermi-estimation |
-| fermi-estimation | skills/fermi-estimation/SKILL.md | probabilistic-thinking, scenario-planning |
-| scenario-planning | skills/scenario-planning/SKILL.md | probabilistic-thinking, fermi-estimation |
-| stakeholder-power-mapping | skills/stakeholder-power-mapping/SKILL.md | second-order-thinking, causal-inference |
-| lateral-thinking | skills/lateral-thinking/SKILL.md | analogical-thinking, first-principles-thinking, bisociative-creativity |
-| analogical-thinking | skills/analogical-thinking/SKILL.md | lateral-thinking, first-principles-thinking, bisociative-creativity |
-| first-principles-thinking | skills/first-principles-thinking/SKILL.md | lateral-thinking, analogical-thinking, bisociative-creativity |
-| bisociative-creativity | skills/bisociative-creativity/SKILL.md | lateral-thinking, analogical-thinking, first-principles-thinking (P2+ only); runs standalone for creative track |
-| decision-synthesis | skills/decision-synthesis/SKILL.md | runs after all others |
-| decision-intelligence | skills/decision-intelligence/SKILL.md | probabilistic-thinking, fermi-estimation, scenario-planning |
-| retrospective-counterfactual | skills/retrospective-counterfactual/SKILL.md | five-whys-root-cause, causal-inference |
+**Skill file convention**: All skills are at `skills/[skill-name]/SKILL.md`.
