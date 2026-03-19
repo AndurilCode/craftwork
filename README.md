@@ -8,11 +8,11 @@ Each skill lives in its own folder and is self-contained: a `SKILL.md` with a tr
 
 ## Reasoning Skills
 
-Twenty frameworks across six thinking categories.
+Twenty-two frameworks across seven thinking categories.
 
 ### Understand the System
 
-- [`systems-thinking`](skills/systems-thinking/SKILL.md) — Maps stocks, flows, feedback loops, and archetypes to find where a system structurally works and where it breaks down.
+- [`systems-thinking`](skills/system-thinking/SKILL.md) — Maps stocks, flows, feedback loops, and archetypes to find where a system structurally works and where it breaks down.
 - [`first-principles-thinking`](skills/first-principles-thinking/SKILL.md) — Strips away conventions down to fundamental truths and rebuilds from scratch. Use when the frame itself might be wrong.
 - [`cynefin-framework`](skills/cynefin-framework/SKILL.md) — Classifies the problem domain (Clear / Complicated / Complex / Chaotic) before choosing an approach. Prevents applying the wrong solution type.
 - [`epistemic-mapping`](skills/epistemic-mapping/SKILL.md) — Maps what you know, believe, and don't know before reasoning. Surfaces unknown unknowns, dangerous assumptions, and what would change your mind.
@@ -21,7 +21,7 @@ Twenty frameworks across six thinking categories.
 
 - [`theory-of-constraints`](skills/theory-of-constraints/SKILL.md) — Identifies the single bottleneck limiting throughput. Optimizing anything else is waste.
 - [`five-whys-root-cause`](skills/five-whys-root-cause/SKILL.md) — Drills through symptoms to structural root causes. Stops fixes that don't hold.
-- [`causal-inference`](skills/causal-inference/SKILL.md) — Distinguishes causation from correlation when interpreting metrics, A/B tests, and system behavior. Surfaces confounders and counterfactuals.
+- [`causal-inference`](skills/casual-inference/SKILL.md) — Distinguishes causation from correlation when interpreting metrics, A/B tests, and system behavior. Surfaces confounders and counterfactuals.
 - [`cognitive-bias-detection`](skills/cognitive-bias-detection/SKILL.md) — Audits the reasoning itself for systematic distortions: confirmation bias, sunk cost, anchoring, groupthink, and more.
 
 ### Stress-Test and Attack
@@ -41,12 +41,17 @@ Twenty frameworks across six thinking categories.
 
 - [`lateral-thinking`](skills/lateral-thinking/SKILL.md) — Deliberately escapes dominant patterns to generate non-obvious alternatives. Use when analytical thinking has hit a ceiling.
 - [`analogical-thinking`](skills/analogical-thinking/SKILL.md) — Finds structural analogues in other domains and transfers solution patterns. Don't reinvent what's been solved elsewhere under a different name.
+- [`bisociative-creativity`](skills/bisociative-creativity/SKILL.md) — Generates genuinely novel ideas by colliding distant frames of reference. Use when the deliverable is a creative concept, name, angle, or metaphor rather than an analysis.
 
 ### Decide and Learn
 
 - [`decision-synthesis`](skills/decision-synthesis/SKILL.md) — Bridges analysis to action using weighted criteria and structured trade-off evaluation. The convergence layer after running other frameworks.
 - [`decision-intelligence`](skills/decision-intelligence/SKILL.md) — Applies six probabilistic models (Expected Value, Base Rate, Sunk Cost, Bayesian Thinking, Survivorship Bias, Kelly Criterion) mandatorily and in sequence to any decision with quantifiable stakes. Produces explicit calculations and a synthesized recommendation with confidence level.
 - [`retrospective-counterfactual`](skills/retrospective-counterfactual/SKILL.md) — Reconstructs what actually caused a past outcome and what would have happened differently. Post-mortems, incident reviews, and decision quality assessment.
+
+### Evaluate Context
+
+- [`context-eval`](skills/context-eval/SKILL.md) — Measures whether a context engineering harness actually improves agent outcomes by comparing baseline vs. harnessed runs against explicit assertions. Use when you need evidence that extra context is worth the tokens.
 
 ---
 
@@ -62,9 +67,13 @@ Skills are designed to be composed. Common sequences:
 
 **Stuck with no good options** → Epistemic Mapping → Lateral Thinking → Analogical Thinking → First Principles
 
+**Generating creative options from scratch** → Bisociative Creativity → Inversion/Pre-mortem → Decision Synthesis
+
 **Diagnosing a recurring problem** → 5 Whys → Causal Inference → Systems Thinking → Cognitive Bias Detection
 
 **After something goes wrong** → Retrospective/Counterfactual → 5 Whys → Epistemic Mapping → Decision Synthesis
+
+**Checking whether a context harness is worth the tokens** → Context Eval
 
 ---
 
@@ -73,9 +82,12 @@ Skills are designed to be composed. Common sequences:
 ```
 skills/
 ├── analogical-thinking/
-├── causal-inference/
+├── bisociative-creativity/
+├── casual-inference/
 ├── cognitive-bias-detection/
+├── context-eval/
 ├── cynefin-framework/
+├── decision-intelligence/
 ├── decision-synthesis/
 ├── epistemic-mapping/
 ├── fermi-estimation/
@@ -84,12 +96,13 @@ skills/
 ├── inversion-premortem/
 ├── lateral-thinking/
 ├── probabilistic-thinking/
+├── reasoning-orchestrator/
 ├── red-teaming/
 ├── retrospective-counterfactual/
 ├── scenario-planning/
 ├── second-order-thinking/
 ├── stakeholder-power-mapping/
-├── systems-thinking/
+├── system-thinking/
 └── theory-of-constraints/
     └── SKILL.md
 ```
