@@ -51,7 +51,9 @@ Twenty-two frameworks across seven thinking categories, plus development methodo
 
 ### Engineer and Evaluate Context
 
-- [`edd`](skills/edd/SKILL.md) — Eval-Driven Development. TDD for context, not code. Write behavioral assertions about agent behavior, engineer harness/prompts until assertions pass, catch regressions before shipping. Use when iterating on any context artifact that runs repeatedly.
+- [`context-cartography`](skills/context-cartography/SKILL.md) — Design what goes into an agent's context window. Prioritize, size, structure, and cut context sources using concrete patterns for common agent task types. Produces a versionable context manifest.
+- [`context-debugging`](skills/context-debugging/SKILL.md) — Diagnose agent failures that originate in the context layer. Systematic triage across 7 failure categories with quick fixes. Most failures that look like reasoning problems are actually context problems.
+- [`edd`](skills/edd/SKILL.md) — Eval-Driven Development. TDD for context, not code. Write behavioral assertions about agent behavior, engineer harness/prompts until assertions pass, catch regressions before shipping.
 - [`context-eval`](skills/context-eval/SKILL.md) — Measures whether a context engineering harness actually improves agent outcomes by comparing baseline vs. harnessed runs against explicit assertions. The measurement engine that EDD uses under the hood.
 
 ---
@@ -78,6 +80,10 @@ Skills are designed to be composed. Common sequences:
 
 **Iterating on a context harness** → EDD (uses Context Eval as measurement engine)
 
+**Agent is failing, need to diagnose** → Context Debugging → fix → EDD to validate fix
+
+**Full context engineering lifecycle** → Context Cartography (design) → EDD (validate) → Context Debugging (when it breaks) → Context Eval (measure)
+
 ---
 
 ## Structure
@@ -88,6 +94,8 @@ skills/
 ├── bisociative-creativity/
 ├── casual-inference/
 ├── cognitive-bias-detection/
+├── context-cartography/
+├── context-debugging/
 ├── context-eval/
 ├── edd/
 ├── cynefin-framework/
