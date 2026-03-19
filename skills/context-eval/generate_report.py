@@ -19,11 +19,34 @@ from statistics import mean, stdev
 
 
 def load_grading(eval_dir: Path) -> dict | None:
-    """Load grading.json from an eval directory."""
-    grading_path = eval_dir / "grading.json"
+    """Load grading.json from an eval directory.
+
+    Checks eval_dir/grading.json first, then eval_dir/with_harness/grading.json
+    and eval_dir/without_harness/grading.json as fallbacks.
+    """
+    for candidate in [
+        eval_dir / "grading.json",
+        eval_dir / "with_harness" / "grading.json",
+    ]:
+        if candidate.exists():
+            with open(candidate) as f:
+                return json.load(f)
+    return None
+
+
+def load_combined_grading(iteration_dir: Path) -> dict | None:
+    """Load a combined grading.json from the iteration directory.
+
+    This supports the common pattern where a single grading agent grades
+    all evals and saves one file with an 'evals' array at the iteration level.
+    """
+    grading_path = iteration_dir / "grading.json"
     if grading_path.exists():
         with open(grading_path) as f:
-            return json.load(f)
+            data = json.load(f)
+        # Only treat as combined if it has an 'evals' array
+        if "evals" in data and isinstance(data["evals"], list):
+            return data
     return None
 
 
@@ -69,13 +92,44 @@ def classify_verdict(mean_benefit: float, per_eval_benefits: list[float]) -> str
     return "MARGINAL"
 
 
-def generate_report(iteration_dir: Path, harness_name: str, harness_type: str, harness_tokens: int) -> dict:
-    """Generate the context eval report from an iteration directory."""
+def _process_per_eval_grading(grading: dict, eval_name: str, eval_id: int) -> dict | None:
+    """Extract per-eval data from a single grading.json (per-eval format)."""
+    summary = grading.get("summary", {})
+    wh = summary.get("with_harness", {})
+    woh = summary.get("without_harness", {})
 
-    eval_dirs = sorted([
-        d for d in iteration_dir.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
-    ])
+    wh_rate = wh.get("pass_rate", 0.0)
+    woh_rate = woh.get("pass_rate", 0.0)
+    benefit = round(wh_rate - woh_rate, 3)
+
+    discriminating = []
+    non_discriminating = []
+    for a in grading.get("assertions", []):
+        disc = a.get("discrimination", "unknown")
+        text = a.get("text", "")
+        if disc == "discriminating":
+            discriminating.append(text)
+        elif disc.startswith("non_discriminating"):
+            non_discriminating.append(text)
+
+    return {
+        "eval_id": eval_id,
+        "eval_name": eval_name,
+        "with_harness_pass_rate": wh_rate,
+        "without_harness_pass_rate": woh_rate,
+        "benefit": benefit,
+        "discriminating_assertions": discriminating,
+        "non_discriminating_assertions": non_discriminating,
+    }
+
+
+def generate_report(iteration_dir: Path, harness_name: str, harness_type: str, harness_tokens: int) -> dict:
+    """Generate the context eval report from an iteration directory.
+
+    Supports two grading layouts:
+    1. Combined: a single grading.json at the iteration level with an 'evals' array
+    2. Per-eval: individual grading.json files inside each eval subdirectory
+    """
 
     per_eval = []
     with_pass_rates = []
@@ -86,61 +140,77 @@ def generate_report(iteration_dir: Path, harness_name: str, harness_type: str, h
     without_tokens_list = []
     all_non_discriminating = []
 
-    for eval_dir in eval_dirs:
-        meta = load_eval_metadata(eval_dir)
-        grading = load_grading(eval_dir)
+    # Try combined grading format first
+    combined = load_combined_grading(iteration_dir)
+    if combined:
+        for eval_entry in combined["evals"]:
+            eval_name = eval_entry.get("eval_name", f"eval-{eval_entry.get('eval_id', 0)}")
+            eval_id = eval_entry.get("eval_id", 0)
 
-        if not grading:
-            continue
+            wh_rate = eval_entry.get("with_harness_pass_rate", 0.0)
+            woh_rate = eval_entry.get("without_harness_pass_rate", 0.0)
+            benefit = round(wh_rate - woh_rate, 3)
 
-        eval_name = meta.get("eval_name", eval_dir.name) if meta else eval_dir.name
-        eval_id = meta.get("eval_id", 0) if meta else 0
+            with_pass_rates.append(wh_rate)
+            without_pass_rates.append(woh_rate)
 
-        summary = grading.get("summary", {})
-        wh = summary.get("with_harness", {})
-        woh = summary.get("without_harness", {})
+            # Extract discrimination from assertions if present
+            discriminating = []
+            non_discriminating = []
+            for a in eval_entry.get("assertions", []):
+                disc = a.get("discrimination", "unknown")
+                text = a.get("text", "")
+                if disc == "discriminating":
+                    discriminating.append(text)
+                elif disc.startswith("non_discriminating"):
+                    non_discriminating.append(text)
+                    all_non_discriminating.append(text)
 
-        wh_rate = wh.get("pass_rate", 0.0)
-        woh_rate = woh.get("pass_rate", 0.0)
-        benefit = round(wh_rate - woh_rate, 3)
+            per_eval.append({
+                "eval_id": eval_id,
+                "eval_name": eval_name,
+                "with_harness_pass_rate": wh_rate,
+                "without_harness_pass_rate": woh_rate,
+                "benefit": benefit,
+                "discriminating_assertions": discriminating,
+                "non_discriminating_assertions": non_discriminating,
+            })
+    else:
+        # Fall back to per-eval grading files
+        eval_dirs = sorted([
+            d for d in iteration_dir.iterdir()
+            if d.is_dir() and not d.name.startswith(".")
+        ])
 
-        with_pass_rates.append(wh_rate)
-        without_pass_rates.append(woh_rate)
+        for eval_dir in eval_dirs:
+            meta = load_eval_metadata(eval_dir)
+            grading = load_grading(eval_dir)
 
-        # Collect timing if available
-        for config, time_list, token_list in [
-            ("with_harness", with_times, with_tokens_list),
-            ("without_harness", without_times, without_tokens_list),
-        ]:
-            run_dir = eval_dir / config
-            timing = load_timing(run_dir)
-            if timing:
-                if "total_duration_seconds" in timing:
-                    time_list.append(timing["total_duration_seconds"])
-                if "total_tokens" in timing:
-                    token_list.append(timing["total_tokens"])
+            if not grading:
+                continue
 
-        # Classify assertions
-        discriminating = []
-        non_discriminating = []
-        for a in grading.get("assertions", []):
-            disc = a.get("discrimination", "unknown")
-            text = a.get("text", "")
-            if disc == "discriminating":
-                discriminating.append(text)
-            elif disc.startswith("non_discriminating"):
-                non_discriminating.append(text)
-                all_non_discriminating.append(text)
+            eval_name = meta.get("eval_name", eval_dir.name) if meta else eval_dir.name
+            eval_id = meta.get("eval_id", 0) if meta else 0
 
-        per_eval.append({
-            "eval_id": eval_id,
-            "eval_name": eval_name,
-            "with_harness_pass_rate": wh_rate,
-            "without_harness_pass_rate": woh_rate,
-            "benefit": benefit,
-            "discriminating_assertions": discriminating,
-            "non_discriminating_assertions": non_discriminating,
-        })
+            entry = _process_per_eval_grading(grading, eval_name, eval_id)
+            if entry:
+                with_pass_rates.append(entry["with_harness_pass_rate"])
+                without_pass_rates.append(entry["without_harness_pass_rate"])
+                all_non_discriminating.extend(entry["non_discriminating_assertions"])
+                per_eval.append(entry)
+
+            # Collect timing if available
+            for config, time_list, token_list in [
+                ("with_harness", with_times, with_tokens_list),
+                ("without_harness", without_times, without_tokens_list),
+            ]:
+                run_dir = eval_dir / config
+                timing = load_timing(run_dir)
+                if timing:
+                    if "total_duration_seconds" in timing:
+                        time_list.append(timing["total_duration_seconds"])
+                    if "total_tokens" in timing:
+                        token_list.append(timing["total_tokens"])
 
     # Compute aggregate stats
     benefits = [e["benefit"] for e in per_eval]
