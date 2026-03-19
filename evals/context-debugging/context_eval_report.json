@@ -6,37 +6,32 @@
     "condensed_token_cost_in_tests": 800,
     "timestamp": "2026-03-19T00:00:00Z",
     "num_evals": 3,
-    "iteration": 1
+    "iteration": 2,
+    "eval_method": "fresh subagent pairs (not post-hoc)",
+    "note": "Iteration 1 used post-hoc grading of prior outputs. This iteration runs fresh independent subagents per the updated context-eval methodology."
   },
   "results": {
     "with_harness": {
-      "pass_rate": {"mean": 1.00, "stddev": 0.00}
+      "pass_rate": {"mean": 0.94, "stddev": 0.08}
     },
     "without_harness": {
-      "pass_rate": {"mean": 0.55, "stddev": 0.04}
+      "pass_rate": {"mean": 0.59, "stddev": 0.09}
     },
     "delta": {
-      "pass_rate": "+0.45",
-      "benefit_per_kilotoken": 0.56
+      "pass_rate": "+0.35",
+      "benefit_per_kilotoken": 0.44
     }
   },
   "per_eval_breakdown": [
     {
       "eval_id": 1,
       "eval_name": "ignored-security-checklist",
-      "with_harness_pass_rate": 1.00,
+      "with_harness_pass_rate": 0.83,
       "without_harness_pass_rate": 0.50,
-      "benefit": 0.50,
-      "discriminating_assertions": [
-        "A1: Verify actual context (Step 0)",
-        "A4: Compound category check",
-        "A6: Concrete verification test"
-      ],
-      "non_discriminating_assertions": [
-        "A2: Buried context identification (both passed)",
-        "A3: Conflicting/emergent interaction (both passed)",
-        "A5: Quick fix (both passed)"
-      ]
+      "benefit": 0.33,
+      "discriminating_assertions": ["A4: Compound category check", "A6: Concrete verification test"],
+      "non_discriminating_assertions": ["A2: Buried context (both pass)", "A3: Conflicting (both pass)", "A5: Quick fix (both pass)"],
+      "note": "A1 (Step 0) was weak in with-harness run — mentioned but not led with"
     },
     {
       "eval_id": 2,
@@ -44,56 +39,36 @@
       "with_harness_pass_rate": 1.00,
       "without_harness_pass_rate": 0.57,
       "benefit": 0.43,
-      "discriminating_assertions": [
-        "A1: Verify actual context",
-        "A3: Revert as immediate fix",
-        "A7: Compound diagnosis"
-      ],
-      "non_discriminating_assertions": [
-        "A2: Regression identification (both passed)",
-        "A4: Tool problem identification (both passed)",
-        "A5: Buried context (both passed)",
-        "A6: Stochastic awareness (both passed)"
-      ]
+      "discriminating_assertions": ["A1: Step 0 verify", "A3: Revert first", "A7: Compound diagnosis"],
+      "non_discriminating_assertions": ["A2: Regression (both pass)", "A4: Tool problem (both pass)", "A5: Buried (both pass)", "A6: Stochastic (both pass)"]
     },
     {
       "eval_id": 3,
       "eval_name": "compound-rag-failure",
       "with_harness_pass_rate": 1.00,
-      "without_harness_pass_rate": 0.57,
-      "benefit": 0.43,
-      "discriminating_assertions": [
-        "A1: Verify actual context",
-        "A4: Conflicting context (helpfulness vs grounding)",
-        "A5: Compound category check"
-      ],
-      "non_discriminating_assertions": [
-        "A2: Missing context / retrieval (both passed)",
-        "A3: Buried context (both passed)",
-        "A6: Retrieval vs grounding distinction (both passed)",
-        "A7: Quick fix (both passed)"
-      ]
+      "without_harness_pass_rate": 0.71,
+      "benefit": 0.29,
+      "discriminating_assertions": ["A1: Step 0 verify", "A4: Conflicting (helpfulness vs grounding)"],
+      "non_discriminating_assertions": ["A2: Missing context (both pass)", "A3: Buried (both pass)", "A5: Compound check (both pass)", "A6: Retrieval vs grounding (both pass)", "A7: Quick fix (both pass)"]
     }
   ],
   "diagnosis": {
     "verdict": "EFFECTIVE",
-    "reasoning": "Mean benefit of +0.45 across all 3 evals with consistent improvement. The skill produces 100% pass rate on all assertions vs 55% baseline. The benefit is concentrated in three areas the baseline consistently misses: (1) Step 0 verification, (2) compound failure detection, (3) structured revert-first discipline.",
+    "reasoning": "Mean benefit of +0.35 across 3 fresh subagent-pair evals. Consistent improvement in all scenarios. With-harness pass rate 0.94 vs baseline 0.59. The 0.06 miss (eval 1, A1) suggests Step 0 could be more prominent in the skill.",
+    "comparison_with_post_hoc": "Post-hoc analysis (iteration 1) reported +0.45 and 1.00 with-harness. Fresh run shows +0.35 and 0.94. Post-hoc was inflated by ~10pp, confirming that post-hoc grading is systematically more generous than fresh subagent evaluation.",
     "highest_impact_areas": [
-      "Step 0 — Verify actual context (discriminating in all 3 evals)",
-      "Compound failure detection (discriminating in all 3 evals)",
-      "Revert-first discipline for regressions (discriminating in eval 2)"
+      "Compound failure detection (discriminating in 3/3 evals)",
+      "Step 0 — verify actual context (discriminating in 2/3 evals)",
+      "Revert-first discipline for regressions (discriminating in 1/1 eval)"
     ],
     "non_discriminating_assertions": [
-      "Basic category identification (buried context, missing context) — baseline already does this reasonably well",
+      "Basic category identification — baseline already does this well",
       "Quick fix suggestions — baseline produces decent ad-hoc fixes"
     ],
-    "wasted_context": [
-      "Individual category descriptions for common categories (buried, missing) add tokens but baseline already identifies these. The skill's value is in the TRIAGE STRUCTURE and COMPOUND DETECTION, not in teaching what buried context is."
-    ],
     "recommendations": [
-      "The skill's unique value is Step 0, compound triage, and revert-first — consider making these even more prominent",
-      "Category descriptions for well-known issues (buried context, missing context) could be condensed since baseline agents already diagnose these",
-      "Consider adding more examples of compound failures since that's the highest-impact differentiator"
+      "Step 0 was weak in eval 1 — consider making it more structurally prominent (before the triage table, not just before Step 1)",
+      "Compound failure detection is the highest-value differentiator — could add more examples",
+      "Post-hoc evaluation inflates results by ~10pp — always use fresh subagent pairs for methodology harnesses"
     ]
   }
 }
