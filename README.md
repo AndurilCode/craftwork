@@ -8,7 +8,7 @@ Each skill lives in its own folder and is self-contained: a `SKILL.md` with a tr
 
 ## Reasoning Skills
 
-Twenty-two frameworks across seven thinking categories, plus development methodologies for context engineering.
+Thirty-two frameworks across seven thinking categories, plus development methodologies for context engineering.
 
 ### Understand the System
 
@@ -36,7 +36,7 @@ Twenty-two frameworks across seven thinking categories, plus development methodo
 - [`fermi-estimation`](skills/fermi-estimation/SKILL.md) — Estimates unknown quantities by decomposition from first principles. Useful when data is unavailable and a decision can't wait.
 - [`scenario-planning`](skills/scenario-planning/SKILL.md) — Maps plausible futures across key uncertainties and stress-tests strategy against each.
 - [`stakeholder-power-mapping`](skills/stakeholder-power-mapping/SKILL.md) — Maps who has power and interest, surfaces informal influence networks, designs engagement strategies.
-
+- [`game-theoretic-analysis`](skills/game-theoretic-analysis/SKILL.md) — Analyzes strategic interaction between agents, actors, or systems where each party's best move depends on what others do. Catches incentive misalignments that systems-thinking alone misses.
 ### Generate New Options
 
 - [`lateral-thinking`](skills/lateral-thinking/SKILL.md) — Deliberately escapes dominant patterns to generate non-obvious alternatives. Use when analytical thinking has hit a ceiling.
@@ -53,8 +53,13 @@ Twenty-two frameworks across seven thinking categories, plus development methodo
 
 - [`context-cartography`](skills/context-cartography/SKILL.md) — Design what goes into an agent's context window. Prioritize, size, structure, and cut context sources using concrete patterns for common agent task types. Produces a versionable context manifest.
 - [`context-debugging`](skills/context-debugging/SKILL.md) — Diagnose agent failures that originate in the context layer. Systematic triage across 7 failure categories with quick fixes. Most failures that look like reasoning problems are actually context problems.
-- [`edd`](skills/edd/SKILL.md) — Eval-Driven Development. TDD for context, not code. Write behavioral assertions about agent behavior, engineer harness/prompts until assertions pass, catch regressions before shipping.
+- [`context-gap-analyzer`](skills/context-gap-analyzer/SKILL.md) — Identify the implicit context missing from a codebase that would most improve agent performance. The delta between what code explicitly says and what a competent team member knows.
 - [`context-eval`](skills/context-eval/SKILL.md) — Measures whether a context engineering harness actually improves agent outcomes by comparing baseline vs. harnessed runs against explicit assertions. The measurement engine that EDD uses under the hood.
+- [`edd`](skills/edd/SKILL.md) — Eval-Driven Development. TDD for context, not code. Write behavioral assertions about agent behavior, engineer harness/prompts until assertions pass, catch regressions before shipping.
+- [`llms-txt-generator`](skills/llms-txt-generator/SKILL.md) — Generate token-budgeted, section-per-concept Markdown optimized for LLM and RAG consumption. Turns sprawling docs into precise, structured context.
+- [`business-logic-extractor`](skills/business-logic-extractor/SKILL.md) — Extract and document business logic, domain models, and product rules from a codebase into a structured llms.txt-style reference.
+- [`test-challenger`](skills/test-challenger/SKILL.md) — Challenge AI-generated (or any) unit tests to find false positives — tests that pass against wrong behavior.
+- [`code-review-amplifier`](skills/code-review-amplifier/SKILL.md) — Amplifies code reviews by assembling context, pre-scanning surface issues, and routing knowledge-transfer opportunities to human reviewers.
 
 ---
 
@@ -92,21 +97,26 @@ Skills are designed to be composed. Common sequences:
 skills/
 ├── analogical-thinking/
 ├── bisociative-creativity/
-├── casual-inference/
+├── business-logic-extractor/
+├── causal-inference/
+├── code-review-amplifier/
 ├── cognitive-bias-detection/
 ├── context-cartography/
 ├── context-debugging/
 ├── context-eval/
-├── edd/
+├── context-gap-analyzer/
 ├── cynefin-framework/
 ├── decision-intelligence/
 ├── decision-synthesis/
+├── edd/
 ├── epistemic-mapping/
 ├── fermi-estimation/
 ├── first-principles-thinking/
 ├── five-whys-root-cause/
+├── game-theoretic-analysis/
 ├── inversion-premortem/
 ├── lateral-thinking/
+├── llms-txt-generator/
 ├── probabilistic-thinking/
 ├── reasoning-orchestrator/
 ├── red-teaming/
@@ -115,6 +125,7 @@ skills/
 ├── second-order-thinking/
 ├── stakeholder-power-mapping/
 ├── system-thinking/
+├── test-challenger/
 └── theory-of-constraints/
     └── SKILL.md
 ```
