@@ -8,28 +8,28 @@
   "plugins": [
     {
       "name": "reasoning",
-      "source": "./reasoning",
+      "source": "./plugins/reasoning",
       "description": "22 reasoning frameworks for analysis, decisions, and problem-solving",
       "version": "1.0.0",
       "category": "reasoning"
     },
     {
       "name": "context-engineering",
-      "source": "./context-engineering",
+      "source": "./plugins/context-engineering",
       "description": "11 skills for building, evaluating, and debugging agent context",
       "version": "1.0.0",
       "category": "development"
     },
     {
       "name": "professional",
-      "source": "./professional",
+      "source": "./plugins/professional",
       "description": "17 skills for architecture, code quality, process design, and communication",
       "version": "1.0.0",
       "category": "professional"
     },
     {
       "name": "all",
-      "source": "./all",
+      "source": "./plugins/all",
       "description": "All 50 skills in one plugin",
       "version": "1.0.0",
       "category": "bundle"
