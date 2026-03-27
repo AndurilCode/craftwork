@@ -247,105 +247,48 @@ Weave these three workstreams into the round structure below. Skip rounds whose 
 
 #### Round 1 — The Failure Round (Always Start Here)
 
-Past failures are the highest-signal source of implicit knowledge. The human remembers them vividly, describes them concretely, and the resulting rules carry the specificity that makes instructions exceptional.
+Past failures are the highest-signal source of implicit knowledge. Ask 2-4 of these:
 
-Ask:
+- "Last time a developer (human or AI) made a frustrating mistake — what did they do wrong, what should they have done?"
+- "Any 'landmines' — areas where doing the obvious thing leads to a subtle bug or painful review?"
+- "Most common mistake in PRs from new team members?"
+- "Any small, recurring annoyances in agent-generated code you fix every time?"
 
-```
-1. "Think about the last time a developer (human or AI) made a mistake that was
-   frustrating to review. What did they do wrong, and what should they have done
-   instead?"
-
-2. "Are there any 'landmines' in this codebase — areas where doing the obvious
-   thing leads to a subtle bug, a production incident, or a painful review cycle?"
-
-3. "What's the most common mistake in PRs from new team members?"
-
-4. "Are there any small, recurring annoyances in agent-generated code? Things you
-   fix every time but that aren't dramatic 'mistakes' — just persistent friction?"
-```
-
-For each answer, immediately probe for specificity:
-- "Can you point me to a file where this pattern applies?"
-- "What does the correct version look like?"
-- "Why does the codebase do it this way instead of the more common approach?"
+For each answer, immediately probe: "Point me to a file?" / "What does the correct version look like?" / "Why this way instead of the common approach?"
 
 #### Round 2 — The Conventions Round
 
-Focus on conventions that *differ* from framework/language defaults — these are where agents fail most, because their training priors pull them toward the default.
+Focus on conventions that *differ* from framework/language defaults — where agents fail most because training priors pull toward the default.
 
-```
-1. "Where does your codebase intentionally deviate from the framework's recommended
-   approach? (e.g., you use X instead of Y, or you structure things differently
-   than the docs suggest)"
-
-2. "Are there any patterns you enforce in code review that aren't caught by linting
-   or CI? Things where you'd comment 'we don't do it this way here'?"
-
-3. "If you could write one rule that would eliminate 50% of the nit-picks in code
-   reviews, what would it be?"
-```
+- "Where does your codebase intentionally deviate from the framework's recommended approach?"
+- "Patterns you enforce in code review that linting/CI doesn't catch?"
+- "One rule that would eliminate 50% of code review nit-picks?"
 
 #### Round 3 — The Architecture Round
 
-Focus on boundaries, data flow, and module ownership — the spatial knowledge agents lack.
+Boundaries, data flow, module ownership — spatial knowledge agents lack.
 
-```
-1. "When an agent needs to add a new feature, how should it decide which module/
-   directory the code goes in? What's the mental model?"
-
-2. "Are there any modules or files that should NOT be modified without extra caution
-   or approval? (Shared libraries, core utilities, database schemas, etc.)"
-
-3. "How does data flow through the system for the most common operation?
-   (e.g., a user request: what gets called in what order?)"
-```
+- "How should an agent decide which module/directory new code goes in?"
+- "Any modules or files that should NOT be modified without extra caution?"
+- "How does data flow for the most common operation?"
 
 #### Round 4 — The Integration Round (if external services detected)
 
-```
-1. "Are there any external APIs or services with quirks the agent should know about?
-   (Rate limits, idempotency requirements, known bugs, retry strategies)"
-
-2. "What's the correct way to add a new external dependency? Is there an approval
-   process, a preferred client pattern, or a wrapper convention?"
-```
+- "External APIs with quirks? (Rate limits, idempotency, known bugs, retry strategies)"
+- "Correct way to add a new external dependency? (Approval, client pattern, wrapper convention)"
 
 #### Round 5 — The Testing Round
 
-```
-1. "What's your testing philosophy? (e.g., 'unit test business logic, integration
-   test API endpoints, don't mock the database')"
-
-2. "Are there any test patterns an agent should follow — or explicitly avoid?"
-```
+- "Testing philosophy? (e.g., 'unit test business logic, integration test endpoints, don't mock DB')"
+- "Test patterns to follow — or explicitly avoid?"
 
 #### Round 6 — Resource Ingestion (Optional)
 
-After the question rounds, ask:
-
-```
-"Is there any existing resource I should read to extract more context?
- This could be:
-  - A Notion page, Google Doc, or wiki
-  - A Slack thread or discussion where a convention was decided
-  - An ADR or RFC document
-  - A particularly well-written PR description that explains a pattern
-  - A postmortem or incident report
-
- Share the link or paste the content, and I'll extract the relevant rules."
-```
-
-If the user provides resources, read them and extract rules using the same seven-property framework. Cross-reference against what's already been captured to avoid duplication.
+Ask: "Any existing resource I should read? (Wiki, ADR, Slack thread, PR description, postmortem)" — extract rules from provided resources using the seven-property framework, cross-referencing against what's already captured.
 
 #### Adaptive Questioning
 
-Throughout the extraction, adapt based on:
-
-- **Codebase type**: For a frontend app, emphasize component patterns, state management, styling conventions. For a backend API, emphasize endpoint patterns, database conventions, auth. For a CLI tool, emphasize argument parsing, output formatting, error messages.
-- **Team size signals**: Solo developer → focus on future-self context. Large team → focus on consistency and boundary rules.
-- **Agent system**: Copilot → focus on completion-level rules (what pattern should autocompletion follow). Claude Code / Cursor → focus on task-level rules (how to approach multi-file changes). General → cover both.
-- **Human energy**: If the human gives short answers, consolidate remaining questions. If they're engaged and detailed, go deeper. Never exhaust the human — 15-20 minutes of input should produce excellent rules.
+Adapt rounds based on codebase type (frontend → component patterns; backend → endpoint/DB conventions; CLI → argument parsing), team size (solo → future-self context; large → consistency/boundaries), agent system (Copilot → completion-level; Claude Code/Cursor → task-level), and human energy (short answers → consolidate; engaged → go deeper; target 15-20 minutes total).
 
 ---
 
@@ -431,25 +374,13 @@ Iterate based on feedback: clarify vague rules, correct inaccuracies, fill narro
 
 Write the final instruction file(s) to the appropriate location(s) based on the target agent system:
 
-**GitHub Copilot** (three layers — most expressive system):
-- **Repo-wide**: `.github/copilot-instructions.md` — always attached to all chat/agent requests
-- **Path-specific**: `.github/instructions/NAME.instructions.md` — requires `applyTo` glob in YAML frontmatter (e.g., `applyTo: "src/api/**/*.ts"`). Supports coding agent + code review.
-- **Prompt files**: `.github/prompts/NAME.prompt.md` — on-demand, user-invoked. Can reference files via `[name](../../path)` or `#file:path`.
+**Copilot** (three layers): repo-wide `.github/copilot-instructions.md`, path-specific `.github/instructions/NAME.instructions.md` (with `applyTo` glob), prompt files `.github/prompts/NAME.prompt.md`. Also reads `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` at root.
 
-Copilot also reads `AGENTS.md` (primary at root, additional in subdirectories), `CLAUDE.md` and `GEMINI.md` at root.
+**Other systems**: Claude Code → `CLAUDE.md` (root + subdirs), Cursor → `.cursorrules`, Windsurf → `.windsurfrules`, Generic → `AGENTS.md` (root + subdirs, `.context/`/`.ctx`).
 
-**Other agent systems**:
+If target system is unclear, ask. If multiple, generate for the primary. If Copilot, always use the three-layer structure.
 
-| Agent System | Primary File | Scoped Files |
-|---|---|---|
-| Claude Code | `CLAUDE.md` at root | `CLAUDE.md` in subdirectories |
-| Cursor | `.cursorrules` at root | `.cursorrules` in subdirectories |
-| Windsurf | `.windsurfrules` at root | `.windsurfrules` in subdirectories |
-| Generic / Multi-agent | `AGENTS.md` at root | `AGENTS.md` in subdirectories, `.context/` or `.ctx` files |
-
-If the target system isn't clear, ask the human which agent(s) they use. If multiple, generate for the primary and note any format differences for others. If the team uses Copilot, always produce the three-layer structure — it's the most expressive instruction system currently available.
-
-After delivery, suggest: run your agent on a real task and see if rules improve output. If it still makes a specific mistake, that's the next rule. Revisit monthly — remove rules the agent has internalized, add rules from new incidents.
+After delivery, suggest: run the agent on a real task. If it still makes a specific mistake, that's the next rule. Revisit monthly.
 
 ---
 
