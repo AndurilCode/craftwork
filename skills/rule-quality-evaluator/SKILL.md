@@ -96,15 +96,7 @@ Output this structured scorecard, then ask the user whether they want Phase 2.
 #### 🗺️ Coverage Map
 
 ```
-C1 Architecture      [coverage indicator]
-C2 Domain Model      [coverage indicator]
-C3 Conventions       [coverage indicator]
-C4 Integration       [coverage indicator]
-C5 Operations        [coverage indicator]
-C6 Testing           [coverage indicator]
-C7 Security          [coverage indicator]
-C8 Performance       [coverage indicator]
-C9 Historical        [coverage indicator]
+C1[●] C2[○] C3[●] C4[○] C5[◐] C6[●] C7[○] C8[○] C9[○]
 ● covered  ◐ partial  ○ missing
 ```
 
@@ -141,7 +133,7 @@ C9 Historical        [coverage indicator]
 Generate 3 coding tasks derived from the rule set. Each task must:
 - Be approximately 50 lines of code to produce
 - Touch 2 or more rules simultaneously (to make grading discriminating)
-- Target the highest-scoring rules by priority: Critical rules first, then rules born from incidents (P3 = 1)
+- Prioritize rules where behavioral confirmation adds the most value: rules scoring 3-5 (uncertain quality), rules covering C7 Security or C2 Domain (high-stakes areas), and rules born from incidents (P3 = 1)
 
 For each task, record which rules it exercises and what correct behavior looks like.
 
@@ -205,10 +197,12 @@ Combine Phase 1 scorecard with Phase 2 results into a unified report.
 
 | Condition | Verdict |
 |---|---|
-| Static ≥ 5 AND behavioral delta ≥ 0.25 | **STRONG** — rules are well-formed and measurably improve behavior |
-| Static ≥ 3 AND behavioral delta ≥ 0.10 | **ADEQUATE** — rules work but have room to improve |
-| Static < 3 OR behavioral delta < 0.10 | **WEAK** — rules are not reliably changing agent behavior |
-| Behavioral delta < 0 | **HARMFUL** — rules are degrading agent performance |
+| Static ≥ 5 AND delta ≥ 0.25 | **STRONG** — rules are well-formed and measurably improve behavior |
+| Static ≥ 3 AND delta ≥ 0.10 | **ADEQUATE** — rules work but have room to improve |
+| Static < 3 OR delta < 0.10 | **WEAK** — rules are not reliably changing agent behavior |
+| Delta < 0 | **HARMFUL** — rules are degrading agent performance |
+
+Delta = pass-rate difference between with-rules and without-rules runs (0.0 to 1.0 scale, where 0.25 = 25 percentage points improvement).
 
 #### ⚠️ Discrepancies
 
