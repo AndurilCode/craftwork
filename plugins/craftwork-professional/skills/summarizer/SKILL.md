@@ -13,20 +13,17 @@ The goal is not to make something shorter. The goal is to produce the smallest a
 
 ## How to Execute This Skill
 
-### STEP 1 — Analyze the Source
+### STEP 1 — Analyze the Source (internal only — NEVER include in output)
 
-Before asking the user anything, classify the summarization task:
+Before asking the user anything, classify the summarization task internally. This analysis is for your decision-making only — **do not include it in your response to the user**:
 
-```
-SOURCE ANALYSIS
-Content type: [article / document / transcript / conversation / code / research paper / book / multi-source collection]
-Source length: [short (<1000 words) / medium (1-5K) / long (5-20K) / very long (20K+) / multi-document]
-Information density: [sparse — lots of filler / mixed / dense — most sentences carry signal]
-Structure: [well-structured with sections / loosely structured / unstructured stream]
-Contains: [arguments / data / narrative / instructions / mixed]
-```
+- Content type: article / document / transcript / conversation / code / research paper / book / multi-source collection
+- Source length: short (<1000 words) / medium (1-5K) / long (5-20K) / very long (20K+) / multi-document
+- Information density: sparse / mixed / dense
+- Structure: well-structured / loosely structured / unstructured stream
+- Contains: arguments / data / narrative / instructions / mixed
 
-Do not show this analysis to the user. It drives the recommendation in Step 2.
+This drives the recommendation in Step 2.
 
 ---
 
@@ -136,7 +133,7 @@ Want me to adjust?
 
 If the agent platform supports structured input (e.g., ask_user_input), use it for frictionless selection.
 
-**Speed override**: If the user pastes content and says "TL;DR" or "summarize this quickly", skip the interaction entirely. Default to BLUF + Snapshot + Rewritten and deliver immediately. Don't add friction to an explicitly fast request.
+**Speed override**: If the user pastes content and says "TL;DR" or "summarize this quickly", skip the interaction entirely and deliver immediately. Write 2-4 plain sentences or a short bullet list — no section labels, no template structure, no BLUF formatting. Match the casual tone of the request. Don't add friction to an explicitly fast request.
 
 ---
 
@@ -286,29 +283,9 @@ Offer naturally. Don't force if the user signals completion.
 
 ## Calibration Rules
 
-**1. Speed is the default virtue.** Most summarization requests are time-saving requests. If the user says "summarize this," they want it now, not after a configuration dance. Reserve the full interaction for ambiguous or high-stakes content. Simple content gets a fast default.
+**1. Compression is not deletion.** Good compression preserves information density while reducing volume. After producing any summary, check: "Did I lose anything the reader would want back?"
 
-**2. Compression is not deletion.** Removing sentences is not summarization. Good compression preserves information density while reducing volume. Bad compression throws away signal along with noise. After producing any summary, check: "Did I lose anything the reader would want back?"
+**2. Flag what you cut.** At Standard compression or above, include a "NOTABLE OMISSIONS" note or "This summary does not cover..." to help the reader decide if they need the original.
 
-**3. Attributions survive compression.** If the source attributes a claim to a specific person, study, or organization, the summary must preserve that attribution. "AI will replace 40% of jobs" is different from "An MIT study estimates AI could automate 40% of current job tasks." Dropping attributions is a form of distortion.
+**3. Multi-source requires synthesis, not concatenation.** Never summarize multiple sources independently and stack the results. The value is in cross-referencing — agreements, tensions, and gaps.
 
-**4. Caveats survive compression.** If the source says "X, but only under conditions Y," the summary cannot say just "X." Qualifications are not filler — they're precision. Dropping caveats is the most common way summaries become misleading.
-
-**5. Faithful mode means faithful.** When faithfulness is selected, do not rephrase claims. Use the source's terminology. Preserve hedging language ("may," "suggests," "could"). In high-stakes domains, a casually rephrased summary can change the meaning enough to cause harm.
-
-**6. The user's explicit request overrides everything.** If they say "just bullet points," use Key Points. If they say "action items only," use Action-Oriented. If they say "one sentence," give them a Headline. Never argue with an explicit format preference.
-
-**7. Flag what you cut.** At Standard compression or above, signal to the reader what was omitted. "NOTABLE OMISSIONS" or "This summary does not cover..." helps the reader decide if they need the original. Invisible omissions are the most dangerous kind.
-
-**8. Multi-source requires synthesis, not concatenation.** If given multiple sources, never summarize them independently and stack the results. The Comparative style exists because the value of multi-source summarization is in the cross-referencing — agreements, tensions, and gaps — not in parallel compression.
-
----
-
-## Thinking Triggers
-
-- *"What will the reader DO after reading this summary? That determines what to preserve."*
-- *"If this summary is the only version that survives, what would be lost?"*
-- *"Am I compressing or am I distorting? Where's the line for this content?"*
-- *"Does my summary preserve the 'why' or only the 'what'?"*
-- *"Could someone make a wrong decision based on what I omitted?"*
-- *"If the source author read my summary, would they say 'yes, that's what I meant'?"*
