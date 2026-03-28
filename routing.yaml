@@ -82,6 +82,7 @@ groups:
       - technical-writing
       - topic-explainer
       - summarizer
+      - presentation-craft
 
 # Directed composition edges
 # Each edge: from skill → to skill, with a condition for when it applies.
@@ -296,6 +297,15 @@ edges:
   - from: summarizer
     to: argument-craft
     when: summary reveals findings that need to be argued to stakeholders
+  - from: argument-craft
+    to: presentation-craft
+    when: argument structured, need to present it to an audience
+  - from: technical-writing
+    to: presentation-craft
+    when: document written, need to present findings or proposal
+  - from: narrative-construction
+    to: presentation-craft
+    when: story crafted, need to build a presentation around it
 
   # ── Professional: Financial ──
   - from: financial-modeling

@@ -28,7 +28,8 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 | Write an RFC, design doc, ADR, runbook, postmortem, one-pager, or announcement | `technical-writing` | → `narrative-construction` if storytelling needed |
 | Summarize a document, article, transcript, or meeting notes | `summarizer` | → `technical-writing` or `argument-craft` if needed |
 | Structure a recommendation or argument | `argument-craft` | → `technical-writing` to write it up |
-| Tell a compelling story from analysis | `narrative-construction` | done |
+| Tell a compelling story from analysis | `narrative-construction` | → `presentation-craft` if presenting |
+| Create, structure, or improve a presentation, talk, or pitch | `presentation-craft` | done |
 | Prepare for a negotiation | `negotiation-strategy` | → `difficult-conversations` if high stakes |
 | Navigate a difficult conversation | `difficult-conversations` | done |
 | Design a meeting or workshop | `facilitation-design` | done |
@@ -115,3 +116,4 @@ Use when a system needs moral and equity analysis, then communication of finding
 | `technical-writing` | Write RFCs, design docs, ADRs, runbooks, postmortems, announcements |
 | `topic-explainer` | Explain concepts, technologies, or ideas using the best style for the topic |
 | `summarizer` | Summarize documents, articles, transcripts, or multi-source content |
+| `presentation-craft` | Create presentation scripts with narrative arc, slide visuals, and speaker notes |
