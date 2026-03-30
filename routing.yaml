@@ -48,6 +48,7 @@ groups:
       - agent-instruction-forge
       - business-logic-extractor
       - context-cartography
+      - context-compressor
       - context-debugging
       - context-eval
       - context-engineering-orchestrator
@@ -218,6 +219,20 @@ edges:
   - from: context-eval
     to: agent-instruction-forge
     when: eval shows regression, iterate on rules
+
+  # ── Context Engineering: Compression ──
+  - from: context-cartography
+    to: context-compressor
+    when: context designed, need to fit within token budget
+  - from: context-compressor
+    to: context-eval
+    when: context compressed, need to verify agent still performs
+  - from: llms-txt-generator
+    to: context-compressor
+    when: generated doc exceeds token budget
+  - from: context-compressor
+    to: edd
+    when: compressed context needs regression testing
 
   # ── Context Engineering: Documentation ──
   - from: deep-document-processor

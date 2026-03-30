@@ -1,6 +1,6 @@
 # Craftwork
 
-58 agent skills for reasoning, context engineering, and professional work. Works with Claude Code, Cursor, Codex, and [40+ agents](https://github.com/vercel-labs/skills#available-agents).
+59 agent skills for reasoning, context engineering, and professional work. Works with Claude Code, Cursor, Codex, and [40+ agents](https://github.com/vercel-labs/skills#available-agents).
 
 ## Install
 
@@ -26,9 +26,9 @@ npx skills add AndurilCode/craftwork -a claude-code
 
 # Install by category
 /plugin install craftwork-reasoning@craftwork              # 23 thinking frameworks (includes orchestrator)
-/plugin install craftwork-context-engineering@craftwork     # 12 context/agent tools (includes orchestrator)
+/plugin install craftwork-context-engineering@craftwork     # 13 context/agent tools (includes orchestrator)
 /plugin install craftwork-professional@craftwork            # 23 architecture/communication skills (includes orchestrator)
-/plugin install craftwork-all@craftwork                     # everything (58 skills)
+/plugin install craftwork-all@craftwork                     # everything (59 skills)
 ```
 
 ---
@@ -49,7 +49,7 @@ Thinking frameworks for analysis, decisions, and problem-solving. Includes its o
 | **Decide** | [decision-synthesis](plugins/craftwork-reasoning/skills/decision-synthesis/SKILL.md), [decision-intelligence](plugins/craftwork-reasoning/skills/decision-intelligence/SKILL.md), [retrospective-counterfactual](plugins/craftwork-reasoning/skills/retrospective-counterfactual/SKILL.md), [evidence-synthesis](plugins/craftwork-reasoning/skills/evidence-synthesis/SKILL.md) |
 | **Orchestrate** | [reasoning-orchestrator](plugins/craftwork-reasoning/skills/reasoning-orchestrator/SKILL.md) — entry point, triages and routes to the right framework |
 
-### context-engineering (12 skills)
+### context-engineering (13 skills)
 
 Build, evaluate, and debug agent context — instructions, harnesses, evals, and documentation. Includes its own orchestrator for guided routing.
 
@@ -65,6 +65,7 @@ Build, evaluate, and debug agent context — instructions, harnesses, evals, and
 | [llms-txt-generator](plugins/craftwork-context-engineering/skills/llms-txt-generator/SKILL.md) | Generate token-efficient context documents for LLM consumption |
 | [deep-document-processor](plugins/craftwork-context-engineering/skills/deep-document-processor/SKILL.md) | Multi-pass reading to extract decision-relevant context from large documents |
 | [business-logic-extractor](plugins/craftwork-context-engineering/skills/business-logic-extractor/SKILL.md) | Extract domain rules and business logic from code into structured references |
+| [context-compressor](plugins/craftwork-context-engineering/skills/context-compressor/SKILL.md) | Maximize signal-per-token under a finite context budget |
 | [test-challenger](plugins/craftwork-context-engineering/skills/test-challenger/SKILL.md) | Find false positives in AI-generated tests |
 | **Orchestrate** | [context-engineering-orchestrator](plugins/craftwork-context-engineering/skills/context-engineering-orchestrator/SKILL.md) — entry point, routes to the right context skill |
 
@@ -140,14 +141,14 @@ skills/                        # flat — npx skills discovers these
 ├── first-principles-thinking/
 ├── agent-instruction-forge/
 ├── context-eval/
-├── ...58 skills total
+├── ...59 skills total
 │   └── SKILL.md
 
 plugins/                       # Claude Code marketplace plugins
 ├── craftwork-reasoning/          → 23 skills (includes orchestrator)
-├── craftwork-context-engineering/ → 12 skills (includes orchestrator)
+├── craftwork-context-engineering/ → 13 skills (includes orchestrator)
 ├── craftwork-professional/       → 23 skills (includes orchestrator)
-└── craftwork-all/                → 58 skills (all orchestrators)
+└── craftwork-all/                → 59 skills (all orchestrators)
 
 routing.yaml                   # single source of truth for skill composition
 scripts/validate-routing.sh    # validates routing.yaml against actual skills

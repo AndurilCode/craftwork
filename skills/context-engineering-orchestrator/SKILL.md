@@ -24,7 +24,8 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 | Debug why an agent is failing / ignoring instructions | `context-debugging` | → `context-gap-analyzer` or `edd` based on findings |
 | Extract business logic or domain rules from code | `business-logic-extractor` | → `llms-txt-generator` or `agent-instruction-forge` |
 | Process a large document for LLM consumption | `deep-document-processor` | → `llms-txt-generator` |
-| Generate an llms.txt or LLM-friendly reference | `llms-txt-generator` | done |
+| Generate an llms.txt or LLM-friendly reference | `llms-txt-generator` | → `context-compressor` if over budget |
+| Optimize / compress context to fit a token budget | `context-compressor` | → `context-eval` to verify compressed context works |
 | Find false positives in AI-generated tests | `test-challenger` | → `edd` if better assertions needed |
 
 ---
@@ -95,4 +96,5 @@ Use when creating LLM-consumable reference material.
 | `llms-txt-generator` | Generate token-efficient context documents |
 | `deep-document-processor` | Multi-pass reading of large documents |
 | `business-logic-extractor` | Extract domain rules from code |
+| `context-compressor` | Maximize signal-per-token under a finite budget |
 | `test-challenger` | Find false positives in AI-generated tests |
