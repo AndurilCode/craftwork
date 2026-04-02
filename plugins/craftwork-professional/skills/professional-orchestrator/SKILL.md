@@ -20,6 +20,7 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 | Debug a software failure systematically | `debugging-methodology` | → `casual-inference` if root cause is causal |
 | Design or run an experiment | `experimental-design` | → `casual-inference` after results |
 | Review code or a PR | `code-review-amplifier` | done |
+| Find incremental improvements, tech debt, or code hygiene issues | `kaizen` | → `execution-planning` or `process-design` |
 | **Planning & Execution** | | |
 | Break a decision into an action plan | `execution-planning` | done |
 | Design or improve a workflow/process | `process-design` | → `execution-planning` |
@@ -134,4 +135,5 @@ Use when a system needs moral and equity analysis, then communication of finding
 | `topic-explainer` | Explain concepts, technologies, or ideas using the best style for the topic |
 | `summarizer` | Summarize documents, articles, transcripts, or multi-source content |
 | `presentation-craft` | Create presentation scripts with narrative arc, slide visuals, and speaker notes |
+| `kaizen` | Continuous improvement audit: find waste, unevenness, and overburden in code |
 | `knowledge-architect` | Capture decisions, context, and learnings; design team knowledge systems |

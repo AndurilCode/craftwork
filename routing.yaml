@@ -85,6 +85,7 @@ groups:
       - topic-explainer
       - summarizer
       - presentation-craft
+      - kaizen
       - knowledge-architect
 
 # Directed composition edges
@@ -346,6 +347,14 @@ edges:
   - from: architecture-evaluation
     to: knowledge-architect
     when: architecture decided, need to capture the decision as a knowledge artifact
+
+  # ── Professional: Continuous improvement ──
+  - from: kaizen
+    to: execution-planning
+    when: improvement backlog prioritized, need action plan
+  - from: kaizen
+    to: process-design
+    when: process waste found, need workflow redesign
   - from: knowledge-architect
     to: technical-writing
     when: knowledge artifact needs to be a formal document (RFC, ADR, runbook)
