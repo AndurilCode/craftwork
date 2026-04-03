@@ -5,489 +5,251 @@ description: "Apply whenever the user needs to write, draft, review, or improve 
 
 # Technical Writing
 
-**Core principle**: Writing isn't about explaining what you think. It's about changing what the reader thinks. Almost none of your readers will pay full attention — they'll read the first sentence, skim the next, and either skim the rest or stop entirely. Every technical document must therefore frontload its point, omit what doesn't serve the reader's decision, and respect the reader's time as the scarcest resource.
+Writing isn't about explaining what you think — it's about changing what the reader thinks. Most readers skim. Every document must frontload its point, omit what doesn't serve the reader's decision, and respect attention as the scarcest resource.
 
-The goal is not to transplant your understanding into someone else's head. The goal is to give the reader enough context to either (a) trust your judgment, (b) make a decision, or (c) take a specific action — and nothing more.
-
----
-
-## The Three Laws of Technical Writing
-
-Every piece of technical writing, regardless of format, must obey these laws in order:
-
-**Law 1 — Lead with the point.** The first sentence should contain your conclusion, recommendation, or request. If a reader stops after one sentence, they should still know what you want. This applies to Slack messages, emails, RFCs, and design docs equally.
-
-**Law 2 — Write less than you think you should.** The biggest mistake engineers make is trying to communicate in too much detail and ending up communicating nothing at all. Omit subtle details. Cut context that doesn't change the reader's decision. If you can say it in one sentence, do that.
-
-**Law 3 — Match depth to audience size.** A Slack message to your team can be one sentence. An ADR for 3-5 reviewers can go deep into trade-offs. A company-wide announcement should be scannable in 30 seconds. The narrower the audience, the more detail is justified.
-
-**Quick-fire rule for Slack and short messages**: If the user asks you to write a Slack message, async message, or any communication under 5 sentences — skip all ceremony. Apply the Three Laws directly: open with the ask, include only the context needed for the decision, close with an explicit request. Do not run the full Step 1-5 process. This is the highest-frequency use case and the one where the Three Laws have the most impact.
+The goal: give the reader enough to (a) trust your judgment, (b) make a decision, or (c) take a specific action — nothing more.
 
 ---
 
-## How to Execute This Skill
+## The Three Laws
 
-### STEP 1 — Classify the Document
+**Law 1 — Lead with the point.** First sentence = conclusion, recommendation, or request. If a reader stops after one sentence, they should still know what you want.
 
-Before writing anything, determine what kind of document this is. The document type dictates structure, depth, audience, and tone.
+**Law 2 — Write less than you think you should.** Cut context that doesn't change the reader's decision. One sentence > one paragraph when both work.
 
-**If the user provides their own template**: Skip to STEP 1B — Template Adaptation.
+**Law 3 — Match depth to audience size.** Slack to your team: one sentence. ADR for 3-5 reviewers: deep trade-offs. Company-wide announcement: scannable in 30 seconds.
 
-**If no template is provided**, classify into one of the built-in types:
-
-| Type | Purpose | Audience Size | Typical Length |
-|------|---------|---------------|----------------|
-| **RFC / Design Doc** | Propose a technical approach, surface trade-offs, get alignment | 5-20 engineers | 2-8 pages |
-| **ADR** | Record a decision and its rationale for future reference | 3-10 (now), unlimited (later) | 0.5-2 pages |
-| **One-Pager** | Pitch a project, get buy-in, secure resources | Leadership + stakeholders | 1 page, strict |
-| **Runbook** | Enable someone to perform a task they've never done | On-call engineers | As long as needed, step-by-step |
-| **Postmortem** | Learn from an incident, prevent recurrence | Broad engineering org | 1-3 pages |
-| **Internal Announcement** | Inform a group about a change, decision, or event | Team → org → company | 3-10 sentences |
-| **PR Description** | Give reviewers context to review effectively | 1-5 reviewers | 5-20 lines |
-| **Technical Explanation** | Help someone understand a system or concept | Varies | Varies |
-| **Slack/Async Message** | Get a response or decision quickly | 1-20 people | 1-5 sentences |
-
-If the request doesn't fit these categories cleanly, ask: "What decision or action should the reader take after reading this?" — the answer determines the structure.
+**Slack/short messages**: Skip all ceremony. Open with the ask, include only context needed for the decision, close with explicit request. Don't run the full Step 1-5 process.
 
 ---
 
-### STEP 1B — Template Adaptation
+## STEP 1 — Classify the Document
 
-When the user provides their own template (company RFC format, team design doc structure, personal writing framework):
+**If the user provides a template**: Preserve its structure exactly. Apply the Three Laws within each section. Flag gaps as suggestions, don't insert.
 
-1. **Parse the template's skeleton**: Identify sections, required fields, and implicit expectations (e.g., "Background" implies the reader doesn't have full context; "Non-Goals" implies explicit scoping is valued)
-2. **Preserve the template's structure exactly**: Don't add sections, rename headings, or reorder. The user's organization has built muscle memory around this format
-3. **Apply the Three Laws within each section**: Lead with the point in each section, cut unnecessary detail, match depth to implied audience
-4. **Flag template gaps**: If the template lacks something important for the specific document (e.g., no "Alternatives" section in a design doc), note it at the end as a suggestion — don't silently add it
+**Otherwise**, classify:
+
+| Type | Purpose | Audience | Length |
+|------|---------|----------|--------|
+| **RFC / Design Doc** | Propose approach, surface trade-offs, get alignment | 5-20 engineers | 2-8 pages |
+| **ADR** | Record decision + rationale for future reference | 3-10 now, unlimited later | 0.5-2 pages |
+| **One-Pager** | Pitch project, get buy-in/resources | Leadership + stakeholders | 1 page strict |
+| **Runbook** | Enable someone to perform unfamiliar task | On-call engineers | Step-by-step |
+| **Postmortem** | Learn from incident, prevent recurrence | Broad engineering org | 1-3 pages |
+| **Announcement** | Inform about change, decision, or event | Team → org → company | 3-10 sentences |
+| **PR Description** | Give reviewers context for effective review | 1-5 reviewers | 5-20 lines |
+| **Slack / Async** | Get a decision or response quickly | 1-20 people | 1-5 sentences |
+
+If it doesn't fit: ask "What decision or action should the reader take?" — the answer determines structure.
+
+## STEP 2 — Audience Brief
+
+Before writing:
 
 ```
-TEMPLATE ADAPTATION BRIEF
-Template source: [User-provided / Company standard / Framework X]
-Sections identified: [List the template's sections]
-Implied audience: [Who this template assumes is reading]
-Gaps noted: [Anything missing that might matter — suggest, don't insert]
+Who reads this: [specific roles, not "engineers"]
+What they already know: [shared context — don't repeat it]
+What decision they'll make: [approve? understand? execute?]
+What they'll do after: [specific action]
+Attention budget: [seconds? minutes? deep read?]
 ```
 
----
+If you can't fill this in, the document will fail.
 
-### STEP 2 — Audience Analysis
+## STEP 3 — Write the Key Sentence
 
-Before writing, answer these questions:
+One sentence capturing the entire document. Must: state the conclusion (not the topic), be understandable with zero context, survive being the only thing read.
 
-```
-AUDIENCE BRIEF
-Who reads this: [Specific roles — "backend engineers on payments team", not "engineers"]
-What they already know: [Don't repeat what's shared context]
-What decision they'll make: [Approve/reject? Understand? Execute? Trust?]
-What they'll do after reading: [Specific action — review, implement, escalate, nothing]
-Attention budget: [Seconds? Minutes? Deep read?]
-```
+"We should use Redis for session caching" — not "This document evaluates caching options."
 
-The Audience Brief is not a section in the final document — it's a tool for calibrating every word you write. If you can't fill it in, the document will probably fail because you don't know who you're writing for.
+This becomes the opening line / TL;DR / subject prefix. If you can't write it, you haven't thought clearly enough to write the document.
 
 ---
 
-### STEP 3 — Write the Key Sentence
+## STEP 4 — Draft Using Template
 
-Before writing the full document, write one sentence that captures the entire document. This sentence must:
-
-- State the conclusion, not the topic ("We should use Redis for session caching" not "This document evaluates caching options")
-- Be understandable by someone with zero context about the project
-- Survive being read by someone who reads nothing else
-
-The Key Sentence becomes the document's opening line, the Slack message summary, the subject line prefix, or the TL;DR. Everything else in the document supports this sentence.
-
-If you can't write the Key Sentence, you haven't thought clearly enough to write the document. Stop and think before you write.
-
----
-
-### STEP 4 — Draft Using the Appropriate Template
-
-Select and fill in the template for the classified document type. Each template below encodes the structure that makes that specific type effective.
-
----
-
-## Built-in Templates
-
-### TEMPLATE: RFC / Design Doc
-
-Based on patterns from Google, HashiCorp, Squarespace, and Sourcegraph. Optimized for surfacing trade-offs and getting alignment before implementation.
+### RFC / Design Doc
 
 ```markdown
 # [Key Sentence as Title]
-
-**Author(s)**: [names]
-**Approvers**: [who must say yes before implementation starts]
-**Status**: Draft | In Review | Approved | Superseded
-**Date**: [created date]
-**Last updated**: [date]
+**Author(s)**: | **Approvers**: | **Status**: Draft | In Review | Approved | Superseded
+**Date**: | **Last updated**:
 
 ## TL;DR
-
-[Key Sentence expanded to 2-3 sentences. A reader who stops here
-should know what you're proposing and why.]
+[Key Sentence expanded to 2-3 sentences.]
 
 ## Background
-
-[Objective facts only. No opinions, no proposals.
-What is the current state? What problem exists?
-A newcomer to this project should be able to read this section
-and fully understand why this RFC exists.
-Link to prior art, previous decisions, related systems.]
+[Objective facts only — no opinions. Current state, problem, prior art.
+Write for someone who has never seen this codebase.]
 
 ## Goals and Non-Goals
-
 ### Goals
-- [Specific, measurable where possible. "Reduce P95 latency from 2.1s to <1s"]
-- [Tied to team/org OKRs where relevant]
-
+- [Specific, measurable. Tied to OKRs where relevant.]
 ### Non-Goals
-- [Things that could reasonably be goals but are explicitly excluded]
-- [This section prevents scope creep during review]
+- [Explicitly excluded scope. Prevents scope creep during review.]
 
 ## Proposed Design
-
-[Start with a high-level overview paragraph.
-Then go into detail. Focus on trade-offs, not implementation steps.
-Include diagrams where they clarify architecture.
-
-The design section should make the reader understand WHY you chose
-this approach, not just WHAT the approach is. If you're writing
-implementation steps with no trade-off discussion, you probably
-don't need an RFC.]
+[High-level overview, then detail. Focus on trade-offs, not implementation steps.
+If you're writing steps with no trade-off discussion, you don't need an RFC.]
 
 ## Alternatives Considered
+**First alternative MUST be "Do Nothing" (status quo).** An RFC that can't explain
+why "do nothing" is worse hasn't justified its existence.
 
-**RULE: The first alternative must ALWAYS be "Do Nothing" (maintain status quo).**
-This forces the author to articulate why change is necessary and gives
-reviewers a baseline to compare against. An RFC that can't explain why
-"do nothing" is worse than the proposal hasn't justified its existence.
-
-For each alternative (including "Do Nothing"):
-- What is it?
-- What trade-offs does it make?
-- Why was it not selected?
-
-This section prevents "why didn't you just..." questions.]
+Each alternative: what is it, trade-offs, why not selected.
 
 ## Cross-Cutting Concerns
-
-[Security, privacy, observability, accessibility, cost.
-Address each that applies. Say "N/A" for ones that don't —
-this shows you considered them.]
+[Security, privacy, observability, accessibility, cost. "N/A" shows you considered it.]
 
 ## Risks and Mitigations
-
-[What could go wrong? What's the rollback plan?
-Be specific: "If Redis fails, sessions are lost for ~5min
-until the fallback cookie mechanism activates."]
+[What could go wrong? Rollback plan? Be specific.]
 
 ## Open Questions
-
-[Questions that need answers before or during implementation.
-These invite reviewers to contribute knowledge, not just opinions.]
+[Questions for reviewers to contribute knowledge, not just opinions.]
 ```
 
-**Calibration**: The strongest signal that an RFC is unnecessary is when there are no real alternatives or trade-offs. If the solution is obvious, write an ADR instead.
+If there are no real alternatives or trade-offs, write an ADR instead.
 
----
-
-### TEMPLATE: ADR (Architecture Decision Record)
-
-Based on Michael Nygard's original format plus industry evolution. Optimized for future discoverability — the primary reader is an engineer 6+ months from now asking "why did we do it this way?"
+### ADR
 
 ```markdown
-# ADR-[number]: [Decision title — verb phrase preferred]
-
-**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-[number]
-**Date**: [decision date]
-**Deciders**: [who was in the room]
+# ADR-[N]: [Decision — verb phrase]
+**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-[N]
+**Date**: | **Deciders**:
 
 ## Context
-
-[What situation prompted this decision?
-Include constraints, requirements, and forces at play.
-Write as if the reader has never seen this codebase.]
+[Situation, constraints, forces. Write for someone who has never seen this codebase.]
 
 ## Decision
-
-[State the decision clearly in 1-2 sentences.
-"We will use PostgreSQL for user data storage."
-Not "After careful consideration of many factors..."]
+[1-2 sentences. "We will use PostgreSQL for user data storage."]
 
 ## Consequences
-
-### Positive
-- [What becomes easier or better]
-
-### Negative
-- [What becomes harder or worse — be honest]
-
-### Neutral
-- [What changes without clear positive/negative valence]
+### Positive — [what becomes easier]
+### Negative — [what becomes harder — be honest]
+### Neutral — [what changes without clear valence]
 ```
 
-**Calibration**: ADRs should be quick to write (15-30 minutes). If you're spending hours, you either need an RFC first or you're putting too much detail in.
+Should take 15-30 minutes. If you're spending hours, you need an RFC or you're over-detailing.
 
----
-
-### TEMPLATE: One-Pager
-
-Optimized for leadership and cross-functional audiences. Strict length discipline — if it doesn't fit on one page, cut until it does.
+### One-Pager
 
 ```markdown
-# [Project Name]: [Key Sentence]
+# [Project]: [Key Sentence]
+**Author**: | **Date**: | **Ask**: [approval, resources, headcount, time]
 
-**Author**: [name] | **Date**: [date] | **Ask**: [What you need — approval, resources, headcount, time]
-
-## Problem
-
-[2-3 sentences. What's broken or missing? Quantify impact if possible.
-"We lose ~15% of checkout conversions due to payment timeout errors."]
-
-## Proposal
-
-[3-5 sentences. What will you do? What's the approach at the highest level?]
-
-## Expected Impact
-
-[Quantified where possible. Tied to metrics the audience cares about.
-"Reduce checkout abandonment by ~8%, worth ~€2M ARR."]
-
-## Cost
-
-[Time, people, infrastructure. Be specific.
-"2 engineers, 6 weeks. No new infrastructure cost."]
-
-## Risks
-
-[Top 2-3 risks, each one sentence. Include mitigation.]
-
-## Timeline
-
-[Key milestones only. 3-5 lines max.]
+## Problem — [2-3 sentences. Quantify impact.]
+## Proposal — [3-5 sentences. Highest-level approach.]
+## Expected Impact — [Quantified. Tied to metrics the audience cares about.]
+## Cost — [Time, people, infrastructure. Be specific.]
+## Risks — [Top 2-3, one sentence each with mitigation.]
+## Timeline — [Key milestones only. 3-5 lines.]
 ```
 
-**Calibration**: One-pagers are persuasion documents. The reader should finish thinking "this is worth doing" or "this is not worth doing" — not "I need more information." If they need more information, your one-pager failed.
+Reader should finish thinking "worth doing" or "not worth doing" — never "I need more information."
 
----
-
-### TEMPLATE: Runbook
-
-Optimized for execution under stress. The reader may be on-call at 3am, unfamiliar with this system, and under time pressure.
+### Runbook
 
 ```markdown
-# Runbook: [What This Enables — action phrase]
+# Runbook: [Action phrase]
+**Last verified**: [date] | **Owner**: [team/person] | **Est. time**: [duration]
 
-**Last verified**: [date someone actually followed these steps]
-**Owner**: [team or person responsible for keeping this current]
-**Estimated time**: [how long the procedure takes]
-
-## When to Use This
-
-[Specific triggers. "Use this when PagerDuty alerts on
-'payment-service-high-latency' AND the dashboard shows P99 > 5s."]
+## When to Use
+[Specific triggers — alert names, dashboard thresholds.]
 
 ## Prerequisites
-
-- [Access needed: VPN, SSH keys, admin roles]
-- [Tools needed: kubectl, aws-cli version X+]
-- [Context needed: link to architecture diagram if helpful]
+[Access, tools, context needed.]
 
 ## Steps
-
 ### 1. [Action verb] — [what and why]
-
-`[exact command to run]`
-
-Expected output:
-```
-[what the user should see]
-```
-
+`[exact command]`
+Expected output: [what to see]
 If this fails: [what to do instead]
+[Repeat pattern for each step.]
 
-### 2. [Action verb] — [what and why]
-
-[Continue pattern. Every step has: the command, expected output,
-and failure guidance.]
-
-## Verification
-
-[How to confirm the procedure worked.
-"Run `curl https://api.example.com/health` — should return 200."]
-
-## Rollback
-
-[How to undo what you just did if things get worse.]
-
-## Escalation
-
-[Who to contact if this runbook doesn't solve the problem.
-Include Slack channel, PagerDuty service, phone numbers.]
+## Verification — [How to confirm it worked.]
+## Rollback — [How to undo.]
+## Escalation — [Who to contact. Slack, PagerDuty, phone.]
 ```
 
-**Calibration**: A runbook is only valid if it's been tested. The "Last verified" date is the most important metadata. A runbook nobody has followed recently is a dangerous artifact — it creates false confidence.
+"Last verified" is the most important metadata. An untested runbook creates false confidence.
 
----
-
-### TEMPLATE: Postmortem / Incident Review
-
-Optimized for organizational learning. The goal is preventing recurrence, not assigning blame. Most agents already produce reasonable postmortem structure — the critical differentiator is **action item quality**.
+### Postmortem
 
 ```markdown
-# Postmortem: [Incident title — what happened, not why]
+# Postmortem: [What happened — not why]
+**Date**: | **Duration**: | **Severity**: | **Author**: | **Reviewers**:
 
-**Date of incident**: [date]
-**Duration**: [time from detection to resolution]
-**Severity**: [your org's severity scale]
-**Author**: [name]
-**Reviewers**: [names]
-
-## Summary
-[3-5 sentences. What happened, impact, resolution. Written for someone who wasn't involved.]
-
-## Timeline
-| Time (UTC) | Event |
-|------------|-------|
-| HH:MM | [event] |
-
-## Root Cause
-[Be specific. "A database migration added an index on a 500M-row table
-without `CONCURRENTLY`, locking writes for 12 minutes." Not "a configuration error."]
-
-## Impact
-[Quantified: users affected, revenue, SLA breaches, data integrity.]
-
+## Summary — [3-5 sentences for someone uninvolved.]
+## Timeline — [Time (UTC) | Event]
+## Root Cause — [Specific. "Migration added index on 500M rows without CONCURRENTLY" not "configuration error."]
+## Impact — [Quantified: users, revenue, SLA, data integrity.]
 ## What Went Well
 ## What Went Poorly
 ## Action Items
 
 | Action | Owner | Priority | Due Date |
 |--------|-------|----------|----------|
-| [Specific, verifiable action] | [name] | P1/P2/P3 | [date] |
 
-## Lessons Learned
-[1-3 broader lessons beyond this specific incident.]
+## Lessons Learned — [1-3 broader lessons.]
 ```
 
-**The action items section is where postmortems succeed or fail.** Apply these rules strictly:
+**Action item rules** (where postmortems succeed or fail):
+- **Verifiable**: "Add alert when P99 > 3s for 5min" not "Improve monitoring"
+- **Owned**: person (not team) + priority + due date. Missing any = aspirational.
+- **No exploratory items**: "Investigate..." is not an action. Commit to findings by a date, or drop it.
+- **3-5 items**. More than 7 = not prioritized.
 
-- Every action item must be **verifiable** — you can check whether it was done. "Improve monitoring" fails this test. "Add alert when payment-service P99 > 3s for 5 minutes" passes.
-- Every action item must have an **owner** (a person, not a team), a **priority**, and a **due date**. Missing any of these makes the item aspirational, not actionable.
-- Exploratory items ("Investigate...", "Explore...") are not action items. Either commit to the investigation with a due date for findings, or drop it.
-- 3-5 action items is the sweet spot. More than 7 means you haven't prioritized.
-
----
-
-### TEMPLATE: Internal Announcement
-
-Optimized for maximum comprehension with minimum reader effort.
+### Announcement
 
 ```markdown
-**Subject**: [Key Sentence — what changed and what the reader should do]
+**Subject**: [Key Sentence — what changed + what reader should do]
 
-[Key Sentence repeated or expanded. 1-2 sentences.]
-
-**What's changing**: [2-3 sentences of factual description]
-
-**Why**: [1-2 sentences. Connect to a goal the reader cares about]
-
-**What you need to do**: [Specific action, or "Nothing — this is informational"]
-
+[Key Sentence expanded. 1-2 sentences.]
+**What's changing**: [2-3 sentences]
+**Why**: [1-2 sentences. Connect to a goal the reader cares about.]
+**What you need to do**: [Specific action, or "Nothing — informational"]
 **Timeline**: [When this takes effect]
-
-**Questions?**: [Where to ask — Slack channel, office hours, document link]
+**Questions?**: [Where to ask]
 ```
 
-**Calibration**: If your announcement is longer than 10 sentences, you're probably writing a document that should be linked from the announcement, not inlined into it.
+If longer than 10 sentences, it should be a linked document, not inline.
 
----
-
-### TEMPLATE: PR Description
-
-Optimized for reviewer efficiency. The reviewer's first 30 seconds determine whether they'll do a careful review or a rubber-stamp.
+### PR Description
 
 ```markdown
-## What
-
-[1-2 sentences. What this does, stated as a change.
-"Adds Redis-based session caching to reduce auth service latency."]
-
-## Why
-
-[1-2 sentences. Link to issue/ticket if available.
-What problem does this solve?]
-
-## How
-
-[Brief description of the approach. Only include what a reviewer
-needs to know to understand the diff — not a line-by-line narration.]
-
-## Testing
-
-[How was this tested? What should the reviewer verify?]
-
-## Risks / Rollback
-
-[Only if this is a risky change. How to revert if needed.]
+## What — [1-2 sentences. The change.]
+## Why — [1-2 sentences. Link to issue/ticket.]
+## How — [Approach. Only what reviewer needs to understand the diff.]
+## Testing — [How tested. What to verify.]
+## Risks / Rollback — [Only if risky.]
 ```
 
----
-
-### TEMPLATE: Slack / Async Message
-
-For when you need a decision or response in a thread.
+### Slack / Async
 
 ```
-[Key Sentence — what you need.]
-[1-2 sentences of context — only what's needed for the decision.]
+[What you need.]
+[1-2 sentences context — only what's needed for the decision.]
 [Explicit ask — "Can you approve by EOD?" / "Which option: A or B?"]
 ```
 
-**Anti-pattern**: Starting a Slack message with context before stating what you need. By the time you get to the ask, the reader has already moved on.
+Never start with context before stating what you need.
 
 ---
 
-## STEP 5 — Review and Sharpen
+## STEP 5 — Review Checks
 
-After drafting, apply these checks:
-
-**The First-Sentence Test**: Read the first sentence of each section. Does the document still make sense? If not, your first sentences aren't doing their job.
-
-**The So-What Test**: For every paragraph, ask "So what? What should the reader do with this information?" If the answer is "nothing," cut the paragraph.
-
-**The Stranger Test**: Could someone who just joined your team understand this? If not, you're relying on shared context that isn't in the document.
-
-**The Compression Test**: Can you cut 30% of the words without losing meaning? Almost always yes on a first draft.
-
-**The Decision Test**: After reading this, does the reader know what to decide or do? If the answer is unclear, the document hasn't served its purpose.
+- **First-Sentence Test**: Read only first sentences of each section. Does the doc still make sense?
+- **So-What Test**: Every paragraph — "what should the reader do with this?" If nothing, cut it.
+- **Stranger Test**: Could someone who just joined understand this?
+- **Compression Test**: Can you cut 30%? Almost always yes on first draft.
+- **Decision Test**: After reading, does the reader know what to decide or do?
 
 ---
 
-## Calibration Rules
+## Calibration
 
-**1. Structure is not a substitute for thinking.** A perfectly formatted RFC with no clear trade-off analysis is a waste of everyone's time. If you can't articulate why your proposed solution is better than the alternatives, you're not ready to write the document.
-
-**2. Don't write documents that should be conversations.** If the audience is 2-3 people and the topic is uncontroversial, a Slack thread or 15-minute call is almost always more effective than a document. Write documents when you need durability, broad review, or async alignment.
-
-**3. Every document has a shelf life.** An RFC is most valuable during review. An ADR is most valuable 6 months later. A runbook is most valuable at 3am. Write for the moment the document will be read, not the moment you're writing it.
-
-**4. Good writing requires clear thinking.** If you can't write the Key Sentence, you haven't thought clearly enough about what you're proposing. The writing is the thinking — not a chore that happens after the thinking is done.
-
-**5. Adapt to your organization.** These templates are starting points. If your team uses Confluence with specific sections, or your company has an RFC format, use that. The principles (frontload, cut, match depth to audience) apply regardless of format. See STEP 1B for template adaptation.
-
-**6. Respect the reader's context.** Technical documents compete with every other document, Slack message, and meeting in the reader's day. You are not entitled to their full attention. You must earn it in the first sentence and justify it in every sentence after.
-
----
-
-## Thinking Triggers
-
-Before and during writing, ask yourself:
-
-- *"If the reader only reads one sentence, which sentence must it be?"*
-- *"What would I cut if this had to be half the length?"*
-- *"Am I writing this for the reader or for myself?"*
-- *"What decision does this document enable?"*
-- *"Will this still be useful in 6 months? If not, does it need to be a document at all?"*
-- *"Am I explaining what X is, or why X matters? The reader needs the why first."*
+1. **Structure ≠ thinking.** A perfect RFC format with no trade-off analysis wastes everyone's time.
+2. **Don't write what should be a conversation.** 2-3 people + uncontroversial = Slack or call.
+3. **Every doc has a shelf life.** Write for when it'll be read (RFC: during review, ADR: 6 months later, runbook: 3am).
+4. **The writing is the thinking.** If you can't write the Key Sentence, you haven't thought clearly enough.
+5. **Adapt to the org.** These templates are starting points. The principles apply regardless of format.
