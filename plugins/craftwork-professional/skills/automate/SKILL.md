@@ -173,6 +173,7 @@ Exit 0 from `create` means "dispatched," not "agent succeeded." For completion d
 - Starting a script for Claude Code → read `references/claude-code.md` for flags, output-format schemas, permission rules.
 - Starting a script for Codex → read `references/codex.md` for sandbox modes, `--output-schema`, `--output-last-message`, resume semantics.
 - Starting a script for Gemini → read `references/gemini.md` for approval modes, policy engine, resume/session handling.
+- Starting a script for GitHub Copilot CLI → read `references/copilot.md` for mode flags (`--autopilot`, `--plan`), `--allow-all-tools` / `--no-ask-user` requirements, output formats, and session/resume handling.
 - Building a ticket/issue → PR pipeline where the agent should open the PR → read `references/github-agent-task.md` for `gh agent-task` patterns (dispatch-and-forget, dispatch-and-watch, batch from queue, pair with local review).
 - Needing to know what tools/MCP servers/skills/models the agent actually has available at runtime (e.g. fail fast in CI if a required MCP server didn't load) → read `references/introspection.md` for both static subcommands (`<cli> mcp list`, `skills list`, etc.) and runtime event-parsing recipes across all five tools.
 - Writing a pipeline shape you haven't built before → read `references/cookbook.md` for longer worked examples (GitHub Action, cron PR reviewer, batch translator, review-then-fix loop).
