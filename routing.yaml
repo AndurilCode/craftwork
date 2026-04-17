@@ -65,6 +65,7 @@ groups:
     skills:
       - architecture-evaluation
       - argument-craft
+      - automate
       - casual-inference
       - code-review-amplifier
       - debugging-methodology
