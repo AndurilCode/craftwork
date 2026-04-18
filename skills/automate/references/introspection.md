@@ -1,11 +1,10 @@
 # Introspection — Discovering Tools, MCP Servers, Skills, and Models
 
-Two paths for finding out what an agent actually has access to:
+Two paths:
+1. **Static** — subcommands that list *registered* servers/skills/plugins.
+2. **Runtime** — first events in a `-p` / `exec` run tell you what *actually loaded* (can differ from registration when a server fails to start or CLI flags override defaults).
 
-1. **Static inspection** — dedicated subcommands that list registered MCP servers, skills, plugins, agents. Run before the session starts; configuration-oriented.
-2. **Runtime events** — the first events emitted by a `-p` / `exec` run tell you what *actually loaded* for this specific invocation (which can differ from registration if a server failed to start, a plugin is disabled, or CLI flags overrode the defaults).
-
-For automation, the dynamic (runtime) view is usually what you want — you care about what the agent sees on *this* run, not what's theoretically configured.
+For automation, trust runtime over static — a server can be configured but fail to start.
 
 ## Claude Code
 
@@ -25,7 +24,7 @@ Emit the session-init event and parse it:
 ```bash
 claude -p "noop" \
   --output-format stream-json --verbose \
-  --permission-mode plan \
+  --permission-mode acceptEdits --allowedTools "Read" \
   | jq -c 'select(.type == "system" and .subtype == "init")' | head -1
 ```
 
@@ -39,7 +38,8 @@ The `system/init` event contains:
 Fail CI if a load-bearing MCP/plugin didn't come up:
 
 ```bash
-init=$(claude -p "noop" --output-format stream-json --verbose --permission-mode plan \
+init=$(claude -p "noop" --output-format stream-json --verbose \
+  --permission-mode acceptEdits --allowedTools "Read" \
   | jq -c 'select(.type == "system" and .subtype == "init")' | head -1)
 
 echo "$init" | jq -e '.mcp_servers | map(.name) | index("my-required-server")' >/dev/null \
@@ -65,16 +65,13 @@ codex features list               # feature flags and their effective state
 
 ### Runtime
 
-`codex exec --json` emits a stream where every tool invocation appears as an `item.*` event. There's no single "here is the full tool list" event, but item types surface as they're used. For a pre-run sanity check, a small probe prompt is the most reliable way:
+`codex exec --json` surfaces tool use as `item.*` events, no tool-list event. Prefer `codex mcp list` for pre-flight; probe prompt as fallback:
 
 ```bash
 codex exec "List the tools you have available. Reply in JSON." \
   --sandbox read-only --skip-git-repo-check \
-  --output-schema tools-schema.json \
-  -o tools.json
+  --output-schema tools-schema.json -o tools.json
 ```
-
-Slower than a dedicated event but works today. Prefer `codex mcp list` for pre-flight checks.
 
 ### Models
 
@@ -105,7 +102,7 @@ gemini -l                                 # equivalent: --list-extensions, print
 JSON output (non-stream) carries `stats.models` too, so a cheap introspection call:
 
 ```bash
-gemini -p "ok" --output-format json --approval-mode plan 2>/dev/null \
+gemini -p "ok" --output-format json --approval-mode auto_edit 2>/dev/null \
   | jq -r '.stats.models | keys[]'     # models that served requests
 ```
 
@@ -128,7 +125,7 @@ copilot plugin marketplace browse <name>   # discover more
 
 ### Runtime
 
-Copilot emits the richest startup-time introspection of any of the four — every significant load step becomes a JSONL event:
+Copilot emits the richest startup-time introspection — every load step becomes a JSONL event:
 
 | Event                                 | What you learn                                            |
 | ------------------------------------- | --------------------------------------------------------- |
@@ -158,7 +155,7 @@ No `--list-models` flag. Set via `--model <name>`. The effective model is not em
 
 ## gh agent-task (delegated cloud agent)
 
-Different model — the agent runs on GitHub's side, so local introspection is about the *repo configuration*, not the CLI.
+Agent runs server-side; local introspection is about repo config, not the CLI.
 
 ### Static
 
@@ -191,4 +188,4 @@ Model selection is managed server-side by GitHub's Copilot coding-agent infrastr
 | `--list-models` flag           | none — use init event's `model`| none — pass via `-m`  | none — stats confirms   | none — passed via `--model`         |
 | Pre-flight fail-fast on load  | parse `plugin_errors`          | `codex mcp list`      | `gemini mcp list`       | parse `session.mcp_servers_loaded`  |
 
-**Rule of thumb**: for scripts that depend on a specific MCP server or tool being available, do the runtime check (init/session event) rather than trusting static `mcp list`. A server can be configured but fail to start; the agent only "has" what actually loaded.
+**Rule:** if a script depends on a specific MCP server/tool, check the runtime init/session event — not just `mcp list`.

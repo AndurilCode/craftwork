@@ -1,8 +1,6 @@
 # Codex CLI — Headless Reference
 
-OpenAI's Codex CLI runs non-interactively via `codex exec`. The top-level `codex` command defaults to TUI; always use the `exec` subcommand for scripts.
-
-Official docs: <https://developers.openai.com/codex/noninteractive>.
+`codex exec`. Plain `codex` is TUI. Docs: <https://developers.openai.com/codex/noninteractive>.
 
 ## The minimum viable invocation
 
@@ -163,19 +161,13 @@ codex exec resume <UUID> "Continue with the changes"
 
 ## Review mode
 
-```bash
-codex review
-```
-
-A specialized non-interactive subcommand for code review against the current repo. Prefer this over hand-rolling a review prompt — it has tuned defaults.
+`codex review` — specialized non-interactive subcommand for code review. Tuned defaults; prefer over hand-rolling.
 
 ## MCP & plugins
 
-- `codex mcp` — manage external MCP servers (list, add, remove).
-- `codex marketplace` — plugin marketplaces.
-- `codex mcp-server` — run Codex itself as an MCP server over stdio, so another agent can call it as a tool.
-
-**MCP servers configured with `required = true` will abort `codex exec`** if initialization fails. Prefer explicit config via `-c mcp_servers...` in CI over relying on `~/.codex/config.toml`, and mark servers `required = false` unless the task genuinely can't proceed without them.
+- `codex mcp` — list/add/remove MCP servers.
+- `codex mcp-server` — run Codex itself as an MCP server over stdio.
+- **`required = true` MCP servers abort `codex exec` on init failure.** In CI, prefer `-c mcp_servers...` over `~/.codex/config.toml` and set `required = false` unless load-bearing.
 
 ## Exit codes
 

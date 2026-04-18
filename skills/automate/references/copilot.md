@@ -1,24 +1,16 @@
 # GitHub Copilot CLI — Headless Reference
 
-GitHub's Copilot CLI runs non-interactively with `-p` / `--prompt`. Without `-p` it launches the TUI.
-
-Official: run `copilot help commands`, `copilot help environment`, `copilot help permissions` for the authoritative local reference.
+`copilot -p`. Plain `copilot` is TUI. Run `copilot help {commands,environment,permissions}` for local docs.
 
 ## The minimum viable invocation
 
 ```bash
-copilot -p "Summarize this project" --allow-all-tools
+copilot -p "Summarize this project" --allow-all-tools --autopilot
 ```
 
-**`--allow-all-tools` is required for non-interactive mode.** This is explicit in the `--help` text — without it, Copilot has no way to proceed when a tool needs permission and there's no human to ask.
+**`--allow-all-tools` is required for `-p`** — without it, the run stalls on the first tool permission request. Pair with `--autopilot` (default mode is interactive).
 
-For clean output suitable for piping:
-
-```bash
-copilot -p "Summarize this project" --allow-all-tools -s
-```
-
-`-s` / `--silent` suppresses stats and ancillary lines, leaving only the agent's response on stdout.
+`-s` / `--silent` strips stats and leaves only the agent response on stdout.
 
 ## Mode selection
 
@@ -30,17 +22,11 @@ copilot -p "Summarize this project" --allow-all-tools -s
 
 | Mode          | Behavior                                                                     |
 | ------------- | ---------------------------------------------------------------------------- |
-| `interactive` | **Do not use in scripts.** Prompts for every tool action.                    |
-| `plan`        | Read-only planning. Good for investigation/review in scripts.                |
-| `autopilot`   | Autonomous execution; agent continues turns without asking. The script default for agentic work. |
+| `interactive` | **Avoid in scripts.** Prompts for every tool action.                         |
+| `plan`        | **Avoid in scripts.** Read-only planning, no action. Use `--autopilot` + narrow `--allow-tool` for read-only. |
+| `autopilot`   | Autonomous; the only script-viable mode.                                      |
 
-Cap autonomous runs:
-```
---max-autopilot-continues <N>   # limit continuation messages (default: unlimited)
---no-ask-user                   # disable the ask_user tool entirely
-```
-
-`--no-ask-user` is important in autopilot: without it, the agent can still pause to ask a clarifying question mid-run — fine interactively, hanging in a script.
+Cap autonomous runs with `--max-autopilot-continues <N>` + `--no-ask-user` (otherwise the agent can still pause mid-run with a clarifying question — fine interactively, hanging in a script).
 
 ## Output formats
 
@@ -173,14 +159,14 @@ Copilot auto-loads:
 - Plugins
 
 ```
---no-custom-instructions          # disable AGENTS.md and related — the "--bare" equivalent
+--no-custom-instructions          # disable AGENTS.md and related
 --disable-builtin-mcps            # disable built-in MCPs (currently github-mcp-server)
 --disable-mcp-server <name>       # disable a specific MCP server (repeatable)
 --additional-mcp-config <json>    # add MCPs for this session (JSON string or @file)
 --plugin-dir <dir>                # load a plugin from a local dir (repeatable)
 ```
 
-**Same posture decision as the other CLIs:** agentic work on a codebase usually wants `AGENTS.md` and project skills loaded — they encode the conventions that make the agent competent. Strip context (`--no-custom-instructions` + `--disable-builtin-mcps`) only for reproducible CI, cost-sensitive batch jobs on a single file, or adversarial/untrusted runs.
+Keep `AGENTS.md` + skills loaded for agentic repo work. Strip (`--no-custom-instructions` + `--disable-builtin-mcps`) only for reproducible CI or adversarial runs.
 
 ### GitHub MCP server control
 
@@ -216,13 +202,9 @@ Session IDs are UUIDs; capture `.sessionId` from the `result` event and reuse it
 
 ## Authentication
 
-```bash
-copilot login
-```
+`copilot login` (GitHub OAuth, requires Copilot subscription). In CI, seed the auth file as a secret — auth lives in the config dir, not a simple API-key env var. See `copilot help environment`.
 
-Uses GitHub OAuth. Requires a GitHub Copilot subscription. For CI, seed the auth file as a secret (check `copilot help environment` for the exact variable — Copilot's auth state lives in its config dir, not a simple `API_KEY` env var).
-
-The `COPILOT_ALLOW_ALL` env var is equivalent to `--allow-all-tools`; prefer the flag in CI so intent is explicit in the workflow file.
+`COPILOT_ALLOW_ALL` env var = `--allow-all-tools`; prefer the flag for explicit intent.
 
 ## Output sharing
 
@@ -249,5 +231,5 @@ For CI: always use `--secret-env-vars` to name any secrets the runner has set, s
 - **Billing is in "premium requests," not tokens.** No direct dollar figure in the output. For budget control, cap turns with `--max-autopilot-continues` and wrap with `timeout`.
 - **Auto-loads your personal skills and MCP servers.** In a fresh `/tmp` dir a trivial run surfaced every skill registered on the machine via `session.skills_loaded`. Use `--no-custom-instructions`, `--disable-builtin-mcps`, or explicit `--disable-mcp-server` in CI to get reproducible behavior.
 - **Notion/GitHub MCP auth failures are silent** — they appear as `session.mcp_servers_loaded` with `status: "failed"` but the run continues. Parse that event if a specific MCP server is load-bearing for your task.
-- **`interactive` is still the default mode.** Without `--autopilot` or `--plan`, the agent will try to prompt. `-p` + `--allow-all-tools` isn't enough by itself — pair with `--autopilot` for non-interactive execution.
+- **`interactive` is still the default mode.** Without `--autopilot`, the agent will try to prompt. `-p` + `--allow-all-tools` isn't enough by itself — always pair with `--autopilot` for non-interactive execution.
 - **No `cwd` flag.** Unlike Codex's `-C` or Claude's explicit `--add-dir`, you `cd` into the target dir before invoking. Confirm cwd in your script to avoid subtle scope bugs.

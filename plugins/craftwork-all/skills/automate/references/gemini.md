@@ -1,8 +1,6 @@
 # Gemini CLI — Headless Reference
 
-Google's Gemini CLI runs non-interactively with `-p` / `--prompt`. Without `-p` it drops into an interactive TUI.
-
-Official docs: <https://geminicli.com/docs/cli/headless/>, <https://geminicli.com/docs/reference/policy-engine/>.
+`gemini -p`. Plain `gemini` is TUI. Docs: <https://geminicli.com/docs/cli/headless/>, <https://geminicli.com/docs/reference/policy-engine/>.
 
 ## The minimum viable invocation
 
@@ -21,7 +19,7 @@ Headless mode is also triggered automatically when stdin is not a TTY — e.g., 
 ## JSON output shape
 
 ```bash
-gemini -p "extract keywords" --output-format json --approval-mode plan
+gemini -p "extract keywords" --output-format json --approval-mode auto_edit
 ```
 
 Empirically observed top-level fields:
@@ -44,7 +42,7 @@ Empirically observed top-level fields:
 
 **No native cost field.** Only token counts. Compute cost externally from model pricing if needed.
 
-**Heavy baseline.** A trivial "ok" prompt costs ~6,280 input tokens — Gemini's built-in system prompt is substantial. Factor this into budgets.
+**Heavy baseline.** A trivial "ok" prompt costs ~6,280 input tokens — Gemini's built-in system prompt is substantial.
 
 ## Stream-json events
 
@@ -84,16 +82,14 @@ Use them directly in shell guards. Still parse `stats.error` for details when yo
 
 | Mode        | Effect                                                                      |
 | ----------- | --------------------------------------------------------------------------- |
-| `default`   | **Do not use in scripts.** Prompt-based; in headless every `ask_user` policy rule becomes a silent deny, and default rules for write tools are `ask_user`. Result: the agent can't do anything meaningful. |
-| `plan`      | Read-only planning mode. Can't edit or run commands. Good for investigation/review.               |
-| `auto_edit` | Auto-approve edit tools; still prompt for shell commands unless a policy allow rule covers them. Pair with a policy file for the shell commands you actually need. |
-| `yolo`      | Auto-approve everything. Also exposed as `-y` / `--yolo`. Sandboxed envs only.                   |
+| `default`   | **Avoid in scripts.** Write tools default to `ask_user`; in headless `ask_user` → deny, so most writes silently fail. |
+| `plan`      | **Avoid in scripts.** Read-only planning — yields a plan, not action. Use `auto_edit` + a deny-shell policy for read-only. |
+| `auto_edit` | Auto-approves edits; still prompts for shell unless a policy allow rule covers it. Script default. |
+| `yolo`      | Auto-approves everything. Same as `-y` / `--yolo`. Sandboxed envs only. |
 
-**Rule of thumb for automation:** pick `plan`, `auto_edit` (with a policy allowlist for shell), or `yolo`. Never `default`.
+**Rule:** use `auto_edit` (with a policy allowlist for shell) or `yolo`.
 
-In non-interactive (headless) runs, any tool that would otherwise ask the user is **denied automatically**. So `--approval-mode default` without a policy file generally means "can't do much." Use `plan` for investigation, `auto_edit` for editing work with a policy allowlist for shell commands, `yolo` only in sandboxed environments.
-
-**CLI flag vs policy field naming.** The CLI flag is `auto_edit` (underscore). The `modes` field inside policy TOML uses `autoEdit` (camelCase). Easy to confuse.
+**Naming gotcha.** CLI flag is `auto_edit` (underscore). Policy TOML `modes` field uses `autoEdit` (camelCase).
 
 ## Policy Engine (preferred over deprecated `--allowed-tools`)
 
@@ -144,7 +140,7 @@ Admin policy locations:
 - macOS: `/Library/Application Support/GeminiCli/policies`
 - Windows: `C:\ProgramData\gemini-cli\policies`
 
-A User tier rule with `priority: 100` (effective `4.100`) overrides an Admin tier rule with `priority: 50` (effective `5.050`). Priority within a tier matters more than the tier itself — a little counter-intuitive, worth reading twice.
+Within-tier priority dominates tier base: a User rule with `priority: 100` (eff. 4.100) beats an Admin rule with `priority: 50` (eff. 5.050).
 
 ### Useful policy examples
 
@@ -206,19 +202,11 @@ In CI, prefer restricting extensions/MCPs explicitly rather than inheriting what
 
 ## ACP mode
 
-```
---acp
-```
-
-Starts Gemini in Agent Control Protocol mode — a structured protocol for other programs to drive Gemini. Rare in shell scripts; more common when embedding Gemini in another agent framework.
+`--acp` — Agent Control Protocol for embedding Gemini in another agent framework. Rare in shell scripts.
 
 ## Model selection
 
-```
--m, --model <NAME>
-```
-
-Pick a specific Gemini model. Falls back to the config default if omitted.
+`-m, --model <NAME>`. Falls back to config default.
 
 ## Gotchas
 
@@ -227,7 +215,7 @@ Pick a specific Gemini model. Falls back to the config default if omitted.
 - **Heavy baseline input tokens.** ~6,280 input tokens on "ok". Trivial batch jobs can be surprisingly expensive relative to Claude's Haiku.
 - **`--allowed-tools` is deprecated.** Use `--policy` or policy files in `~/.gemini/policies/`.
 - **`--raw-output` is a security risk** — ANSI escapes from attacker-controlled text can mess with terminals or logs. Don't enable unless you understand the threat model.
-- **No native `--max-budget-usd` flag.** Use `timeout <N>s` and model choice to bound spend.
+- **No native budget flag.** Use `timeout <N>s` and model choice to bound spend; check `stats.models[...].tokens` post-run.
 - **Session resume is index-based**, so parallel scripts using `-r latest` race. Prefer single-invocation tasks when parallelizing.
 - **`-y` / `--yolo` ≡ `--approval-mode yolo`** — treat both as red flags.
 - **`ask_user` in headless = deny.** If your policy relies on prompts for interactive confirmation, it'll silently block in CI.

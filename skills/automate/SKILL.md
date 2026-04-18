@@ -14,7 +14,7 @@ Pick the category before the tool:
 
 | CLI | Headless invocation | Reference |
 |-----|--------------------|-----------|
-| Claude Code | `claude -p "<prompt>"` / `claude --bare -p ...` | `references/claude-code.md` |
+| Claude Code | `claude -p "<prompt>"` | `references/claude-code.md` |
 | Codex | `codex exec "<prompt>"` | `references/codex.md` |
 | Gemini CLI | `gemini -p "<prompt>"` | `references/gemini.md` |
 | GitHub Copilot CLI | `copilot -p "<prompt>" --allow-all-tools --autopilot` | `references/copilot.md` |
@@ -24,15 +24,12 @@ The two can be combined — `gh agent-task` opens the PR, a local CLI reviews it
 
 ## Non-negotiable flags (the checklist)
 
-Every script must explicitly set these. CLI defaults are wrong for automation — stating them is the point.
-
 **Local execution (`claude` / `codex` / `gemini` / `copilot`):**
 
-- [ ] **Non-interactive permission mode.** `-p` alone doesn't pick a mode. Claude: `plan` / `acceptEdits` / `dontAsk` / `bypassPermissions`. Codex: `--sandbox <mode>`. Gemini: `--approval-mode <mode>`. Copilot: `--autopilot` (or `--plan`) + `--allow-all-tools` + `--no-ask-user`. No mode ⇒ "default" ⇒ silent block/deny.
-- [ ] **Per-call budget cap.** `--max-budget-usd` for Claude; `timeout <N>s` wrapper for Codex/Gemini. **Also per worker inside parallel fan-outs** — one runaway file burns the whole job otherwise.
+- [ ] **Deterministic auto mode.** Claude: `acceptEdits` / `dontAsk` / `bypassPermissions`. Codex: `--sandbox <read-only|workspace-write|danger-full-access>`. Gemini: `--approval-mode auto_edit` or `yolo`. Copilot: `--autopilot` + `--allow-all-tools` + `--no-ask-user`. See the auto-mode menu below for the full comparison.
+- [ ] **`--allowedTools` narrow allowlist — the real safety boundary.** Auto mode means "don't pause for approval"; the allowlist defines what the agent can do. Read-only? `"Read,Grep,Glob"`. Dev? `"Read,Edit,Bash(npm test*)"`.
 - [ ] **`--output-format json`** when the next step is a shell pipeline. Never parse `text` with regex/grep/sed.
 - [ ] **Structured-output constraint** (`--json-schema` for Claude, `--output-schema` for Codex) when output feeds downstream code. Stops the model from drifting into prose / invalid enums so your `jq` pipeline can't silently break.
-- [ ] **`--allowedTools` narrow allowlist** paired with the permission mode. Auto-mode ≠ blanket authority; list exactly what the task needs (e.g. `"Read,Grep,Glob"` for review, `"Read,Edit,Bash(npm test*)"` for dev).
 - [ ] **Verify success in the JSON** (`is_error`, `subtype`, `errors[]`, `permission_denials[]`), not just exit code. All four CLIs can exit 0 on recoverable failures.
 
 **Delegated cloud execution (`gh agent-task`):**
@@ -51,15 +48,16 @@ Shapes 1-4 are local execution; shape 5 is cloud delegation.
 Classification, extraction, summarization, triage. Script gets a structured answer it can parse.
 
 ```bash
-result=$(claude --bare -p "Classify the severity of this error: $(cat error.log)" \
+result=$(claude -p "Classify the severity of this error: $(cat error.log)" \
   --output-format json \
   --json-schema '{"type":"object","properties":{"severity":{"type":"string","enum":["low","medium","high","critical"]},"reason":{"type":"string"}},"required":["severity","reason"]}' \
-  --max-budget-usd 0.10)
+  --permission-mode acceptEdits \
+  --allowedTools "Read")
 
 severity=$(echo "$result" | jq -r '.structured_output.severity')
 ```
 
-`--bare` skips hooks/skills/MCP/CLAUDE.md — right for a classifier with no repo context. Drop it if the task benefits from project context.
+No edit tool in the allowlist ⇒ no writes happen, regardless of permission mode. That's how you scope "read-only" in a script.
 
 ### 2. Agentic loop on a codebase
 
@@ -70,11 +68,10 @@ cd /path/to/repo
 claude -p "Run the test suite and fix any failures. Report which tests you changed." \
   --allowedTools "Bash,Read,Edit" \
   --permission-mode acceptEdits \
-  --max-budget-usd 2.00 \
   --output-format json > run.json
 ```
 
-`acceptEdits` auto-approves writes. `dontAsk` is stricter (deny-by-default) — better for locked-down CI.
+`acceptEdits` auto-approves writes. `dontAsk` is stricter (deny-by-default) — better for locked-down CI. The real scope control is still the allowlist.
 
 ### 3. Multi-turn agentic (chained calls sharing state)
 
@@ -82,16 +79,18 @@ Discrete steps with checkpoints — review, decide, act — each seeing prior co
 
 ```bash
 session_id=$(claude -p "Audit the auth module for security issues" \
-  --output-format json --allowedTools "Read,Grep,Glob" | jq -r '.session_id')
+  --output-format json --permission-mode acceptEdits \
+  --allowedTools "Read,Grep,Glob" | jq -r '.session_id')
 
 claude -p "Now prioritize the issues you found by severity" \
-  --resume "$session_id" --output-format json > prioritized.json
+  --resume "$session_id" --output-format json \
+  --permission-mode acceptEdits --allowedTools "Read,Grep,Glob" > prioritized.json
 
 claude -p "Fix the critical issues only" \
-  --resume "$session_id" --allowedTools "Read,Edit" --permission-mode acceptEdits
+  --resume "$session_id" --permission-mode acceptEdits --allowedTools "Read,Edit"
 ```
 
-`--resume <id>` is explicit and parallel-safe; `--continue` (most-recent-in-cwd) races.
+First two steps are read-only via narrow tools. `--resume <id>` is explicit and parallel-safe; `--continue` (most-recent-in-cwd) races.
 
 ### 4. Parallel fan-out
 
@@ -101,15 +100,16 @@ Same operation against N files/PRs/tickets. Fan out via `xargs -P` or background
 mkdir -p out
 find . -name '*.py' -print0 | xargs -0 -P 4 -I {} bash -c '
   f="$1"
-  claude --bare -p "Summarize $(cat "$f") in one sentence" \
-    --output-format json --max-budget-usd 0.05 \
+  timeout 60s claude -p "Summarize $(cat "$f") in one sentence" \
+    --output-format json --permission-mode acceptEdits \
+    --allowedTools "Read" \
     > "out/$(basename "$f").json"
 ' _ {}
 
 jq -s 'map({file: .session_id, summary: .result})' out/*.json > summary.json
 ```
 
-Bound parallelism (`-P 4`) to dodge rate limits. Per-call budget prevents a runaway task from burning the batch.
+Bound parallelism (`-P 4`) to dodge rate limits. `timeout` per worker stops one runaway from stalling the batch.
 
 ### 5. Delegate to a cloud agent (async PR)
 
@@ -137,20 +137,16 @@ gh agent-task create -F ticket.md --base main --follow
 
 ## Principles that save you later
 
-The checklist covers the must-set flags. These are the gotchas and cross-CLI details it assumes.
+- **Auto-mode menu** — tool restriction, not a plan mode, is how you scope capability in a script:
 
-- **Budget caps overshoot.** `--max-budget-usd` is checked *post-turn* — one expensive call overshoots 2-3× before stopping. Verify `total_cost_usd` in the JSON. Codex/Gemini have no native flag; use `timeout <N>s` + post-run spend check.
+  | CLI | Auto + read-only (via tools) | Auto + edits | Auto + unrestricted | Never use in scripts |
+  |-----|-----------------------------|--------------|---------------------|----------------------|
+  | Claude | `acceptEdits` + `--allowedTools "Read,Grep,Glob"` | `acceptEdits` / `dontAsk` + edit allowlist | `bypassPermissions` | `plan` / `default` / `auto` |
+  | Codex | `--sandbox read-only` | `--full-auto` / `--sandbox workspace-write` | `--sandbox danger-full-access` | — (the flag is the posture) |
+  | Gemini | `--approval-mode auto_edit` + read-only policy | `--approval-mode auto_edit` | `--approval-mode yolo` | `plan` / `default` |
+  | Copilot | `--autopilot` + narrow `--allow-tool` list | `--autopilot` + `--allow-all-tools` + `--no-ask-user` | `--yolo` / `--allow-all` | `--plan` / `--mode interactive` |
 
-- **Per-CLI permission-mode menu** (pick one from each row per task):
-
-  | CLI | Read-only | Agentic edits | Sandboxed-only | Never use |
-  |-----|-----------|---------------|----------------|-----------|
-  | Claude | `plan` | `acceptEdits` / `dontAsk` | `bypassPermissions` | `default` / `auto` |
-  | Codex | `--sandbox read-only` | `--full-auto` / `--sandbox workspace-write` | `--sandbox danger-full-access` | — (flag IS the posture) |
-  | Gemini | `--approval-mode plan` | `--approval-mode auto_edit` | `--approval-mode yolo` | `default` (silent-denies `ask_user`) |
-  | Copilot | `--plan` | `--autopilot` + `--allow-all-tools` + `--no-ask-user` | `--yolo` / `--allow-all` | `--mode interactive` |
-
-- **Context posture is per-task.** Each CLI auto-loads a stack (Claude: `CLAUDE.md`/hooks/plugins/skills/MCP; Codex: `AGENTS.md` + `~/.codex/config.toml`; Gemini: extensions/skills/hooks/policies; Copilot: `AGENTS.md` + skills + built-in GitHub MCP). That context is often *why* the agent is competent on this codebase, so for agentic work on the repo, keep it loaded. Strip it for single-file classification, CI reproducibility, or adversarial-input runs: Claude `--bare`; Codex `-c` overrides + `--ephemeral`; Gemini `-e` + explicit `--policy`; Copilot `--no-custom-instructions` + `--disable-builtin-mcps`.
+- **Repo context auto-loads** (CLAUDE.md, AGENTS.md, skills, MCP) — usually *why* the agent is competent here, so keep it. Strip via per-CLI config overrides + minimal `--allowedTools` only for reproducibility or adversarial input. Per-CLI details in the references.
 
 - **Capture session IDs for chained calls.** Claude/Gemini: `.session_id`; Codex: `.thread_id` (in `thread.started` when `--json` is on). Stash it early — `--continue` / `--last` / `-r latest` break under shared cwd or parallelism.
 
@@ -160,7 +156,7 @@ The checklist covers the must-set flags. These are the gotchas and cross-CLI det
 
 - **Quote prompts aggressively.** `$`, backticks, quotes, newlines. Heredocs (`<<'EOF'`) or `--append-system-prompt-file` avoid shell-expansion bugs.
 
-- **Trap and clean up.** `trap 'git stash -u' ERR` is three lines that save a partial agentic run.
+- **Hygiene wrappers.** `trap 'git stash -u' ERR` to rescue a partial agentic run; `timeout <N>s ...` around every unattended invocation to cap infinite loops, network stalls, or agents that won't stop.
 
 ## Anti-patterns
 
@@ -182,4 +178,4 @@ The checklist covers the must-set flags. These are the gotchas and cross-CLI det
 
 ## Delivering the script
 
-Include a header with: usage + required env vars; budget (typical cost + per-run cap); permission posture (read-only / edits / shell); tunable flags (model, dir, timeout).
+Include a header with: usage + required env vars; permission posture (read-only / edits / shell) and the `--allowedTools` list that enforces it; tunable flags (model, dir, timeout).

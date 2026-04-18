@@ -1,19 +1,8 @@
 # GitHub Agent Tasks (`gh agent-task`) — Delegation Reference
 
-`gh agent-task` dispatches a task to GitHub's cloud-hosted Copilot coding agent. The agent runs asynchronously on GitHub's infrastructure, opens a pull request against the repo, and the local CLI is just a thin client for create/list/view.
+Dispatches a task to GitHub's cloud-hosted Copilot coding agent. Async; agent opens a PR. Local CLI is a thin dispatcher.
 
-**This is a different mental model from the local-agent CLIs** (Claude, Codex, Gemini, Copilot CLI):
-
-| | Local agent CLIs | `gh agent-task` |
-|-|-----------------|-----------------|
-| Where code runs | Your machine / CI runner | GitHub's cloud infrastructure |
-| Execution model | Synchronous process | Asynchronous task, produces a PR |
-| Artifact | Stdout / files / optional commit | Pull request |
-| Permissions | Local filesystem + shell | GitHub repo permissions |
-| Auth | API key / OAuth per CLI | GitHub token (via `gh auth`) |
-| Context | Loaded at invocation time | Configured per-repo + optional custom agent |
-
-Preview feature — flags may change. Aliases: `gh agent-tasks`, `gh agent`, `gh agents`.
+Differs from local CLIs: runs server-side, artifact is a PR (not stdout), auth is GitHub token (`gh auth`). Preview feature — flags may change. Aliases: `gh agent-tasks`, `gh agent`, `gh agents`.
 
 ## The three subcommands
 
@@ -33,7 +22,7 @@ gh agent-task view [<id>] [flags]              # view a task session
 -R, --repo <OWNER/REPO>         Target a different repo (you do not need to be inside it)
 ```
 
-**`-R/--repo` is the orchestration lever.** You can dispatch into any repo you have access to without `cd`-ing into a local clone — the agent runs in GitHub's cloud against the remote repo. This makes the whole thing scriptable from one central location: a cron job, a webhook handler, an ops dashboard. You never need to check out the target repo on the dispatcher.
+**`-R/--repo` is the orchestration lever.** Dispatch into any accessible repo without a local clone — one dispatcher script can drive a cron, webhook, or ops dashboard across many repos.
 
 Input sources (choose one):
 - Positional argument: `gh agent-task create "fix the pagination bug"`
@@ -63,131 +52,70 @@ Task identifiers accepted: session ID UUID, PR number, PR URL, or `OWNER/REPO#<n
 
 ### Dispatch-and-forget
 
-For integrations where a ticket or issue should result in an agent-authored PR. You don't wait; another process watches the PR.
+Fire and move on; a separate watcher handles completion.
 
 ```bash
-#!/usr/bin/env bash
-# Called from a webhook when a Linear/Jira ticket is marked "ready for agent"
-set -euo pipefail
-TICKET_FILE="$1"
 gh agent-task create -F "$TICKET_FILE" --base main
 ```
 
-The command exits quickly; the agent continues working in the cloud. A PR will appear on the repo when it's done.
-
 ### Dispatch-and-watch
 
-When you want live progress in the current job (CI step, local monitor, etc.).
+`--follow` keeps the process alive and streams logs until the session finishes. Foreground use only.
 
 ```bash
 gh agent-task create "Add tests for src/billing" --follow --base main
 ```
 
-`--follow` keeps the process alive and streams logs until the session finishes. Use in an interactive or foreground context; skip in true fire-and-forget automation.
+### Custom agent
 
-### Dispatch with a custom agent
-
-Custom agents live at `.github/agents/<name>.md` in the repo — a markdown spec of role, constraints, and style. Dispatch with `-a`:
+Custom agents live at `.github/agents/<name>.md` in the target repo. Keeps prompts in version control and shortens task descriptions.
 
 ```bash
 gh agent-task create "Refactor the auth middleware" --custom-agent security-reviewer
 ```
 
-If the team has invested in agent prompts for specific kinds of work (security review, test generation, docs), custom agents keep the prompt in version control and make task descriptions short.
+### Batch dispatch
 
-### Batch dispatch from a queue
-
-Fan out N tickets into N agent tasks. Collect session IDs for later polling.
+Fan out N tickets. `create` has no `--json` in preview — capture via `gh agent-task list` or `gh api` against the REST endpoint.
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail
-mkdir -p dispatched
 for ticket in tickets/*.md; do
-  base_name=$(basename "$ticket" .md)
-  # create returns human-readable output; parse with --jq or capture the session ID via list
-  gh agent-task create -F "$ticket" --base main > "dispatched/$base_name.out"
-  sleep 1  # avoid rate limits
+  gh agent-task create -F "$ticket" --base main
+  sleep 1
 done
-
-# Later: poll for completion
 gh agent-task list --limit 100
 ```
 
-`gh agent-task create` doesn't have a `--json` output flag in preview. To get structured task data, fall back to `gh agent-task list` or query the GitHub REST API directly with `gh api`.
+### Cross-repo fleet (`-R` pattern)
 
-### Cross-repo / fleet orchestration (the `-R` pattern)
-
-`-R/--repo` makes a single dispatcher script work across many repositories without local clones. Three concrete patterns this enables:
-
-**Fan out one task across a fleet of repos:**
+Fan one task across every repo matching a filter — no clones needed:
 
 ```bash
-#!/usr/bin/env bash
-# Upgrade a dependency across every repo in an org's "services" topic
-set -euo pipefail
-task_file="tasks/upgrade-node-20.md"
-
 gh repo list my-org --topic services --json nameWithOwner -L 100 \
   --jq '.[].nameWithOwner' | while read -r repo; do
-    echo "dispatching to $repo"
-    gh agent-task create -F "$task_file" --base main --repo "$repo"
+    gh agent-task create -F tasks/upgrade.md --base main --repo "$repo"
     sleep 2
 done
 ```
 
-**Ticket router — route each ticket to the repo it belongs to:**
-
-```bash
-#!/usr/bin/env bash
-# Called from a webhook. Ticket metadata names the target repo.
-set -euo pipefail
-repo="$1"                     # e.g., my-org/payments-service
-ticket_file="$2"              # problem statement
-gh agent-task create -F "$ticket_file" --base main --repo "$repo" --follow
-```
-
-**Central ops dashboard dispatches into many repos:**
-
-```bash
-# From a platform team's scheduler, targeting repos owned by product teams
-gh agent-task create "Rotate the deprecated API keys per RUNBOOK.md" \
-  --repo my-org/checkout-service --base main
-gh agent-task create "Rotate the deprecated API keys per RUNBOOK.md" \
-  --repo my-org/billing-service --base main
-```
-
-In each case the dispatcher needs only `gh auth` credentials with access to the target repos — no clones, no working trees, no local context. The agent runs on GitHub's side and opens the PR there.
+Same pattern fits ticket routers (webhook picks the repo) and ops dashboards (platform team dispatches into product-team repos). Dispatcher needs only `gh auth`.
 
 ### Pair with local verification
 
-A common pattern: agent opens the PR; a local CLI (Claude/Codex/Gemini/Copilot) reviews it.
+Agent opens the PR; a local CLI reviews before merge.
 
 ```bash
-# Step 1: dispatch
 gh agent-task create "Implement $FEATURE" --base main
-
-# ... wait for PR to appear (separate cron or webhook) ...
-
-# Step 2 (from a reviewer job): review the PR with a local agent
+# ... wait for PR (cron / webhook) ...
 claude -p "Review PR #$PR for correctness and test coverage" \
-  --allowedTools "Bash(gh pr *),Read" \
-  --permission-mode plan \
+  --permission-mode acceptEdits \
+  --allowedTools "Bash(gh pr *),Read,Grep,Glob" \
   --output-format json
 ```
 
-Delegation produces the PR; local agent gates its merge.
-
 ## Authentication
 
-`gh agent-task` uses the authenticated `gh` CLI context. In CI:
-
-```yaml
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # or a PAT with appropriate scopes
-```
-
-The agent runs under GitHub's managed identity, not under your token — your token just authorizes dispatch. The Copilot coding agent feature must be enabled for the org/repo.
+Uses `gh auth` context. In CI: `GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` (or a PAT). Agent runs under GitHub's managed identity; your token only authorizes dispatch. Copilot coding agent must be enabled for the org/repo.
 
 ## Exit codes
 
