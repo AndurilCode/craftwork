@@ -5,16 +5,16 @@ description: "Apply debugging methodology whenever the user faces a software fai
 
 # Debugging Methodology
 
-**Core principle**: Systematic debugging outperforms intuition. Resist the urge to guess-and-patch. Instead: reproduce, observe, hypothesize, isolate, verify. The goal is root cause, not symptom suppression — a fix that addresses the wrong cause will break again.
+Reproduce, observe, hypothesize, isolate, verify. Resist guess-and-patch. Goal is root cause — fixing the wrong cause means it breaks again.
 
 ---
 
-## When to Use This Skill
+## When to Use
 
-- A test fails and the reason is not immediately obvious
-- Behavior changed and nobody knows what caused it
-- A bug is intermittent or environment-dependent
-- The user is pattern-matching to a fix without evidence for the root cause
+- Test fails for non-obvious reason
+- Behavior changed; cause unknown
+- Bug is intermittent or environment-dependent
+- User pattern-matches to a fix without root-cause evidence
 - A fix was applied but the problem recurred or shifted
 
 ---
@@ -23,127 +23,120 @@ description: "Apply debugging methodology whenever the user faces a software fai
 
 ### Step 1: Reproduce the Failure
 
-Establish a reliable reproduction before doing anything else. A bug you cannot trigger on demand is a bug you cannot verify you have fixed.
+A bug you can't trigger is a bug you can't verify fixed.
 
-- Record the exact steps, inputs, and environment that produce the failure
-- If the failure is intermittent, characterize its frequency and conditions (load level, timing, data shape, concurrency)
-- If you cannot reproduce locally, identify the environmental difference — OS, dependency version, configuration, data volume, network conditions
-- **No reproduction, no diagnosis.** If reproduction is impossible, instrument the code to capture state on next occurrence and move to Step 2 with the data you have
+- Record exact steps, inputs, environment
+- For intermittent failures, characterize frequency and conditions (load, timing, data shape, concurrency)
+- If it doesn't repro locally, identify the environmental delta (OS, deps, config, data volume, network)
+- **No reproduction, no diagnosis.** If impossible, instrument code to capture state on next occurrence and proceed to Step 2 with available data
 
 ### Step 2: Observe Before Theorizing
 
-Collect evidence without forming conclusions yet. Premature hypotheses create confirmation bias — you look for evidence that supports your theory and ignore evidence that contradicts it.
+Premature hypotheses cause confirmation bias. Collect evidence first:
 
-Gather:
-- Full error messages and stack traces (not paraphrased — exact text)
-- Relevant log output surrounding the failure
-- System state: memory, CPU, disk, open connections, queue depth
-- Recent changes: commits, config changes, dependency updates, infrastructure changes
-- Data state: what input triggered the failure? Is the data valid?
+- Full error messages and stack traces (exact text, not paraphrased)
+- Relevant log output around the failure
+- System state: memory, CPU, disk, connections, queue depth
+- Recent changes: commits, config, dependency updates, infra
+- Data state: what input triggered it? Valid?
 
-Write down what you observe. Separate facts ("the error is a NullPointerException on line 42") from interpretations ("the object must not be initialized").
+Separate facts ("NullPointerException on line 42") from interpretations ("the object must not be initialized").
 
 ### Step 3: Generate and Rank Hypotheses
 
-Based on observations, list every plausible cause. Then rank by:
+List every plausible cause. Rank by:
 
-1. **Likelihood** — given the evidence, how probable is this cause?
-2. **Testability** — how quickly can you confirm or rule it out?
-3. **Impact** — if this is the cause, how severe is it?
+1. **Likelihood** given evidence
+2. **Testability** — how fast to confirm/rule out
+3. **Impact** — severity if true
 
-Prioritize hypotheses that are both likely and fast to test. A 30-second check that eliminates a candidate is always worth running first.
+Prioritize likely + fast-to-test. A 30-second elimination check is always worth it.
 
-**Differential diagnosis**: What changed? Walk through each category:
-- **Code**: recent commits, merge conflicts, refactors
-- **Configuration**: environment variables, feature flags, settings files
-- **Data**: new data patterns, schema changes, edge cases
-- **Dependencies**: version bumps, transitive dependency changes
-- **Infrastructure**: deployment changes, resource limits, network topology
+**Differential diagnosis — what changed?**
+- **Code**: recent commits, merges, refactors
+- **Configuration**: env vars, feature flags, settings
+- **Data**: new patterns, schema changes, edge cases
+- **Dependencies**: version bumps, transitive changes
+- **Infrastructure**: deployments, resource limits, network
 
 ### Step 4: Isolate with Binary Search
 
-Narrow the search space systematically rather than reading code line by line.
+Halve the search space; don't read line by line.
 
-- **Bisect commits**: use `git bisect` to find the exact commit that introduced the failure
-- **Bisect code**: comment out or stub components until the failure disappears, then re-enable them one by one
-- **Bisect input**: reduce the failing input to the minimal case that still triggers the bug
-- **Bisect environment**: swap one environmental variable at a time between working and broken environments
+- **Bisect commits**: `git bisect`
+- **Bisect code**: stub components until failure disappears, re-enable one by one
+- **Bisect input**: minimize failing input
+- **Bisect environment**: swap one env variable at a time
 
-Each bisection step should halve the remaining search space. If it does not, choose a different dimension to bisect.
+Each step should halve the space. If not, change dimension.
 
 ### Step 5: Confirm Root Cause and Fix
 
-Once you have a candidate root cause:
+1. **Explain the mechanism** — full causal chain from cause to symptom. Can't explain? It's proximate, not root.
+2. **Predict** — if this is the cause, what else should be true? Check.
+3. **Fix at the root** — not the symptom. A null check that suppresses a crash isn't a fix if the object should never be null.
+4. **Verify** — original repro resolved + run broader tests for regressions
+5. **Write a regression test** — encode the failure so it can't silently return
 
-1. **Explain the mechanism** — articulate exactly how this cause produces the observed symptom. If you cannot explain the full causal chain, you may have a proximate cause, not the root cause
-2. **Predict** — if this is the root cause, what else should be true? Check those predictions
-3. **Fix at the root** — address the underlying cause, not the surface symptom. A null check that suppresses a crash is not a fix if the object should never be null
-4. **Verify** — confirm the fix resolves the original reproduction case. Run the broader test suite to check for regressions
-5. **Write a regression test** — encode the failure as a test so it cannot silently return
-
-Feed the confirmed root cause to `five-whys-root-cause` if the failure is systemic, or to `causal-inference` if the root cause involves a causal claim that needs rigorous validation.
+Feed root cause to `five-whys-root-cause` if systemic, or `causal-inference` if the claim needs rigorous validation.
 
 ---
 
 ## Output Format
 
-### 🔍 Symptom Description
-- **What fails**: [exact error, behavior, or test name]
-- **When it fails**: [conditions — always, intermittently, after specific action]
-- **Since when**: [first observed date/commit, or "unknown"]
+### 🔍 Symptom
+- **What fails**: [exact error/behavior/test]
+- **When it fails**: [always / intermittent / after action]
+- **Since when**: [date/commit, or "unknown"]
 
-### 📋 Observations Collected
+### 📋 Observations
 | Category | Finding |
 |----------|---------|
 | Error message | [exact text] |
-| Logs | [relevant log lines] |
+| Logs | [relevant lines] |
 | Recent changes | [commits, config, deps, infra] |
-| Environment | [OS, versions, resource state] |
-| Data | [input characteristics, edge cases] |
+| Environment | [OS, versions, resources] |
+| Data | [input, edge cases] |
 
-### 🧠 Hypothesis List
-| # | Hypothesis | Likelihood | Test to confirm/rule out | Time to test |
-|---|-----------|------------|--------------------------|-------------|
-| 1 | [Most likely cause] | High | [What to check] | [Minutes] |
-| 2 | [Second candidate] | Medium | [What to check] | [Minutes] |
-| 3 | [Third candidate] | Low | [What to check] | [Minutes] |
+### 🧠 Hypotheses
+| # | Hypothesis | Likelihood | Test | Time |
+|---|-----------|------------|------|------|
+| 1 | [Most likely] | High | [check] | [min] |
+| 2 | [Second] | Medium | [check] | [min] |
+| 3 | [Third] | Low | [check] | [min] |
 
-### 🎯 Isolation Strategy
+### 🎯 Isolation
 - **Dimension**: [commits / code / input / environment]
-- **Method**: [git bisect / component stubbing / input reduction / env swap]
+- **Method**: [git bisect / stubbing / input reduction / env swap]
 - **Result**: [what was isolated]
 
 ### 🏆 Root Cause
-- **Cause**: [precise description of what went wrong and why]
-- **Mechanism**: [how the cause produces the symptom — full causal chain]
+- **Cause**: [precise]
+- **Mechanism**: [full causal chain]
 - **Fix**: [what to change]
-- **Verification**: [how to confirm the fix works + regression test added]
+- **Verification**: [how to confirm + regression test]
 
 ### ⚠️ Follow-Up
-- **Systemic?**: [Yes → feed to five-whys-root-cause / No → done]
-- **Causal claim?**: [Yes → feed to causal-inference / No → done]
-- **Other areas at risk**: [code that shares the same pattern or assumption]
+- **Systemic?**: [Yes → five-whys-root-cause / No]
+- **Causal claim?**: [Yes → causal-inference / No]
+- **Other areas at risk**: [shared pattern/assumption]
 
 ---
 
 ## Common Traps
 
-**Guess-and-patch**: Applying a fix based on intuition without confirming the root cause. The symptom disappears temporarily, then resurfaces or shifts to a different failure.
-
-**Confirmation bias**: Forming a hypothesis early and only looking for evidence that supports it. Force yourself to try to *disprove* each hypothesis, not prove it.
-
-**Fixing the symptom**: Adding a null check, retry loop, or try-catch that suppresses the error without understanding why the error occurs. The underlying cause remains and will manifest differently.
-
-**Skipping reproduction**: Diving into code before confirming you can trigger the failure. Without a reproduction case, you cannot verify your fix.
-
-**Changing multiple things at once**: Making several changes simultaneously, then finding the bug is gone. You do not know which change fixed it — or whether they interact to mask the real problem.
+- **Guess-and-patch**: fix without confirmed root cause; symptom resurfaces or shifts
+- **Confirmation bias**: only seeking supporting evidence; force yourself to *disprove*
+- **Fixing the symptom**: null check / retry / try-catch suppressing without understanding
+- **Skipping reproduction**: diving in before you can trigger; can't verify the fix
+- **Changing multiple things**: bug gone, but you don't know which change fixed it
 
 ---
 
 ## Thinking Triggers
 
-- *"Can I reproduce this failure right now, on demand?"*
+- *"Can I reproduce this on demand right now?"*
 - *"What have I observed vs. what am I assuming?"*
-- *"What changed between the working state and the broken state?"*
-- *"What is the fastest test that would eliminate my top hypothesis?"*
+- *"What changed between working and broken?"*
+- *"What's the fastest test that eliminates my top hypothesis?"*
 - *"Am I fixing the root cause or suppressing a symptom?"*

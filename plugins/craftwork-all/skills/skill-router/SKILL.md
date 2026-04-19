@@ -25,14 +25,14 @@ Rules: analysis + production = two skill needs. Decision = reasoning + output. O
 
 Read EVERY skill description. Do not stop after first match.
 
-Score each: **PRIMARY** (core intent, output worse without it) ORTING** (secondary need, quality boost) · **IRRELEVANT**
+Score each: **PRIMARY** (core intent, output worse without it) · **SUPPORTING** (secondary need, quality boost) · **IRRELEVANT**
 
 Zero PRIMARY matches = you skimmed. Re-read.
 
 ```
-Primary:   [skill]: [which intent component]
+Primary:    [skill]: [which intent component]
 Supporting: [skill]: [what quality dimension]
-Excluded:  [skill]: [why not, non-obvious only]
+Excluded:   [skill]: [why not, non-obvious only]
 ```
 
 ### STEP 3 — Composition Pattern
@@ -52,7 +52,8 @@ Excluded:  [skill]: [why not, non-obvious only]
 
 ```
 SKILL ROUTER — PLAN
-Intent: [onettern]
+Intent: [one-line]
+Pattern: [from table]
 Skills: [ordered list with roles]
 ---
 Executing Step 1: [skill-name]
