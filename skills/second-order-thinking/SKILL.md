@@ -5,7 +5,7 @@ description: Apply second-order thinking whenever the user is making a decision,
 
 # Second-Order Thinking
 
-**Core principle**: First-order thinking asks "what happens next?" Second-order thinking asks "and then what?" Most people stop at the first answer. The most consequential effects — intended and unintended — live in the second and third order.
+First-order asks "what happens next?" Second-order asks "and then what?" Most consequential effects — intended and unintended — live in the second and third order.
 
 ---
 
@@ -29,10 +29,10 @@ At each level ask:
 
 ---
 
-## Key Mental Models Within Second-Order Thinking
+## Key Mental Models
 
 ### Unintended Consequences
-Most "obvious" interventions fail because of unintended consequences. Classic patterns:
+Classic patterns:
 
 | Intervention | 1st Order | 2nd Order (unintended) |
 |---|---|---|
@@ -43,21 +43,19 @@ Most "obvious" interventions fail because of unintended consequences. Classic pa
 | Fix every bug immediately | Cleaner code | Team never works on features, roadmap stalls |
 
 ### Goodhart's Law
-*"When a measure becomes a target, it ceases to be a good measure."*
-
-When you optimize for a metric, behavior shifts to game the metric — the underlying goal is lost.
+*"When a measure becomes a target, it ceases to be a good measure."* Optimizing for a metric shifts behavior to game it — the underlying goal is lost.
 
 Ask: *What happens to this metric if people optimize for it directly?*
 
 ### Cobra Effect
-Incentives designed to solve a problem can make it worse. (British offered bounties for dead cobras in India → people bred cobras to collect bounties.)
+Incentives designed to solve a problem can make it worse. (British bounties for dead cobras in India → people bred cobras for bounties.)
 
-Ask: *Could the incentive structure we're creating be gamed in a way that produces more of what we're trying to eliminate?*
+Ask: *Could the incentive structure be gamed to produce more of what we're trying to eliminate?*
 
 ### Equilibrium Shifts
-Systems seek equilibrium. When you disturb them, they rebalance — often in ways that cancel your intervention.
+Systems seek equilibrium. Disturbed, they rebalance — often canceling your intervention.
 
-Ask: *What new equilibrium does this create? Is it better or worse than the current one?*
+Ask: *What new equilibrium does this create? Better or worse than the current one?*
 
 ---
 
@@ -88,8 +86,8 @@ List the most likely negative second/third-order effects:
 - **Reversibility**: Easily reversible / Hard to undo / Irreversible
 
 ### 🛡️ Design Adjustments
-How can the action be modified to preserve first-order benefits while mitigating second-order risks?
-- Add constraints or safeguards
+Modify the action to preserve first-order benefits while mitigating second-order risks:
+- Add constraints/safeguards
 - Phase the change (test before full rollout)
 - Monitor early signals of bad second-order effects
 - Build in a reversal mechanism
@@ -108,15 +106,15 @@ Use these to deepen the analysis:
 
 ---
 
-## Time Horizons Framework
+## Time Horizons
 
-Deliberately apply three time horizons:
+Apply three horizons:
 
 | Horizon | Question | Typical blind spot |
 |---------|----------|-------------------|
 | **10 minutes** | What happens immediately? | Usually well-understood |
 | **10 months** | Who has adapted and how? | Often overlooked |
-| **10 years** | What's the long-term equilibrium? | Almost always ignored |
+| **10 years** | Long-term equilibrium? | Almost always ignored |
 
 The 10-month window is where most unintended consequences first become visible.
 

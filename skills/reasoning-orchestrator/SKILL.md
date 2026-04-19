@@ -11,18 +11,18 @@ description: "Apply this skill first whenever the user presents a problem, quest
 
 ## How to Execute This Skill
 
-Follow these steps exactly, in order. Do not skip steps. Do not collapse steps.
+Follow these steps exactly, in order. Do not skip or collapse steps.
 
 ---
 
-### STEP 1 — Triage (do this yourself, no skill file needed)
+### STEP 1 — Triage (no skill file needed)
 
-Classify the situation across these dimensions and write the classification out loud before proceeding:
+Classify the situation across these dimensions and write the classification before proceeding:
 
 **Temporal direction**: Forward-looking / Present-state / Backward-looking
 
 **Problem maturity**:
-- Unframed — the problem itself may not be correctly defined
+- Unframed — problem itself may not be correctly defined
 - Framed, unsolved — problem understood, solution not found
 - Solved, needs validation — solution exists, needs stress-testing
 - Decided, needs learning — something happened, extract signal
@@ -34,12 +34,12 @@ Classify the situation across these dimensions and write the classification out 
 - Something went wrong → retrospective track
 - About to commit to something → adversarial track
 - Don't know what we don't know → epistemic track
-- Incentives are misaligned / need to design rules → strategic track
+- Incentives misaligned / need to design rules → strategic track
 
 **Domain complexity** (if unclear, assign `unknown` and include `cynefin-framework` in Step 2):
-- Clear / Complicated / Complex / Chaotic / Unknown
+Clear / Complicated / Complex / Chaotic / Unknown
 
-Write the triage output in this format before moving to Step 2:
+Write the triage output:
 ```
 TRIAGE
 Temporal: [forward / present / backward]
@@ -50,9 +50,9 @@ Domain: [label]
 
 ---
 
-### STEP 2 — Build the Execution Plan (do this yourself, no skill file needed)
+### STEP 2 — Build the Execution Plan (no skill file needed)
 
-Using the triage output and the routing table below, produce a numbered execution plan. Label each step as `SEQUENTIAL` or `PARALLEL`. Do not execute anything yet.
+Using the triage and the routing table, produce a numbered execution plan. Label each step `SEQUENTIAL` or `PARALLEL`. Do not execute yet.
 
 **Routing table — entry points by obstacle:**
 
@@ -70,7 +70,7 @@ Using the triage output and the routing table below, produce a numbered executio
 | Incentives misaligned / need to design rules | SEQUENTIAL: game-theoretic-analysis → PARALLEL: second-order-thinking ∥ red-teaming → decision-synthesis |
 | Synthesize evidence from multiple sources | SEQUENTIAL: evidence-synthesis → decision-synthesis |
 
-Write the plan in this format:
+Write the plan:
 ```
 EXECUTION PLAN
 Step 1 — PARALLEL: [skill-a] ∥ [skill-b] ∥ [skill-c]
@@ -83,15 +83,12 @@ Step 4 — SEQUENTIAL: [skill-g]
 
 ### STEP 3 — Execute the Plan (step by step, never all at once)
 
-Work through the execution plan one step at a time. For each step:
+Work through one step at a time.
 
 #### For a SEQUENTIAL step:
 
-1. **Read the skill file**:
-   ```
-   view: skills/[skill-name]/SKILL.md
-   ```
-2. **Apply the skill** to the current problem context, following the methodology in that file exactly
+1. **Read the skill file**: `view: skills/[skill-name]/SKILL.md`
+2. **Apply the skill** to the current problem context, following the methodology exactly
 3. **Write the output** in the skill's output format
 4. **Write the routing decision**:
    ```
@@ -99,13 +96,13 @@ Work through the execution plan one step at a time. For each step:
    Key finding: [1–2 sentences]
    Routing to Step [N+1]: [reason based on finding]
    ```
-5. Proceed to the next step
+5. Proceed to next step
 
 #### For a PARALLEL step:
 
-1. **Spawn one subagent per skill** using the Task tool. Each subagent receives:
-   - The full problem description
-   - Any findings from prior sequential steps
+1. **Spawn one subagent per skill** using the Task tool. Each receives:
+   - Full problem description
+   - Findings from prior sequential steps
    - This instruction: *"Read skills/[skill-name]/SKILL.md then apply that skill's full methodology to the problem. Output your findings in that skill's output format. Do not perform other reasoning."*
 
 2. **Wait for all subagents to complete**
@@ -126,16 +123,16 @@ Work through the execution plan one step at a time. For each step:
    Key inputs for Step [N+1]: [what the next step needs]
    ```
 
-4. Proceed to the next step
+4. Proceed to next step
 
 ---
 
 ### STEP 4 — Terminate
 
-Stop when any of these conditions are met:
-- `decision-synthesis` has completed and produced a decision with acceptable confidence
+Stop when:
+- `decision-synthesis` has produced a decision with acceptable confidence
 - The problem is understood well enough to act without further analysis
-- **If 4+ steps have run without converging**: stop, flag the problem as likely unframed, restart from Step 1 with `epistemic-mapping` as the only entry point
+- **4+ steps without converging**: stop, flag as likely unframed, restart from Step 1 with `epistemic-mapping` as the only entry point
 
 Write the termination output:
 ```
@@ -145,13 +142,13 @@ Key finding: [1–2 sentences]
 Recommended action: [what to do now]
 ```
 
-Then propose relevant follow-up skills to the user. Do NOT auto-execute. Common follow-ups after reasoning chains:
+Then propose follow-up skills. Do NOT auto-execute. Common follow-ups:
 
-- Decision made → "Want me to write this up? (`technical-writing` for an ADR/RFC, `argument-craft` to structure the case)"
+- Decision made → "Want me to write this up? (`technical-writing` for ADR/RFC, `argument-craft` to structure the case)"
 - Plan needed → "Want me to break this into an execution plan? (`execution-planning`)"
-- Communication needed → "Want me to prepare a presentation? (`presentation-craft`) or draft the announcement? (`technical-writing`)"
+- Communication needed → "Want a presentation? (`presentation-craft`) or draft announcement? (`technical-writing`)"
 
-Present only follow-ups that are relevant to the findings. If no follow-up is needed, say so.
+Present only relevant follow-ups. If none needed, say so.
 
 ---
 
@@ -163,7 +160,7 @@ Skills within a cluster apply independent lenses and never depend on each other'
 |---------|--------|---------|
 | P1 — Adversarial | inversion-premortem ∥ red-teaming ∥ second-order-thinking | Validating a plan before commitment |
 | P2 — Generative | lateral-thinking ∥ analogical-thinking ∥ first-principles-thinking | Stuck, need new options |
-| P3 — Diagnostic | system-thinking ∥ theory-of-constraints | System is failing, need to understand why |
+| P3 — Diagnostic | system-thinking ∥ theory-of-constraints | System failing, need to understand why |
 | P4 — Uncertainty | scenario-planning ∥ probabilistic-thinking ∥ fermi-estimation | Decision needs quantification |
 | P5 — Meta-cognitive | epistemic-mapping ∥ cognitive-bias-detection ∥ cynefin-framework | Clean the reasoning environment first |
 | P6 — Strategic | game-theoretic-analysis ∥ second-order-thinking | Multiple agents with competing incentives |
@@ -172,14 +169,14 @@ Skills within a cluster apply independent lenses and never depend on each other'
 
 ## Post-Step Routing Reference
 
-After completing any step, use this table to adjust the plan if findings warrant it:
+After completing any step, adjust the plan if findings warrant:
 
 | Completed skill | Finding | Adjust plan to include |
 |----------------|---------|----------------------|
 | epistemic-mapping | Dangerous assumptions found | first-principles-thinking (sequential, next) |
 | cynefin-framework | Domain = Complex | lateral-thinking ∥ scenario-planning (parallel) instead of structured analysis |
 | cynefin-framework | Domain = Chaotic | Act immediately; retrospective-counterfactual after stabilization |
-| game-theoretic-analysis | Nash Equilibrium ≠ Pareto Optimum | Mechanism design needed — decision-synthesis with design constraints |
+| game-theoretic-analysis | Nash Equilibrium ≠ Pareto Optimum | Mechanism design — decision-synthesis with design constraints |
 | game-theoretic-analysis | Information asymmetry identified | red-teaming on exploitability (sequential) |
 | game-theoretic-analysis | Repeated game dynamics | second-order-thinking on reputation effects (sequential) |
 | system-thinking | Bottleneck identified | theory-of-constraints (sequential) |
