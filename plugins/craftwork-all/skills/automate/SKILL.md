@@ -5,12 +5,24 @@ description: Build automation scripts and pipelines that use coding-agent CLIs (
 
 # Coding-Agent CLI Automation
 
-## Two categories
+## Method — step-by-step
 
-Pick the category before the tool:
+Run these nine steps in order for every new automation. The sections below are the toolbox; this list is the procedure.
 
-1. **Local execution** — agent runs on your machine or CI runner, synchronous, output to stdout. For artifacts other than PRs (reports, JSON, edits, batch transforms).
-2. **Delegated cloud execution** — dispatch to a cloud agent that opens a PR asynchronously. For ticket/issue/webhook-triggered "implement and open a PR" workflows.
+1. **Discover runtime.** Which CLIs, skills, MCPs, and models are available on the host? Fail fast when a dependency is missing. See `references/introspection.md`.
+2. **Pick category** — local execution or cloud-delegated PR (§Two categories, five CLIs).
+3. **Pick CLI, then load its reference BEFORE writing any invocation.** Default to Claude Code; use another only if the user named it. For non-Claude targets, loading `references/{codex,gemini,copilot,github-agent-task}.md` is mandatory — examples in this file are Claude-syntax. See §Do not transliterate.
+4. **Define the I/O contract** — inputs (positional args, env vars, stdin) and outputs (stdout JSON, exit codes, artifact files). Everything a caller needs to re-run the script lives here (§Reusability & observability).
+5. **Pick shape** — single-turn extract, agentic loop, multi-turn, parallel fan-out, or cloud delegation (§The five canonical shapes).
+6. **Apply non-negotiable flags** — auto mode + `--allowedTools` + `--output-format json` + schema + success verification (§Non-negotiable flags).
+7. **Wire reusability** — parameterize every path, model, timeout; no hardcoded constants (§Reusability & observability).
+8. **Wire observability** — capture session ID, cost, live progress, structured exit codes (§Reusability & observability).
+9. **Deliver** — header block documenting usage, env, permission posture, tunables.
+
+## Two categories, five CLIs
+
+- **Local execution** (rows 1–4) — agent runs on your machine or CI, synchronous, stdout output. For artifacts that aren't PRs.
+- **Delegated cloud** (row 5) — dispatch a cloud agent that opens a PR asynchronously. For ticket/webhook→PR flows.
 
 | CLI | Headless invocation | Reference |
 |-----|--------------------|-----------|
@@ -20,13 +32,26 @@ Pick the category before the tool:
 | GitHub Copilot CLI | `copilot -p "<prompt>" --allow-all-tools --autopilot` | `references/copilot.md` |
 | `gh agent-task` (cloud) | `gh agent-task create "<description>" --base main` | `references/github-agent-task.md` |
 
-Combinable — `gh agent-task` opens the PR, a local CLI reviews it (see cookbook). **Default to Claude Code** unless the user names another. Load the reference when you commit to a CLI.
+Combinable — `gh agent-task` opens the PR, a local CLI reviews it (see cookbook).
+
+### Do not transliterate across CLIs
+
+Examples throughout this file are Claude-syntax. Swapping `claude`→`codex`/`gemini`/`copilot` with the same flags hallucinates. Key divergences:
+
+| Concern | Claude | Codex | Gemini | Copilot |
+|---|---|---|---|---|
+| Auto mode | `--permission-mode acceptEdits` | `--sandbox <mode>` / `--full-auto` | `--approval-mode auto_edit` | `--autopilot` + `--allow-all-tools` + `--no-ask-user` |
+| Tool scope | `--allowedTools "Read,Edit,..."` | `--sandbox read-only\|workspace-write\|danger-full-access` | `--policy <file>` | `--allow-tool "<name>"` |
+| Structured output | `--json-schema '<inline JSON>'` | `--output-schema <file>` | (policy / post-parse) | (post-parse) |
+| JSON result field | `.result` / `.structured_output` | `--output-last-message <file>` | `.response` | JSONL events |
+| Session resume | `--resume <id>` | `codex exec resume --last` | `-r <id>` / `-r latest` | (n/a) |
+| Session ID path | `.session_id` | `.thread_id` (in `thread.started`) | `.session_id` | per-event `session_id` |
 
 ## Non-negotiable flags (the checklist)
 
 **Local execution (`claude` / `codex` / `gemini` / `copilot`):**
 
-- [ ] **Deterministic auto mode.** Claude: `acceptEdits` / `dontAsk` / `bypassPermissions`. Codex: `--sandbox <read-only|workspace-write|danger-full-access>`. Gemini: `--approval-mode auto_edit` or `yolo`. Copilot: `--autopilot` + `--allow-all-tools` + `--no-ask-user`. See auto-mode menu below.
+- [ ] **Deterministic auto mode** — per-CLI flag in §Do not transliterate. Never `plan`/`default`/`interactive` in a script; they pause for a human.
 - [ ] **`--allowedTools` narrow allowlist — the real safety boundary.** Auto mode = "don't pause for approval"; the allowlist defines what the agent *can* do. Read-only: `"Read,Grep,Glob"`. Dev: `"Read,Edit,Bash(npm test*)"`.
 - [ ] **`--output-format json`** when the next step is a shell pipeline. Never parse `text` with regex/grep/sed.
 - [ ] **Structured-output constraint** (`--json-schema` Claude, `--output-schema` Codex) when output feeds downstream code. Stops drift into prose/invalid enums so `jq` can't silently break.
@@ -137,26 +162,9 @@ gh agent-task create -F ticket.md --base main --follow
 
 ## Principles that save you later
 
-- **Auto-mode menu** — tool restriction, not plan mode, is how you scope capability in a script:
-
-  | CLI | Auto + read-only (via tools) | Auto + edits | Auto + unrestricted | Never in scripts |
-  |-----|-----------------------------|--------------|---------------------|------------------|
-  | Claude | `acceptEdits` + `--allowedTools "Read,Grep,Glob"` | `acceptEdits` / `dontAsk` + edit allowlist | `bypassPermissions` | `plan` / `default` / `auto` |
-  | Codex | `--sandbox read-only` | `--full-auto` / `--sandbox workspace-write` | `--sandbox danger-full-access` | — (the flag is the posture) |
-  | Gemini | `--approval-mode auto_edit` + read-only policy | `--approval-mode auto_edit` | `--approval-mode yolo` | `plan` / `default` |
-  | Copilot | `--autopilot` + narrow `--allow-tool` list | `--autopilot` + `--allow-all-tools` + `--no-ask-user` | `--yolo` / `--allow-all` | `--plan` / `--mode interactive` |
-
-- **Repo context auto-loads** (CLAUDE.md, AGENTS.md, skills, MCP) — usually *why* the agent is competent here. Keep it. Strip via per-CLI config + minimal `--allowedTools` only for reproducibility or adversarial input. Details in references.
-
-- **Capture session IDs for chained calls.** Claude/Gemini: `.session_id`; Codex: `.thread_id` (in `thread.started` when `--json` is on). Stash early — `--continue` / `--last` / `-r latest` break under shared cwd or parallelism.
-
-- **Stream for progress, JSON to parse.** `--output-format stream-json --verbose --include-partial-messages` for live feedback; plain `json` for `jq`.
-
-- **Don't mix stdout channels.** If the CLI writes JSON to stdout, send progress to stderr (`>&2`). Gemini writes `[WARN]` to stderr on unreadable subdirs — don't `2>&1` into a pure-JSON pipe.
-
+- **Tool restriction scopes capability, not plan mode.** Auto mode says "don't pause"; the allowlist (Claude `--allowedTools`, Codex `--sandbox`, Gemini `--policy`, Copilot `--allow-tool`) says what the agent *can* do. Read-only = narrow allowlist, not a different mode.
+- **Repo context auto-loads** (CLAUDE.md, AGENTS.md, skills, MCP) — usually *why* the agent is competent here. Keep it. Strip via per-CLI config + minimal `--allowedTools` only for reproducibility or adversarial input.
 - **Quote prompts aggressively.** `$`, backticks, quotes, newlines. Heredocs (`<<'EOF'`) or `--append-system-prompt-file` avoid shell-expansion bugs.
-
-- **Hygiene wrappers.** `trap 'git stash -u' ERR` to rescue a partial agentic run; `timeout <N>s ...` around every unattended invocation to cap infinite loops, stalls, or agents that won't stop.
 
 ## Anti-patterns
 
@@ -166,16 +174,42 @@ gh agent-task create -F ticket.md --base main --follow
 
 ## When to load what
 
-| Scenario | Reference |
-|---|---|
-| Writing a Claude Code script (flags, output schemas, permissions) | `references/claude-code.md` |
-| Writing a Codex script (sandbox modes, `--output-schema`, resume) | `references/codex.md` |
-| Writing a Gemini script (approval modes, policy engine, sessions) | `references/gemini.md` |
-| Writing a Copilot script (mode flags, `--allow-all-tools` / `--no-ask-user`, output formats) | `references/copilot.md` |
-| Ticket/issue → PR pipelines, fleet dispatch, dispatch-then-review | `references/github-agent-task.md` |
-| Detecting MCP / skills / models at runtime (fail-fast in CI) | `references/introspection.md` |
-| A pipeline shape you haven't built (GH Action, cron PR review, batch translate, review-then-fix) | `references/cookbook.md` |
+- **CLI-specific script** — the matching reference from the §Two categories table.
+- **Detecting MCP / skills / models at runtime** (fail-fast in CI) — `references/introspection.md`.
+- **Pipeline shape not covered above** (GH Action, cron PR review, batch translate, review-then-fix) — `references/cookbook.md`.
+
+## Reusability & observability
+
+Every automation has to be re-runnable by someone who didn't write it and auditable after the fact.
+
+**Reusability:**
+
+- `set -euo pipefail` at the top. Non-negotiable.
+- Every path, model, timeout, parallelism bound is an arg or env var with a default: `MODEL="${MODEL:-sonnet}"`, `TIMEOUT="${TIMEOUT:-600}"`, `FILE="${1:?path required}"`. No hardcoded constants.
+- Require secrets explicitly: `: "${ANTHROPIC_API_KEY:?set it}"`.
+- Take an explicit `--dir` or `TARGET="${1:?}"` and `cd "$TARGET"` inside the script. Don't rely on the caller's cwd.
+- Idempotent when plausible: skip if the output artifact exists unless `--force` (or env `FORCE=1`).
+- Prompt text lives in a heredoc or `--append-system-prompt-file`, not inlined — swap prompts without editing shell logic.
+
+**Observability:**
+
+- **Stdout = machine (JSON), stderr = human (progress).** Never `2>&1` into a pipe that feeds `jq`. Progress messages go `>&2`.
+- **Persist the session ID** to a file (`echo "$session_id" > .session`) — Claude/Gemini `.session_id`, Codex `.thread_id` (in `thread.started` when `--json` is on). `--continue`/`--last`/`-r latest` race under shared cwd or parallelism; always pass an explicit ID.
+- **Track cost** via `.total_cost_usd` on every call; sum across a batch before you report done.
+- **Live progress** on long agentic runs: `--output-format stream-json --verbose --include-partial-messages | tee progress.log`.
+- **Exit-code taxonomy**: `0` success, `2` usage/input error, `3` agent reported failure (`is_error:true` or `permission_denials[]` non-empty), `124` `timeout` fired, `130` interrupted. Downstream tools branch on codes, not on stdout text.
+- **Error trap** to capture state before unwinding: `trap 'git stash -u || true; cp progress.log "progress.$(date +%s).log" 2>/dev/null || true' ERR`.
 
 ## Delivering the script
 
-Header with: usage + required env vars; permission posture (read-only / edits / shell) and the `--allowedTools` list that enforces it; tunable flags (model, dir, timeout).
+Every script opens with a header a stranger can run from:
+
+```bash
+#!/usr/bin/env bash
+# <name>.sh — one-line purpose
+# Usage: ./<name>.sh <args> [flags]
+# Env:   ANTHROPIC_API_KEY (required), MODEL (default: sonnet), TIMEOUT (default: 600)
+# Posture: read-only | edits | shell  (enforced by --allowedTools "<list>")
+# Output: stdout JSON; exits 0/2/3/124 — see README for taxonomy
+set -euo pipefail
+```
