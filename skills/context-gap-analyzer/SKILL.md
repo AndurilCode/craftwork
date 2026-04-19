@@ -5,9 +5,9 @@ description: "Identify implicit context missing from a codebase that would most 
 
 # Context Gap Analyzer
 
-Code is necessary but insufficient context. The delta between "what the code says" and "what a competent team member knows" is where agents fail most expensively. This skill identifies that delta, prioritizes by agent impact, and surfaces focused questions a human can answer.
+Code is necessary but insufficient context. The delta between "what the code says" and "what a competent team member knows" is where agents fail most expensively. Identify that delta, prioritize by agent impact, surface focused questions a human can answer.
 
-What agents **cannot** derive from code alone: **Why** (rationale), **What** conventions aren't enforced by tooling, **How** things interact beyond repo boundaries, **When** to break vs. follow a pattern, **Who** owns what.
+What agents **cannot** derive from code: **Why** (rationale), **What** conventions aren't enforced by tooling, **How** things interact beyond repo boundaries, **When** to break vs. follow a pattern, **Who** owns what.
 
 ---
 
@@ -15,11 +15,11 @@ What agents **cannot** derive from code alone: **Why** (rationale), **What** con
 
 Discover all context infrastructure already in place. Actively explore — don't rely on a checklist.
 
-**Layer 1: File-level** — Scan repo root + 2-3 levels deep for anything that reads like "instructions for someone working here." For each: read it, inventory topics, note scope (repo/dir/module), format, audience.
+**Layer 1: File-level** — Scan repo root + 2-3 levels deep for "instructions for someone working here." For each: read it, inventory topics, note scope (repo/dir/module), format, audience.
 
-**Layer 2: Toolchain** — MCP servers (context delivery channels), skills/plugins, hooks/middleware (git hooks, CI, pre-commit, linting), IDE/editor configs. These are implicit context delivery mechanisms.
+**Layer 2: Toolchain** — MCP servers, skills/plugins, hooks/middleware (git hooks, CI, pre-commit, linting), IDE/editor configs.
 
-**Layer 3: Runtime** — Connected services (Drive, Notion, Confluence, Slack), env/secrets management, package manager metadata (dependency choices signal patterns).
+**Layer 3: Runtime** — Connected services (Drive, Notion, Confluence, Slack), env/secrets, package metadata.
 
 **Layer 4: Delivery classification**
 
@@ -30,15 +30,15 @@ Discover all context infrastructure already in place. Actively explore — don't
 | **Triggered** | Git hooks, CI checks, pre-commit | Enforcement without *why* |
 | **Implicit** | Types, tests, linter configs | Partial; rationale missing |
 
-Output: inventory of static files (path, topics, scope, format), toolchain context (MCP servers, skills, hooks), runtime context (connected services, config injection), delivery map with counts, already-documented topics, and primary delivery format (determines Phase 6 output).
+Output: inventory of static files (path, topics, scope, format), toolchain context (MCP, skills, hooks), runtime context (services, config injection), delivery map with counts, already-documented topics, primary delivery format (determines Phase 6 output).
 
-Be thorough before concluding "nothing exists" — `.eslintrc`, `Makefile`, `docker-compose.yml` are all context. The question is *sufficiency*.
+Be thorough before concluding "nothing exists" — `.eslintrc`, `Makefile`, `docker-compose.yml` are all context. Question is *sufficiency*.
 
 ---
 
 ## PHASE 2 — Codebase Topology Scan
 
-Map: directory structure (modules, depth), technology fingerprint (languages, frameworks, build tools), complexity indicators (file counts, nesting depth, config variety), integration surface (external services, APIs, DBs, queues), entry points (routes, CLI commands, event handlers).
+Map: directory structure (modules, depth), technology fingerprint (languages, frameworks, build tools), complexity indicators (file counts, nesting, config variety), integration surface (external services, APIs, DBs, queues), entry points (routes, CLI, event handlers).
 
 Output: codebase type, languages, framework, top-level modules ranked by complexity, integration surface, high-traffic areas for agents.
 
@@ -51,14 +51,14 @@ Cross-reference Phase 1 (documented) against Phase 2 (code). Evaluate nine categ
 | Cat | Name | Agent needs | Gap indicator |
 |-----|------|------------|---------------|
 | C1 | Architecture & Boundaries | Component topology, data flow, module dependency rules | Cross-boundary imports, code in wrong module |
-| C2 | Domain Model & Business Rules | Business logic rationale, domain vocabulary, invariants | Technically correct but domain-wrong code |
-| C3 | Conventions & Patterns | Naming, file organization, error handling, logging | Code that works but "feels wrong" to the team |
-| C4 | Integration & External Deps | API calling patterns, retry/fallback, rate limits, auth | Incorrect service calls, missing retry logic |
-| C5 | Operations & Deployment | CI/CD, feature flags, rollback, monitoring conventions | Code that breaks CI, unmonitored failure modes |
-| C6 | Testing Philosophy | Unit vs. integration boundaries, mocking, fixtures | Wrong test type, mocks at wrong boundaries |
-| C7 | Security Model | Auth patterns, data classification, secret management | Auth bypasses, logged sensitive data |
+| C2 | Domain Model & Business Rules | Logic rationale, vocabulary, invariants | Technically correct but domain-wrong code |
+| C3 | Conventions & Patterns | Naming, file org, error handling, logging | Code that works but "feels wrong" |
+| C4 | Integration & External Deps | API patterns, retry/fallback, rate limits, auth | Incorrect service calls, missing retry |
+| C5 | Operations & Deployment | CI/CD, feature flags, rollback, monitoring | Code that breaks CI, unmonitored failures |
+| C6 | Testing Philosophy | Unit vs. integration, mocking, fixtures | Wrong test type, mocks at wrong boundaries |
+| C7 | Security Model | Auth patterns, data classification, secrets | Auth bypasses, logged sensitive data |
 | C8 | Performance Constraints | Bottlenecks, caching, query patterns, pagination | N+1 queries, skipped caching, unbounded queries |
-| C9 | Historical Decisions & Debt | Why things are this way, migrations, deprecated patterns | Extending deprecated patterns, building on doomed code |
+| C9 | Historical Decisions & Debt | Why this way, migrations, deprecated patterns | Extending deprecated, building on doomed code |
 
 ### Scoring
 
@@ -76,20 +76,20 @@ Cross-reference Phase 1 (documented) against Phase 2 (code). Evaluate nine categ
 | 3-4 | Significant |
 | <= 2 | Acceptable |
 
-Output: table with all 9 categories scored, overall coverage percentage (Doc sum / 27 x 100), critical gaps listed.
+Output: table with all 9 categories scored, overall coverage % (Doc sum / 27 x 100), critical gaps listed.
 
 ---
 
 ## PHASE 4 — Prioritized Question Generation
 
-For each gap >= 3, generate focused questions answerable in 2-5 minutes. Each targets exactly one piece of implicit knowledge, and the answer must be directly usable as agent context.
+For each gap >= 3, generate focused questions answerable in 2-5 minutes. Each targets one piece of implicit knowledge; the answer must be directly usable as agent context.
 
 ```
 Q[N] — [Category] — Priority: [Critical/High/Medium]
 [Specific, focused question]
 
 Why this matters: [what goes wrong without this context]
-Good answer example: [3-5 sentence template showing detail level needed]
+Good answer example: [3-5 sentence template showing detail level]
 ```
 
 Generate 10-20 questions. At least 2 per critical gap, 1 per significant gap. Order by gap severity x actionability.
@@ -97,8 +97,6 @@ Generate 10-20 questions. At least 2 per critical gap, 1 per significant gap. Or
 ---
 
 ## PHASE 5 — Coverage Map
-
-Visualize current state as baseline:
 
 ```
 CONTEXT COVERAGE MAP — [repo] — [date]
@@ -109,7 +107,7 @@ C2 Domain Model      [█░░░░░░░░░]  10%  🔴 Critical
 OVERALL: [X]% | Questions: [N] | Est. time to close critical gaps: ~[N] min
 ```
 
-Use interactive visualization (radar chart, heatmap) when environment supports it.
+Use interactive visualization (radar, heatmap) when supported.
 
 ---
 
@@ -118,19 +116,19 @@ Use interactive visualization (radar chart, heatmap) when environment supports i
 Create `.context-coverage.json` at repo root with: version, repo, dates, harness info (primary format, static sources, toolchain, delivery summary), per-category scores, questions (id, category, priority, question, status, answer, integrated_to), overall coverage.
 
 **When the user answers a question**:
-1. Store the answer, mark as `"answered"`
+1. Store answer, mark `"answered"`
 2. Write into the harness matching existing conventions (tone, structure, format, scope)
 3. Record `integrated_to` path, recalculate coverage, show updated map
 
-**Integration principle**: Adapt to the harness, never prescribe. Match the existing file's voice and format. If no writable harness exists, ask the user where they want context written.
+**Integration principle**: Adapt to the harness, never prescribe. Match existing voice and format. If no writable harness exists, ask where to write.
 
 ---
 
 ## Incremental Modes
 
-- **First run**: Full Phases 1-6, baseline coverage + all questions
+- **First run**: Full Phases 1-6, baseline + all questions
 - **Answer session**: Integrate answers, update coverage
-- **Re-audit**: Re-run Phases 2-5 after significant codebase changes
+- **Re-audit**: Re-run Phases 2-5 after significant changes
 - **Coverage check**: Phase 5 only from existing `.context-coverage.json`
 
 Detect mode from whether `.context-coverage.json` exists and what the user asks.
@@ -141,7 +139,7 @@ Detect mode from whether `.context-coverage.json` exists and what the user asks.
 
 1. **Agent-first**: Frame every question as "what would an agent get wrong?" not "what's undocumented?"
 2. **Precision over completeness**: 10 high-impact questions beat 50 thorough ones. Human time is the bottleneck.
-3. **Respect existing context**: Cross-reference before asking — don't duplicate what's already documented.
+3. **Respect existing context**: Cross-reference before asking — don't duplicate.
 4. **Harness humility**: Detect and work within existing systems. Don't prescribe.
-5. **Actionable answers**: The example answer in each question prevents both one-word and novel-length responses.
+5. **Actionable answers**: The example answer prevents both one-word and novel-length responses.
 6. **Coverage honesty**: Score based on what an agent would find useful, not what technically exists.

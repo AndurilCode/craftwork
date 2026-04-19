@@ -24,7 +24,8 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 | Debug why an agent is failing / ignoring instructions | `context-debugging` | → `context-gap-analyzer` or `edd` based on findings |
 | Extract business logic or domain rules from code | `business-logic-extractor` | → `llms-txt-generator` or `agent-instruction-forge` |
 | Process a large document for LLM consumption | `deep-document-processor` | → `llms-txt-generator` |
-| Generate an llms.txt or LLM-friendly reference | `llms-txt-generator` | done |
+| Generate an llms.txt or LLM-friendly reference | `llms-txt-generator` | → `context-compressor` if over budget |
+| Optimize / compress context to fit a token budget | `context-compressor` | → `context-eval` to verify compressed context works |
 | Find false positives in AI-generated tests | `test-challenger` | → `edd` if better assertions needed |
 
 ---
@@ -33,20 +34,20 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 
 1. Read `skills/[skill-name]/SKILL.md`
 2. Apply that skill's full methodology
-3. When the skill completes, check the "Then" column above for potential follow-ups
+3. On completion, check the "Then" column for follow-ups
 
 ## Step 3 — Propose Next Steps
 
-Do NOT auto-execute the "Then" skill. Instead, propose it to the user:
+Do NOT auto-execute the "Then" skill. Propose it:
 
 ```
 Based on [what the skill produced], a natural next step would be:
-→ [skill-name]: [1-sentence reason this would help]
+→ [skill-name]: [1-sentence reason]
 
 Want me to continue with that, or is this what you needed?
 ```
 
-If multiple follow-ups are relevant, list them as options. The user chooses — the orchestrator does not chain automatically.
+Multiple follow-ups → list as options. User chooses; orchestrator never chains automatically.
 
 ---
 
@@ -95,4 +96,5 @@ Use when creating LLM-consumable reference material.
 | `llms-txt-generator` | Generate token-efficient context documents |
 | `deep-document-processor` | Multi-pass reading of large documents |
 | `business-logic-extractor` | Extract domain rules from code |
+| `context-compressor` | Maximize signal-per-token under a finite budget |
 | `test-challenger` | Find false positives in AI-generated tests |
