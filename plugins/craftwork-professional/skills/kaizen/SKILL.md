@@ -5,17 +5,17 @@ description: "Apply kaizen continuous improvement philosophy to any codebase —
 
 # Kaizen (改善) — Codebase Continuous Improvement
 
-Rejectes. Identify the smallest changes that compound into significant quality. Every file you touch should leave better than you found it.
+Smallest changes compounding into significant quality. Every file you touch leaves better than found.
 
 ---
 
 ## Input Modes
 
-### Standard: `/kaizen`
+### `/kaizen`
 Run all seven dimensions across the codebase. Full improvement map.
 
-### Focused: `/kaizen "focus description"`
-Run all dimensions but **weight and prioritize** through the user's focus lens.
+### `/kaizen "focus description"`
+All dimensions, **weighted and prioritized** through user's lens.
 
 Examples:
 - `/kaizen "file sizes — nothing should exceed 500 LOC"`
@@ -23,20 +23,20 @@ Examples:
 - `/kaizen "dead code and unused imports"`
 - `/kaizen "error handling patterns"`
 
-When a focus is provided:
-1. Still scan all seven dimensions (you may find critical issues outside the focus)
+When focused:
+1. Still scan all seven dimensions (critical issues may lie outside focus)
 2. Lead the report with focus-specific findings
-3. Mark non-focus findings as `[ALSO NOTED]` — keep them brief
-4. Issues matching the focus are severity-promoted one level
+3. Mark non-focus findings as `[ALSO NOTED]` — keep brief
+4. Issues matching focus are severity-promoted one level
 
 ---
 
 ## The Three Wastes (三大ムダ)
 
-Every finding maps to one of these. This is the classification taxonomy.
+Every finding maps to one. Classification taxonomy.
 
 ### Muda (無駄) — Waste
-Code consuming rdding value.
+Code consuming effort without adding value.
 
 | Type | Code manifestation |
 |---|---|
@@ -49,7 +49,7 @@ Code consuming rdding value.
 | Over-processing | Over-engineered abstractions, config for hypothetical flexibility |
 
 ### Mura (斑) — Unevenness
-Inconsistency forcing developers to context-switch and guess.
+Inconsistency forcing context-switching and guessing.
 
 | Signal | Example |
 |---|---|
@@ -57,10 +57,10 @@ Inconsistency forcing developers to context-switch and guess.
 | Mixed paradigms | Callbacks + promises + async/await in same codebase |
 | Structure | Different folder layouts across features |
 | Error handling | Some throw, some return null, some use Result types |
-| Test style | Mixed assertion libs, inconsistent AAA adherence
+| Test style | Mixed assertion libs, inconsistent AAA |
 
 ### Muri (無理) — Overburden
-Code units carrying too much responsibility.
+Code units carrying too much.
 
 | Signal | Default threshold |
 |---|---|
@@ -77,7 +77,7 @@ Code units carrying too much responsibility.
 
 ### Shared Output Format
 
-All findings in Dimensions 2–4 use this format:
+Findings in D2–D4:
 
 ```
 [MUDA|MURA|MURI] [subtype]
@@ -91,13 +91,13 @@ Effort: [trivial | small | medium]
 
 ### D1 — Gemba Walk (現場): See the Actual State
 
-*Go to the gemba — observe the real state, not the idealized version.*
+*Observe the real state, not the idealized version.*
 
 1. Map directory structure (2 levels deep)
 2. Count files by type, measure LOC distribution
 3. Identify largest files, deepest nesting, most-imported modules
 4. Read existing context files (README, ARCHITECTURE.md, .ctx, CLAUDE.md)
-5. Note languat framework, build system
+5. Note language, framework, build system
 
 ```
 GEMBA SNAPSHOT
@@ -115,22 +115,22 @@ Context files:  [list found]
 
 ### D2 — Muda Scan: Waste
 
-Scan for each waste type from the Muda table. Prioritize by impact:
-1. Dead code (unused functions, unreachable branches, exports nothing imports)
-2. Over-engineering (single-implementation abstractions, one-setting config systems)
+Scan each waste type. Prioritize:
+1. Dead code (unused functions, unreachable branches, orphan exports)
+2. Over-engineering (single-impl abstractions, one-setting config systems)
 3. Stale artifacts (undated TODOs, deprecated code, outdated comments)
-4. Redundancy (duplicated logic, copy-paste patterns, overlapping utilities)
-5. Unnecessary complexity (could be fewer lines without losing clarity)
+4. Redundancy (duplicated logic, copy-paste, overlapping utilities)
+5. Unnecessary complexity (fewer lines without losing clarity)
 
 ---
 
 ### D3 — Mura Scan: Unevenness
 
-For each inconsistency found, identify the **dominant pattern** (most common variant) — this is what to standardize on.
+For each inconsistency, identify the **dominant pattern** (most common variant) — standardize on it.
 
-Additional output fields:
+Additional fields:
 ```
-Variants found: [list ahes observed]
+Variants found: [list observed]
 Dominant pattern: [most common — standardize on this]
 ```
 
@@ -138,9 +138,9 @@ Dominant pattern: [most common — standardize on this]
 
 ### D4 — Muri Scan: Overburden
 
-Scan against thresholds from the Muri table. If user provides custom thresholds via focus, use theirs. Adjust upward for languages where longer files are conventional (Java).
+Scan against Muri thresholds. Honor user-specified thresholds. Adjust upward where longer files are conventional (Java).
 
-Additional output fields:
+Additional fields:
 ```
 Metric: [what] = [measured] (threshold: [N])
 Impact: [why this hurts — "hard to test", "merge conflict magnet"]
@@ -158,17 +158,17 @@ Impact: [why this hurts — "hard to test", "merge conflict magnet"]
 | Standardize (清潔) | Consistent practices | Documented patterns, enforced conventions |
 | Sustain (躾) | Maintain discipline | CI checks, pre-commit hooks, quality gates |
 
-O| 🔴 Needs work` with one-line evidence.
+Score each `🟢 Good | 🟡 Partial | 🔴 Needs work` with one-line evidence.
 
 ---
 
 ### D6 — Improvement Backlog (改善バックログ)
 
-**Primary deliverable.** Synthesize all findings from D2–D5, prioritized by:
-- **Impact** (1–3): How much waste/unevenness/overburden removed?
-- **Effort** (1=trivial, 2=small, 3=medium): How long?
-- **Risk** (1=safe, 2=needs tests, 3=risky): Could it break?
-- **Score**: Impact / (Effort × Risk) — higher is better
+**Primary deliverable.** Synthesize D2–D5, prioritized:
+- **Impact** (1–3): waste/unevenness/overburden removed
+- **Effort** (1=trivial, 2=small, 3=medium): time
+- **Risk** (1=safe, 2=needs tests, 3=risky): can it break
+- **Score**: Impact / (Effort × Risk) — higher better
 
 ```
 改善 IMPROVEMENT BACKLOG
@@ -179,7 +179,7 @@ O| 🔴 Needs work` with one-line evidence.
 ...
 ```
 
-**Cap at 15 items.** If more exist, note "N additional — run `/kaizen` with a focus to drill in."
+**Cap at 15 items.** If more, note "N additional — run `/kaizen` with a focus to drill in."
 
 ---
 
@@ -188,7 +188,7 @@ O| 🔴 Needs work` with one-line evidence.
 ```
 PLAN:  [Top 3 improvements to tackle first and why]
 DO:    [Concrete next steps — "In your next PR, ..."]
-CHECK: [How to ve
+CHECK: [How to verify improvements landed]
 ACT:   [Systemic prevention — linter rules, CI, conventions to document]
 ```
 
@@ -196,8 +196,7 @@ ACT:   [Systemic prevention — linter rules, CI, conventions to document]
 
 ## Report Assembly
 
-Assemble the final report in this order:
-1. **Header**: Codebase name, focus (or "Full scan"), date
+1. **Header**: Codebase, focus (or "Full scan"), date
 2. **Gemba Snapshot** (D1)
 3. **5S Scorecard** (D5)
 4. **Improvement Backlog** (D6) — hero section
@@ -210,10 +209,10 @@ Close with: *"改善の精神: 今日の最善は、明日の出発点。"*
 
 ## Calibration Rules
 
-1. **Single-PR scope**: Every suggestion must be achievable in one PR. Multi-day refactors need decomposition or a "requires planning" flag.
-2. **Respect existing decisions**: Don't contradict ADRs or documented conventions. Note tensions instead.
-3. **Evidence over opinion**: Every finding references a specific file, line, or pattern. No vague "could be cleaner."
-4. **Compound interest priority**: Prefer changes that improve many files (shared utility naming) over isolated fixes.
-5. **Don't manufacture findings**: If theity is [one thing]" beats padded lists.
-6. **Focus mode discipline**: Focus-specific findings lead. Non-focus findings are brief bonus context.
-7. **Threshold flexibility**: State the thresholds used. Honor user-specified thresholds. Adjust for language conventions.
+1. **Single-PR scope**: every suggestion achievable in one PR. Multi-day refactors need decomposition or "requires planning" flag.
+2. **Respect existing decisions**: don't contradict ADRs/conventions. Note tensions instead.
+3. **Evidence over opinion**: every finding cites file/line/pattern. No vague "could be cleaner."
+4. **Compound priority**: prefer changes improving many files over isolated fixes.
+5. **Don't manufacture findings**: if priority is one thing, say so. Honest beats padded.
+6. **Focus discipline**: focus findings lead. Non-focus is brief bonus context.
+7. **Threshold flexibility**: state thresholds used. Honor user-specified. Adjust for language conventions.
