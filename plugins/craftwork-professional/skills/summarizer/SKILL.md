@@ -5,125 +5,83 @@ description: "Apply this skill whenever the user asks to summarize, condense, di
 
 # Summarizer
 
-**Core principle**: A summary is lossy compression. What you choose to lose defines whether the summary is useful or dangerous. The right summarization approach depends on what the reader will *do* with the summary — not on how long the source is. A summary for a decision-maker must lead with the conclusion. A summary for future reference must preserve retrievability. A summary for sharing must be self-contained. Different purposes demand different shapes.
-
-The goal is not to make something shorter. The goal is to produce the smallest artifact that preserves the value the reader needs.
+**Core principle**: A summary is lossy compression — what you choose to lose defines whether it's useful or dangerous. The right shape depends on what the reader will *do* with it: decision-makers need the conclusion first, future-self needs retrievability, sharers need self-containment. Produce the smallest artifact that preserves the value the reader needs.
 
 ---
 
-## How to Execute This Skill
+## STEP 1 — Analyze the Source (internal only — NEVER show)
 
-### STEP 1 — Analyze the Source (internal only — NEVER include in output)
-
-Before asking the user anything, classify the summarization task internally. This analysis is for your decision-making only — **do not include it in your response to the user**:
-
-- Content type: article / document / transcript / conversation / code / research paper / book / multi-source collection
-- Source length: short (<1000 words) / medium (1-5K) / long (5-20K) / very long (20K+) / multi-document
-- Information density: sparse / mixed / dense
-- Structure: well-structured / loosely structured / unstructured stream
+Classify silently:
+- Type: article / document / transcript / conversation / code / paper / book / multi-source
+- Length: short (<1K) / medium (1-5K) / long (5-20K) / very long (20K+) / multi-doc
+- Density: sparse / mixed / dense
+- Structure: well-structured / loose / unstructured
 - Contains: arguments / data / narrative / instructions / mixed
 
-This drives the recommendation in Step 2.
-
 ---
 
-### STEP 2 — Recommend Style and Compression
+## STEP 2 — Recommend Style and Compression
 
-Present the recommendation as a single interaction — one message with options the user can confirm or adjust.
-
-#### Summarization Styles
+### Summarization Styles
 
 | Style | How it works | Best for | Avoid when |
 |-------|-------------|----------|------------|
-| **BLUF** | Bottom Line Up Front. State the conclusion/recommendation/decision in the first sentence. Then provide supporting evidence in descending order of importance. Reader can stop at any point and has received the most important information first. | Decision-makers, busy stakeholders, status updates, any summary where "what should we do?" matters more than "what happened?" | Source is exploratory with no clear conclusion; reader needs to form their own opinion |
-| **Key Points** | Extract the N most important claims, findings, or ideas as a structured list. Each point is self-contained. No narrative flow — optimized for scanning. | Meeting notes, research papers, long reports, anything where the reader needs to quickly find specific information | Source is a narrative or argument where the logic between points matters as much as the points themselves |
-| **Narrative** | Rewrite the content as a coherent short-form narrative that preserves the logical flow and argumentation structure. Reads like a well-written paragraph, not a list. | Articles, essays, arguments, stories, anything where the *reasoning chain* matters — not just the conclusions | Source is a data dump or reference material where flow doesn't matter |
-| **Briefing** | Self-contained summary designed to be shared with people who haven't seen the source. Includes enough context that the reader doesn't need the original. Structured with: situation → key findings → implications → recommended actions. | Sharing summaries with teammates, leadership updates, cross-team communication, async briefings | Reader has access to the original and just needs a compressed version for themselves |
-| **Progressive** | Multi-layer summary. Layer 1: one sentence. Layer 2: one paragraph. Layer 3: full summary with key details. Reader chooses their depth. | Reference material, notes for future self, content you'll revisit later, knowledge management | One-time summaries where the reader won't return to the content |
-| **Action-Oriented** | Extract only what requires action: decisions made, action items, owners, deadlines, open questions. Everything else is discarded. | Meeting transcripts, planning sessions, retrospectives, any content where "what do we do next?" is the only question that matters | Content is informational with no actions (use Key Points instead) |
-| **Comparative** | Synthesize multiple sources into a single summary that highlights agreements, disagreements, and unique contributions from each. | Literature reviews, competitive analysis, multi-article research, any multi-source input | Single-source summarization |
+| **BLUF** | Bottom Line Up Front. Conclusion in first sentence; supporting evidence descending by importance. Reader can stop at any point. | Decision-makers, status updates — "what should we do?" matters more than "what happened?" | Exploratory source with no clear conclusion; reader must form own opinion |
+| **Key Points** | Extract N most important claims as a structured list. Each point self-contained. Optimized for scanning. | Meeting notes, papers, long reports, anything needing quick lookup | Narrative/argument where logic between points matters as much as the points |
+| **Narrative** | Coherent short-form prose preserving logical flow and argumentation. | Articles, essays, arguments, stories — when *reasoning chain* matters | Data dumps or reference material where flow doesn't matter |
+| **Briefing** | Self-contained for people who haven't seen the source. Structure: situation → key findings → implications → recommended actions. | Sharing with teammates, leadership updates, async briefings | Reader has source access and just wants compression |
+| **Progressive** | Multi-layer. Layer 1: one sentence. Layer 2: paragraph. Layer 3: full summary. Reader picks depth. | Reference material, notes for future self, knowledge management | One-time summaries the reader won't revisit |
+| **Action-Oriented** | Only what requires action: decisions, action items, owners, deadlines, open questions. Discard the rest. | Meeting transcripts, planning sessions, retros | Informational content with no actions (use Key Points) |
+| **Comparative** | Synthesize multiple sources highlighting agreements, disagreements, unique contributions. | Literature reviews, competitive analysis, multi-article research | Single source |
 
-#### Compression Levels
+### Compression Levels
 
-| Level | Ratio | Output | When to recommend |
-|-------|-------|--------|-------------------|
-| **Headline** | ~98% compression | 1 sentence | "What is this about?" — maximum compression, minimum nuance |
-| **Snapshot** | ~90% compression | 2-4 sentences | Quick orientation. Reader decides if they want to go deeper |
-| **Standard** | ~75% compression | 1-3 paragraphs | Default. Captures the substance without the detail |
-| **Detailed** | ~50% compression | Multiple paragraphs | When nuance, evidence, or caveats matter. Preserves reasoning chains |
-| **Comprehensive** | ~30% compression | Structured document | Long or complex sources where too much compression destroys value |
+| Level | Ratio | Output | When |
+|-------|-------|--------|------|
+| **Headline** | ~98% | 1 sentence | "What is this about?" |
+| **Snapshot** | ~90% | 2-4 sentences | Quick orientation |
+| **Standard** | ~75% | 1-3 paragraphs | Default |
+| **Detailed** | ~50% | Multiple paragraphs | Nuance, evidence, caveats matter |
+| **Comprehensive** | ~30% | Structured doc | Long/complex sources |
 
-#### Fidelity Mode
+### Fidelity Mode
 
-Every summary makes a trade-off between readability and source accuracy. Make this explicit:
+| Mode | Means | When |
+|------|-------|------|
+| **Faithful** | Preserves source language, terminology, attributions, qualifications. Accuracy > fluency. | Legal, medical, scientific, compliance |
+| **Rewritten** | Rephrases freely; may restructure. Readability > verbatim accuracy. | General content, articles, blogs, meeting notes |
 
-| Mode | What it means | When to use |
-|------|------------|-------------|
-| **Faithful** | Stays close to the source language. Preserves original terminology, attributions, and qualifications. Prioritizes accuracy over fluency. | Legal, medical, scientific, compliance — anywhere distortion is dangerous |
-| **Rewritten** | Rephrases freely in clear, simple language. May restructure arguments for clarity. Prioritizes readability over verbatim accuracy. | General content, articles, blog posts, meeting notes — anywhere clarity matters more than exact wording |
+Default to **Rewritten** unless high-stakes domain or user requests faithfulness.
 
-Default to **Rewritten** unless the content is in a high-stakes domain or the user asks for faithfulness.
-
-#### Recommendation Logic
+### Recommendation Logic
 
 ```
-IF source is a meeting transcript or conversation:
-  → Action-Oriented + Standard + Rewritten
-  "Meetings are about decisions and next steps — I'll extract what matters."
-
-IF source is a research paper or technical document:
-  → Key Points + Detailed + Faithful
-  "Dense technical content benefits from structured extraction with preserved precision."
-
-IF source is an article, essay, or blog post:
-  → Narrative + Standard + Rewritten
-  "This reads as an argument — I'll preserve the reasoning chain."
-
-IF user says "brief my team" or "share with leadership":
-  → Briefing + Standard + Rewritten
-  "I'll make this self-contained so they don't need the original."
-
-IF user says "TL;DR" or "gist" or "quick summary":
-  → BLUF + Snapshot + Rewritten
-  (Explicit speed request — honor it directly)
-
-IF user says "action items" or "what do we need to do":
-  → Action-Oriented + Standard + Rewritten
-  (Explicit action request — honor it directly)
-
-IF multiple sources are provided:
-  → Comparative + Standard + Rewritten
-  "Multiple sources — I'll synthesize rather than summarize individually."
-
-IF user wants to save for future reference or notes:
-  → Progressive + Detailed + Rewritten
-  "Multi-layer summary so you can scan at any depth later."
-
-IF source is legal, medical, financial, or compliance-related:
-  → Key Points + Detailed + Faithful
-  "High-stakes content — I'll preserve source language and qualifications."
+meeting transcript / conversation  → Action-Oriented + Standard + Rewritten
+research paper / technical doc     → Key Points + Detailed + Faithful
+article / essay / blog             → Narrative + Standard + Rewritten
+"brief my team" / "for leadership" → Briefing + Standard + Rewritten
+"TL;DR" / "gist" / "quick"         → BLUF + Snapshot + Rewritten
+"action items" / "what to do"      → Action-Oriented + Standard + Rewritten
+multiple sources                   → Comparative + Standard + Rewritten
+"save for future reference"        → Progressive + Detailed + Rewritten
+legal/medical/financial/compliance → Key Points + Detailed + Faithful
 ```
 
-#### Incompatible Combinations
+### Incompatible Combinations
 
-- **Action-Oriented + Headline**: Actions need enough detail to be actionable. Suggest Snapshot minimum.
-- **Comparative + Headline**: Can't synthesize multiple sources in one sentence. Suggest Standard minimum.
-- **Progressive + Headline/Snapshot**: Progressive IS multi-level — it already contains a headline. Use Progressive at Standard or Detailed.
-- **Faithful + Headline**: Impossible to be faithful at 98% compression. Suggest Snapshot + Faithful.
-- **Briefing + Headline**: Briefings need context to be self-contained. Suggest Standard minimum.
+- **Action-Oriented + Headline**: Actions need detail. → Snapshot minimum.
+- **Comparative + Headline**: Can't synthesize multi-source in one sentence. → Standard minimum.
+- **Progressive + Headline/Snapshot**: Progressive already contains a headline. → Standard or Detailed.
+- **Faithful + Headline**: Impossible at 98%. → Snapshot + Faithful.
+- **Briefing + Headline**: Briefings need context. → Standard minimum.
 
 ---
 
-### STEP 3 — Present Options to the User
-
-Present the recommendation concisely. The user wants the summary, not a lecture about summarization theory.
-
-Format:
+## STEP 3 — Present Options
 
 ```
-I'd recommend a [style] summary at [compression] depth, [fidelity mode].
-
-[1-sentence reason why this approach fits this content.]
+I'd recommend a [style] summary at [compression] depth, [fidelity].
+[1-sentence reason.]
 
 Want me to adjust?
   Style: [recommended] / [alt 1] / [alt 2]
@@ -131,103 +89,89 @@ Want me to adjust?
   Fidelity: Faithful / Rewritten
 ```
 
-If the agent platform supports structured input (e.g., ask_user_input), use it for frictionless selection.
+Use ask_user_input if available.
 
-**Speed override**: If the user pastes content and says "TL;DR" or "summarize this quickly", skip the interaction entirely and deliver immediately. Write 2-4 plain sentences or a short bullet list — no section labels, no template structure, no BLUF formatting. Match the casual tone of the request. Don't add friction to an explicitly fast request.
+**Speed override**: If user pastes content and says "TL;DR" or "summarize quickly", skip interaction and deliver immediately. 2-4 plain sentences or short bullets — no labels, no template, casual tone matching the request.
 
 ---
 
-### STEP 4 — Produce the Summary
+## STEP 4 — Produce the Summary
 
-Once style, compression, and fidelity are confirmed (or defaulted), produce the summary following the selected style's structure.
-
-#### BLUF Execution
+#### BLUF
 
 ```
-BOTTOM LINE: [Conclusion / recommendation / key finding in 1-2 sentences]
+BOTTOM LINE: [Conclusion / recommendation in 1-2 sentences]
 
 SUPPORTING DETAIL:
-[Most important evidence or context — 1-2 sentences]
+[Most important evidence — 1-2 sentences]
 [Second most important — 1-2 sentences]
-[Additional context if compression level allows]
+[Additional if compression allows]
 
-SO WHAT: [Why this matters to the reader — 1 sentence]
+SO WHAT: [Why this matters — 1 sentence]
 ```
 
-**Quality check**: Cover the "BOTTOM LINE" section. If someone reads only that, do they have what they need to act? If not, your bottom line isn't bottom-line enough.
+**Check**: Cover all but BOTTOM LINE. Does the reader have what they need to act?
 
-#### Key Points Execution
+#### Key Points
 
 ```
-KEY POINTS FROM: [source title/description]
+KEY POINTS FROM: [source]
 
-1. [Point — stated as a complete, self-contained claim. Not a topic label.]
-2. [Point]
-3. [Point]
-...N points (scale to compression level: Snapshot=3, Standard=5-7, Detailed=8-12)
+1. [Self-contained claim, not topic label]
+2. [...]
+... N points (Snapshot=3, Standard=5-7, Detailed=8-12)
 
-NOTABLE OMISSIONS: [Anything important you had to cut — 1 sentence]
+NOTABLE OMISSIONS: [What you cut — 1 sentence]
 ```
 
-**Quality check**: Read each point in isolation. Does it make sense without the others? If a point says "The authors also discussed methodology" — that's a topic label, not a key point. Rewrite as "The study used a randomized control trial with 500 participants across 12 months."
+**Check**: Each point sensible in isolation? "The authors discussed methodology" is a label — rewrite as "The study used a randomized control trial with 500 participants over 12 months."
 
-#### Narrative Execution
+#### Narrative
 
-Write a coherent short passage that preserves the source's reasoning structure:
+Coherent passage preserving reasoning:
+1. Open with core thesis/finding
+2. Walk through key supporting arguments in order
+3. Note most important caveats/counterarguments
+4. Close with implication/conclusion
 
-1. Open with the core thesis or finding
-2. Walk through the key supporting arguments in order
-3. Note the most important caveats or counterarguments
-4. Close with the implication or conclusion
+**Check**: Could someone follow the argument from your summary alone?
 
-**Quality check**: Does the summary have a logical flow a reader can follow without jumping? If you removed the source entirely, could someone understand the argument from your summary alone?
-
-#### Briefing Execution
+#### Briefing
 
 ```
 BRIEFING: [Title]
-Source: [what this summarizes]
-Date: [when the source was created/published]
-Prepared for: [intended audience, if known]
+Source: [what this summarizes] | Date: [created] | Prepared for: [audience]
 
-SITUATION: [Context the reader needs to understand why this matters — 2-3 sentences]
-
+SITUATION: [Context — 2-3 sentences]
 KEY FINDINGS:
-- [Finding 1]
-- [Finding 2]
-- [Finding 3]
-
-IMPLICATIONS: [What this means for the reader's work/decisions — 1-2 sentences]
-
-RECOMMENDED ACTIONS: [What should happen next, if applicable]
-
-OPEN QUESTIONS: [Unresolved issues from the source]
+- [Finding 1] [...]
+IMPLICATIONS: [What this means — 1-2 sentences]
+RECOMMENDED ACTIONS: [If applicable]
+OPEN QUESTIONS: [Unresolved]
 ```
 
-**Quality check**: Send this to someone who hasn't seen the source. Can they understand it fully? If they need to ask "but what was the original about?" — the briefing isn't self-contained enough.
+**Check**: Send to someone unfamiliar with the source. Self-contained?
 
-#### Progressive Execution
+#### Progressive
 
 ```
 ## Layer 1 — One Sentence
-[The single most important takeaway]
+[Most important takeaway]
 
 ## Layer 2 — One Paragraph
-[Core message expanded with 2-3 supporting points]
+[Core message + 2-3 supporting points]
 
 ## Layer 3 — Full Summary
-[Detailed summary preserving key evidence, caveats, and nuance.
- Structured with subheadings if the source has natural sections.]
+[Detailed; preserve evidence, caveats, nuance. Subheadings if source has sections.]
 ```
 
-**Quality check**: Each layer must be a complete, valid summary on its own. Layer 1 shouldn't require Layer 2 to make sense. A reader should be able to stop at any layer and walk away informed.
+**Check**: Each layer valid alone. Layer 1 doesn't need Layer 2.
 
-#### Action-Oriented Execution
+#### Action-Oriented
 
 ```
 DECISIONS MADE:
-- [Decision 1 — stated clearly, with who decided if known]
-- [Decision 2]
+- [Decision 1 + decider if known]
 
 ACTION ITEMS:
 | Action | Owner | Deadline | Status |
@@ -235,57 +179,52 @@ ACTION ITEMS:
 | [Specific action] | [Name] | [Date] | Open |
 
 OPEN QUESTIONS:
-- [Unresolved question 1 — who needs to answer it?]
-- [Unresolved question 2]
+- [Question — who answers?]
 
-PARKING LOT: [Topics raised but deferred — 1-2 sentences if any]
+PARKING LOT: [Deferred topics — 1-2 sentences]
 ```
 
-**Quality check**: Could someone who missed the meeting read this and know exactly what they need to do? If any action item says "Follow up on X" without specifying what "follow up" means concretely, it's not actionable enough.
+**Check**: Could someone who missed the meeting know exactly what to do? "Follow up on X" without specifics isn't actionable.
 
-#### Comparative Execution
+#### Comparative
 
 ```
-SYNTHESIS: [Sources compared — list titles/descriptions]
+SYNTHESIS: [Sources]
 
-CONSENSUS: [What all/most sources agree on]
-- [Shared finding 1]
-- [Shared finding 2]
+CONSENSUS: [Where all/most agree]
+- [Shared finding]
 
 DIVERGENCE: [Where sources disagree]
-- [Source A says X; Source B says Y — the tension is about Z]
+- [A says X; B says Y — tension is about Z]
 
-UNIQUE CONTRIBUTIONS: [What only one source covers]
-- [Source C uniquely argues/provides...]
+UNIQUE CONTRIBUTIONS:
+- [Source C uniquely argues...]
 
-GAP: [What none of the sources address but probably should]
+GAP: [What none address]
 ```
 
-**Quality check**: Does each source get fair representation? Could a reader identify the distinct contribution of each source? If you removed one source, would the synthesis change — and can the reader see how?
+**Check**: Each source fairly represented? Distinct contribution visible?
 
 ---
 
-### STEP 5 — Offer Follow-up
+## STEP 5 — Offer Follow-up
 
-After delivering the summary, offer exactly one follow-up based on style:
+Pick one based on style:
 
-- **BLUF**: "Want me to expand on any of the supporting detail?"
-- **Key Points**: "Want me to elaborate on any specific point?"
-- **Narrative**: "Want me to compress this further or expand a particular section?"
-- **Briefing**: "Should I adjust this for a different audience?"
-- **Progressive**: "Want me to add a Layer 4 — your own executive annotation?"
-- **Action-Oriented**: "Want me to draft follow-up messages for any of these action items?"
-- **Comparative**: "Want me to deep-dive into any of the divergences?"
+- **BLUF**: "Want me to expand any supporting detail?"
+- **Key Points**: "Want me to elaborate on any point?"
+- **Narrative**: "Compress further or expand a section?"
+- **Briefing**: "Adjust for a different audience?"
+- **Progressive**: "Add a Layer 4 — your executive annotation?"
+- **Action-Oriented**: "Draft follow-up messages for any action items?"
+- **Comparative**: "Deep-dive into any divergence?"
 
-Offer naturally. Don't force if the user signals completion.
+Skip if user signals completion.
 
 ---
 
-## Calibration Rules
+## Calibration
 
-**1. Compression is not deletion.** Good compression preserves information density while reducing volume. After producing any summary, check: "Did I lose anything the reader would want back?"
-
-**2. Flag what you cut.** At Standard compression or above, include a "NOTABLE OMISSIONS" note or "This summary does not cover..." to help the reader decide if they need the original.
-
-**3. Multi-source requires synthesis, not concatenation.** Never summarize multiple sources independently and stack the results. The value is in cross-referencing — agreements, tensions, and gaps.
-
+1. **Compression is not deletion.** Preserve information density while reducing volume. Did you lose anything the reader would want back?
+2. **Flag what you cut.** Standard or above: include "NOTABLE OMISSIONS" so reader knows when to consult the original.
+3. **Multi-source requires synthesis, not concatenation.** Never summarize each source independently and stack. The value is in cross-references.
