@@ -5,116 +5,105 @@ description: "Extract and document business logic, domain models, and product ru
 
 # Business Logic Extractor
 
-**What this produces**: A single, structured Markdown document that captures the *product and domain knowledge* embedded in a codebase — the entities, their relationships, the business rules that govern them, and the invariants that must hold. Same llms.txt format (H2 sections, annotated code, token-budgeted) but focused on *what the system does* rather than *how to use its APIs*.
+Produces a single Markdown doc capturing the *product and domain knowledge* embedded in a codebase — entities, relationships, business rules, invariants. Same llms.txt format (H2 sections, annotated code, token-budgeted) but focused on *what the system does*, not *how to use its APIs*.
 
-**Why this matters**: Business logic is the most expensive context to lose. It lives scattered across models, validators, services, tests, and config files. When it's implicit, every new developer (or agent) has to re-derive it from code. This skill makes it explicit.
-
-**Key difference from llms-txt-generator**: That skill documents a library's *public API surface* from its docs. This skill documents a codebase's *product behavior* from its source code. The input is code, not documentation. The sections are domain concepts, not API topics.
+**Difference from llms-txt-generator**: that skill documents a library's *public API* from its docs; this one documents a codebase's *product behavior* from its source. Input is code, not docs. Sections are domain concepts, not API topics.
 
 ---
 
 ## Execution
 
-This skill operates on the current codebase only. The agent must have filesystem access to the project being analyzed.
+Operates on the current codebase. Requires filesystem access.
 
-**Pre-flight check**: Confirm you can see the codebase root. Look for a manifest file (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.csproj`) to orient yourself. If you can't find one, ask the user to confirm the project root.
+**Pre-flight**: Confirm codebase root. Look for manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `pom.xml`, `*.csproj`). If missing, ask user to confirm root.
 
 ---
 
 ## PHASE 1 — Domain Surface Scan
 
-Map the codebase to find where business logic lives. Not all code carries domain knowledge — focus on the high-signal locations.
+Find where business logic lives. Focus on high-signal locations.
 
-### High-signal locations (scan these first)
+### High-signal locations
 
-| What to look for | Why it matters | Typical paths |
+| Look for | Why | Typical paths |
 |---|---|---|
-| **ORM models / schemas** | Define entities, fields, relationships, constraints | `models/`, `entities/`, `schema/`, `prisma/schema.prisma`, `**/models.py`, `**/*Entity.java` |
-| **Validation logic** | Encodes business rules as code | `validators/`, `rules/`, `guards/`, `**/validate*`, `**/*.guard.ts` |
-| **Service / use-case layer** | Orchestrates business operations | `services/`, `usecases/`, `domain/`, `**/service*`, `**/*Service.*` |
-| **Tests (especially integration)** | Tests assert expected behavior — they're a goldmine | `test/`, `spec/`, `__tests__/`, `**/test_*`, `**/*.spec.*` |
+| **ORM models / schemas** | Entities, fields, relationships, constraints | `models/`, `entities/`, `schema/`, `prisma/schema.prisma`, `**/models.py`, `**/*Entity.java` |
+| **Validation logic** | Business rules as code | `validators/`, `rules/`, `guards/`, `**/validate*`, `**/*.guard.ts` |
+| **Service / use-case layer** | Business operations | `services/`, `usecases/`, `domain/`, `**/service*`, `**/*Service.*` |
+| **Tests (esp. integration)** | Assert expected behavior — goldmine | `test/`, `spec/`, `__tests__/`, `**/test_*`, `**/*.spec.*` |
 | **Constants and config** | Thresholds, limits, feature flags, pricing tiers | `constants/`, `config/`, `**/*constants*`, `**/*config*`, `.env.example` |
-| **Enums and status types** | Lifecycle states, categories, permission levels | `types/`, `enums/`, `**/status*`, `**/state*` |
-| **Migration files** | Schema evolution reveals domain model decisions | `migrations/`, `db/migrate/`, `alembic/versions/` |
-| **API route handlers / controllers** | The verbs of the system — what operations exist | `routes/`, `controllers/`, `api/`, `app/api/` |
-| **Middleware / interceptors** | Cross-cutting business rules (auth, rate limits, tenant isolation) | `middleware/`, `interceptors/`, `pipes/` |
+| **Enums and status types** | Lifecycle states, categories, permissions | `types/`, `enums/`, `**/status*`, `**/state*` |
+| **Migration files** | Schema evolution → domain decisions | `migrations/`, `db/migrate/`, `alembic/versions/` |
+| **API routes / controllers** | The verbs of the system | `routes/`, `controllers/`, `api/`, `app/api/` |
+| **Middleware / interceptors** | Cross-cutting rules (auth, rate limits, tenancy) | `middleware/`, `interceptors/`, `pipes/` |
 
 ### Scan procedure
 
 ```bash
-# 1. Find the tech stack
+# 1. Tech stack
 cat package.json 2>/dev/null || cat pyproject.toml 2>/dev/null || cat go.mod 2>/dev/null || cat Cargo.toml 2>/dev/null
 
-# 2. Find model/entity files
+# 2. Models/entities
 find . -type f \( -name "*.model.*" -o -name "*.entity.*" -o -name "*.schema.*" \
   -o -name "models.py" -o -name "schema.prisma" \) \
   ! -path "*/node_modules/*" ! -path "*/.git/*" | head -50
 
-# 3. Find business logic layers
+# 3. Business logic layers
 find . -type f \( -name "*.service.*" -o -name "*.usecase.*" -o -name "*.rule.*" \
   -o -name "*.validator.*" -o -name "*.guard.*" -o -name "*.policy.*" \) \
   ! -path "*/node_modules/*" ! -path "*/.git/*" | head -50
 
-# 4. Find test files (prioritize integration/e2e)
+# 4. Tests (prioritize integration/e2e)
 find . -type f \( -name "*.spec.*" -o -name "*.test.*" -o -name "test_*" \) \
   ! -path "*/node_modules/*" ! -path "*/.git/*" | head -50
 
-# 5. Find constants, enums, config
+# 5. Constants, enums, config
 find . -type f \( -name "*constant*" -o -name "*enum*" -o -name "*config*" \
   -o -name "*status*" -o -name "*types*" \) \
   ! -path "*/node_modules/*" ! -path "*/.git/*" ! -path "*/dist/*" | head -50
 ```
 
-Read the files you find. Build a mental inventory of what domain concepts exist before proceeding.
+Read what you find. Build a mental inventory of domain concepts before proceeding.
 
-**Output of Phase 1**: A file inventory organized by signal type, plus a first-pass list of domain entities and operations you've spotted.
+**Output**: file inventory by signal type, plus first-pass list of entities and operations spotted.
 
 ---
 
 ## PHASE 2 — Domain Model Extraction
 
-From the files discovered in Phase 1, identify and document the domain model.
-
-### What to extract
-
 For each **entity** (model, aggregate, value object):
 
-1. **Name and purpose**: What real-world concept does this represent?
-2. **Fields and their semantics**: Not just `status: string` — what are the valid values, what do they mean?
-3. **Relationships**: How does this entity connect to others? (belongs to, has many, references)
-4. **Invariants**: What must always be true? Look for:
-   - Database constraints (unique, not null, foreign keys, check constraints)
-   - Validation rules applied before persistence
-   - Business rules in setters or lifecycle hooks
+1. **Name and purpose**: What real-world concept does it represent?
+2. **Fields and semantics**: Not `status: string` — what are valid values, what do they mean?
+3. **Relationships**: belongs to / has many / references
+4. **Invariants** — what must always be true. Look for:
+   - DB constraints (unique, not null, FK, check)
+   - Validations before persistence
+   - Rules in setters / lifecycle hooks
    - Test assertions that check "this should never happen"
-5. **Lifecycle**: Does this entity have states? What transitions are allowed? (look for status enums, state machines, workflow logic)
+5. **Lifecycle**: states + allowed transitions (status enums, state machines, workflow logic)
 
 ### Where invariants hide
 
-Invariants are rarely labeled as such. Look for them in:
-
 - **Model validations**: `@IsNotEmpty()`, `validates :email, presence: true`, Zod/Yup schemas
-- **Database constraints**: `NOT NULL`, `UNIQUE`, `CHECK`, foreign key cascades
-- **Guard clauses**: `if (!user.isActive) throw ...`, early returns in service methods
-- **Test assertions**: `expect(order.total).toBeGreaterThan(0)` — this IS a business rule
-- **Comments with "must" or "should"**: Developers annotate invariants informally
-- **Migration files**: `ALTER TABLE ... ADD CONSTRAINT` reveals rules added after initial design
+- **DB constraints**: `NOT NULL`, `UNIQUE`, `CHECK`, FK cascades
+- **Guard clauses**: `if (!user.isActive) throw ...`, early returns
+- **Test assertions**: `expect(order.total).toBeGreaterThan(0)` IS a business rule
+- **Comments with "must"/"should"**: informal invariant annotations
+- **Migrations**: `ALTER TABLE ... ADD CONSTRAINT` — rules added post-design
 
-### How to document entities
-
-For each entity, produce a section following this format:
+### Entity section format
 
 ```markdown
 ## {Entity Name}
 
-{1-3 sentences: what this entity represents in the business domain, its core purpose, and its most important invariant or lifecycle characteristic.}
+{1-3 sentences: what it represents, its purpose, its most important invariant or lifecycle characteristic.}
 
 ```{language}
 // Key fields with business-relevant annotations
 // Relationships indicated by comments
 // Invariants and constraints called out explicitly
 
-// Example: from the actual codebase, annotated
 type Order = {
   id: string
   userId: string                    // belongs to User
@@ -123,7 +112,7 @@ type Order = {
   total: number                     // invariant: must equal sum of items × prices, must be > 0
   currency: Currency                // set at creation, immutable after
   createdAt: Date
-  confirmedAt: Date | null          // set when status transitions to 'confirmed'
+  confirmedAt: Date | null          // set when status → 'confirmed'
 }
 
 // Valid status transitions (from state machine or service logic)
@@ -138,30 +127,30 @@ type Order = {
 
 ## PHASE 3 — Business Rule Extraction
 
-Business rules are the behavioral constraints that go beyond the data model. They answer: "Under what conditions can X happen?"
+Behavioral constraints beyond the data model. Answer: "Under what conditions can X happen?"
 
-### What qualifies as a business rule
+### What qualifies
 
-- **Validation rules**: Input constraints beyond type safety (min length, format, allowed values, cross-field dependencies)
-- **Authorization rules**: Who can do what, under what conditions (role checks, ownership checks, time-based access)
-- **Calculation rules**: How derived values are computed (pricing formulas, tax calculations, discount logic, scoring algorithms)
-- **Eligibility rules**: Conditions that must be met before an operation (can this user place an order? can this item be returned?)
-- **Rate limits and thresholds**: Maximum orders per day, minimum balance for withdrawal, cooling-off periods
-- **Side effects and triggers**: When X happens, Y must also happen (send email on signup, create audit log on deletion, sync to external system)
+- **Validation**: input constraints beyond type safety (min length, format, allowed values, cross-field deps)
+- **Authorization**: who can do what when (role, ownership, time-based)
+- **Calculation**: pricing, tax, discount, scoring formulas
+- **Eligibility**: preconditions ("can this user place an order?")
+- **Rate limits / thresholds**: max orders/day, min balance, cooling-off
+- **Side effects / triggers**: when X happens, Y must too (email on signup, audit log on delete, external sync)
 
-### Where business rules hide
+### Where rules hide
 
-- **Service methods**: The if/else chains in `createOrder()`, `processRefund()`, `upgradeSubscription()` are business rules
-- **Middleware/guards**: Authentication and authorization logic
-- **Validators**: Input schemas with business constraints (not just type validation)
-- **Test descriptions**: `it('should not allow checkout with empty cart')` — the test name IS the rule
-- **Constants files**: `MAX_ITEMS_PER_ORDER = 50`, `REFUND_WINDOW_DAYS = 30`
-- **Config/feature flags**: `ENABLE_LOYALTY_DISCOUNT`, `MIN_ORDER_AMOUNT`
-- **Error messages**: `'Cannot cancel order after shipment'` — the error string states the rule
+- **Service methods**: if/else chains in `createOrder()`, `processRefund()`, `upgradeSubscription()`
+- **Middleware/guards**: auth/authz logic
+- **Validators**: schemas with business constraints (not just type validation)
+- **Test descriptions**: `it('should not allow checkout with empty cart')` — test name IS the rule
+- **Constants**: `MAX_ITEMS_PER_ORDER = 50`, `REFUND_WINDOW_DAYS = 30`
+- **Feature flags**: `ENABLE_LOYALTY_DISCOUNT`, `MIN_ORDER_AMOUNT`
+- **Error messages**: `'Cannot cancel order after shipment'` — error string states the rule
 
-### How to document business rules
+### Rule section format
 
-Group related rules by domain operation or concept. Each section covers one operation or rule cluster:
+Group related rules by domain operation or cluster:
 
 ```markdown
 ## {Operation / Rule Cluster Name}
@@ -175,7 +164,7 @@ Group related rules by domain operation or concept. Each section covers one oper
 async function processRefund(orderId: string, reason: string) {
   const order = await getOrder(orderId)
 
-  // Rule: can only refund completed orders
+  // Rule: only refund completed orders
   if (order.status !== 'delivered') throw new Error('Order not eligible')
 
   // Rule: refund window is 30 days from delivery
@@ -202,7 +191,7 @@ async function processRefund(orderId: string, reason: string) {
 
 ### Extraction technique: read tests first
 
-Tests are the single best source of business rules because they state behavior as assertions. Read test files and extract rules by pattern:
+Tests are the best source of business rules — they state behavior as assertions.
 
 | Test pattern | Extracted rule |
 |---|---|
@@ -211,20 +200,18 @@ Tests are the single best source of business rules because they state behavior a
 | `it('should not allow cancellation after shipping')` | Cancellation blocked after shipment |
 | `expect(user.loginAttempts).toBeLessThan(5)` | Account locks after 5 failed logins |
 
-After extracting rules from tests, cross-reference with the service/model code to confirm and add implementation detail.
+Cross-reference rules from tests with service/model code to confirm and add detail.
 
 ---
 
 ## PHASE 4 — Assembly
-
-Combine domain model and business rule sections into the final document.
 
 ### Document structure
 
 ```markdown
 # {Project Name} — Domain & Business Logic Reference
 
-{2-3 sentence overview: what this system does as a product, who uses it, and what the core domain is.}
+{2-3 sentence overview: what this system does as a product, who uses it, what the core domain is.}
 
 ## Domain Model
 
@@ -244,28 +231,28 @@ Combine domain model and business rule sections into the final document.
 
 ## Summary
 
-{1-2 paragraphs: how the domain entities and business rules compose into the system's actual product behavior. Key workflows, critical invariants that span multiple entities, and the most important "gotchas" a developer or agent would need to know.}
+{1-2 paragraphs: how entities and rules compose into actual product behavior. Key workflows, cross-entity invariants, top "gotchas".}
 ```
 
-**Note on heading structure**: This skill uses a two-level hierarchy — `## Domain Model` and `## Business Rules` as top-level groupings, with `###` for individual entities and rule clusters. This differs from the library llms.txt format (flat H2s) because domain knowledge has natural grouping that aids RAG retrieval. A query about "order validation" should retrieve the Order entity AND the order-related business rules — the grouping headers help retrievers do this.
+**Heading structure**: two-level — `## Domain Model` and `## Business Rules` as top groupings, `###` for individual entities and rule clusters. Differs from flat-H2 library llms.txt because domain knowledge has natural grouping that aids RAG (a query about "order validation" should retrieve the Order entity AND order-related rules — grouping headers help retrievers).
 
 ### Assembly rules
 
-1. The H1 includes the project name and the qualifier "Domain & Business Logic Reference" to distinguish from API references.
-2. Entity sections come before business rule sections — you need to understand the nouns before the verbs.
-3. Order entities by centrality: the core domain entity first (e.g., `Order` in an e-commerce system), then entities that relate to it, then supporting entities.
-4. Order business rules by frequency: the most commonly triggered operations first, edge cases last.
-5. Cross-reference between sections using entity names — if a business rule references an entity, use the same name as in the domain model section.
-6. The Summary ties domain model and rules together: "Orders go through these states, governed by these rules, interacting with these entities."
+1. H1 includes project name + "Domain & Business Logic Reference" qualifier (distinguishes from API references).
+2. Entity sections before rule sections — nouns before verbs.
+3. Order entities by centrality: core domain (e.g., `Order` in e-commerce) first, then related, then supporting.
+4. Order rules by frequency: most-triggered first, edge cases last.
+5. Cross-reference using entity names — same name as in domain model section.
+6. Summary ties model and rules: "Orders go through these states, governed by these rules, interacting with these entities."
 
 ### Token budget
 
-Same approach as llms-txt-generator:
+Same as llms-txt-generator:
 - Overview: ~200 tokens
-- Domain model: ~40% of remaining budget
-- Business rules: ~50% of remaining budget
+- Domain model: ~40% of remaining
+- Business rules: ~50% of remaining
 - Summary: ~200 tokens
-- Default total: 10K tokens. Use 5K for small codebases, 15-20K for complex domains.
+- Default total: 10K. 5K small / 15-20K complex domains.
 
 ---
 
@@ -274,37 +261,35 @@ Same approach as llms-txt-generator:
 ### File naming
 
 - Default: `{project-name}.business-logic.md`
-- Alternative: `{project-name}.domain.md`
-- If user specifies a name: use it
+- Alt: `{project-name}.domain.md`
+- User-specified: use it
 
 ### Save location
 
-- If in a codebase: save to repo root or `docs/`
+- In codebase: repo root or `docs/`
 - Always copy to `/mnt/user-data/outputs/` for download
 
 ---
 
 ## Quality Checklist
 
-Before saving, verify:
-
-- [ ] Every entity section includes: purpose, key fields with semantics, relationships, and at least one invariant
-- [ ] Every business rule is stated as a plain-English condition, not just code
-- [ ] Code examples are from the actual codebase, annotated — not synthetic examples
-- [ ] Lifecycle/state transitions are documented for entities that have them
-- [ ] Rules extracted from tests are cross-referenced with implementation code
-- [ ] The document answers "what does this system do" not "how is it built"
-- [ ] No framework/infrastructure details unless they encode business rules (e.g., a Prisma `@unique` IS a business rule)
+- [ ] Every entity section: purpose, key fields with semantics, relationships, ≥1 invariant
+- [ ] Every business rule stated as plain-English condition, not just code
+- [ ] Code from actual codebase, annotated — not synthetic
+- [ ] Lifecycle/state transitions documented for entities that have them
+- [ ] Test-extracted rules cross-referenced with implementation
+- [ ] Doc answers "what does this system do" not "how is it built"
+- [ ] No framework/infra details unless they encode business rules (Prisma `@unique` IS a business rule)
 - [ ] Summary connects entities and rules into coherent product behavior
-- [ ] Cross-references between entities and rules use consistent naming
+- [ ] Cross-references use consistent naming
 
 ---
 
 ## Edge Cases
 
-- **No tests**: Lean harder on service layer code, validation files, and constants. Warn the user that confidence in extracted rules is lower without test coverage.
-- **Anemic domain model**: If models are just data bags and all logic is in services, document the services as the primary source of truth and note the architecture pattern.
-- **Microservices / distributed**: Focus on the current service's bounded context. Document integration contracts (what this service expects from others) as a separate section if relevant.
-- **Heavy ORM magic**: If the ORM hides business logic (ActiveRecord callbacks, Hibernate lifecycle hooks, Prisma middleware), explicitly surface these — they're invisible business rules.
-- **Feature flags**: Document the behavior under each flag state. Feature flags ARE business rules — they control which logic executes.
-- **Legacy codebase with no clear structure**: Scan all files, look for the densest clusters of conditionals and validation. Follow the money — trace the core transaction flow (e.g., "what happens when a user pays?") and document what you find along the way.
+- **No tests**: Lean on service layer, validation files, constants. Warn user that confidence is lower.
+- **Anemic domain model**: If models are data bags and logic is in services, document services as primary source. Note the architecture pattern.
+- **Microservices**: Focus on current service's bounded context. Document integration contracts (what this service expects from others) as a separate section if relevant.
+- **Heavy ORM magic**: Surface hidden logic (ActiveRecord callbacks, Hibernate hooks, Prisma middleware) — invisible business rules.
+- **Feature flags**: Document behavior under each flag state. Flags ARE business rules.
+- **Legacy / no clear structure**: Find densest clusters of conditionals and validation. Trace core transaction flow ("what happens when a user pays?") and document along the way.
