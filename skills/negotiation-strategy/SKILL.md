@@ -5,18 +5,17 @@ description: "Apply negotiation strategy whenever the user needs to prepare for,
 
 # Negotiation Strategy
 
-**Core principle**: Effective negotiation is not about winning — it is about understanding what each party actually needs, finding trades that create value, and building agreements that hold. Preparation determines 80% of negotiation outcomes. This skill replaces instinct and improvisation with structured analysis of interests, alternatives, and leverage.
+**Core principle**: Effective negotiation finds trades that create value and builds agreements that hold. Preparation determines ~80% of outcomes. Replace instinct with structured analysis of interests, alternatives, and leverage.
 
 ---
 
 ## When to Use This Skill
 
 - Preparing for any negotiation — salary, contract, vendor, partnership, scope, resource allocation
-- A user describes a situation where two or more parties need to reach agreement
-- Someone is stuck in a negotiation and needs to reassess their position
+- Two or more parties need to reach agreement
+- Stuck in a negotiation and need to reassess
 - A deal structure needs to be designed or evaluated
-- Interests conflict and the user needs to find a path to agreement
-- Upstream game-theoretic-analysis has identified a strategic interaction that now needs tactical preparation
+- Upstream game-theoretic-analysis identified a strategic interaction needing tactical prep
 
 ---
 
@@ -24,157 +23,147 @@ description: "Apply negotiation strategy whenever the user needs to prepare for,
 
 ### Step 1: Map the Situation
 
-Before strategizing, clarify the negotiation landscape:
+- **Parties**: Who's at the table? Who influences but isn't?
+- **Subject**: What's being negotiated? (money, terms, scope, timeline, roles, access)
+- **Context**: First interaction or ongoing? History?
+- **Timeline**: Deadlines, time pressure. Who benefits from delay?
+- **Power dynamics**: Who has more alternatives, information, patience?
 
-- **Parties**: Who is at the table? Who influences the outcome but isn't at the table?
-- **Subject**: What is being negotiated? (money, terms, scope, timeline, roles, access)
-- **Context**: Is this a first interaction or an ongoing relationship? What's the history?
-- **Timeline**: What deadlines or time pressures exist? Who benefits from delay?
-- **Power dynamics**: Who has more alternatives? More information? More patience?
-
-Get specific. "Negotiating a contract" is too vague. "Negotiating a 2-year SaaS contract with a vendor who has 3 competitors, under a Q2 deadline" is actionable.
+Be specific. "Negotiating a contract" is too vague. "Negotiating a 2-year SaaS contract with a vendor who has 3 competitors, under a Q2 deadline" is actionable.
 
 ### Step 2: Separate Positions from Interests
 
-Positions are what people say they want. Interests are why they want it. Negotiations stall on positions but unlock on interests.
+Positions = what they say they want. Interests = why. Negotiations stall on positions, unlock on interests.
 
-- **Your positions**: What are you asking for on the surface?
-- **Your interests**: What underlying needs drive those positions? (security, recognition, flexibility, cost control, speed, autonomy)
-- **Their positions**: What are they asking for?
-- **Their interests**: What underlying needs drive their positions? (revenue, risk reduction, prestige, simplicity, precedent)
-- **Shared interests**: Where do both parties want the same underlying thing? (relationship preservation, deal completion, market timing)
+- **Your positions / interests**: surface ask vs. underlying need (security, recognition, flexibility, cost control, speed, autonomy)
+- **Their positions / interests**: surface ask vs. underlying need (revenue, risk reduction, prestige, simplicity, precedent)
+- **Shared interests**: where both parties want the same underlying thing (relationship, deal completion, market timing)
 
-Interests you cannot identify are interests you cannot trade on. If you are guessing, flag the uncertainty and plan to test your hypotheses during the negotiation.
+Interests you can't identify are interests you can't trade on. If guessing, flag it and plan to test.
 
 ### Step 3: Assess BATNAs
 
-The **Best Alternative To Negotiated Agreement** is each party's walkaway option — what happens if no deal is reached. BATNA is the single most important factor in negotiation leverage.
+**Best Alternative To Negotiated Agreement** — each party's walkaway. The single biggest leverage factor.
 
-- **Your BATNA**: What do you do if this negotiation fails? How good is that alternative? Be honest — an inflated BATNA leads to overplaying your hand.
-- **Their BATNA**: What do they do if this fails? How good is their alternative? The harder it is for them to walk away, the more leverage you have.
-- **BATNA improvement**: Can you strengthen your BATNA before negotiating? (get competing offers, develop internal alternatives, reduce switching costs)
-- **BATNA confidence**: Rate each BATNA assessment as High / Medium / Low confidence. Low-confidence BATNA estimates are dangerous — they lead to miscalibrated strategy.
+- **Your BATNA**: What if this fails? How good honestly? (Inflated BATNA → overplaying.)
+- **Their BATNA**: What if it fails for them? Harder for them to walk → more leverage for you.
+- **BATNA improvement**: Strengthen yours before negotiating (competing offers, internal alternatives, lower switching costs).
+- **Confidence**: Rate each estimate H/M/L. Low-confidence = miscalibrated strategy risk.
 
-Never reveal a weak BATNA. Never bluff a strong one you don't have — it collapses if tested.
+Never reveal a weak BATNA. Never bluff a strong one — it collapses if tested.
 
 ### Step 4: Identify the ZOPA
 
-The **Zone of Possible Agreement** is the range where a deal is better than both parties' BATNAs.
+**Zone of Possible Agreement** — range where a deal beats both BATNAs.
 
-- **Your reservation point**: The worst deal you would still accept (just barely better than your BATNA)
-- **Their reservation point**: The worst deal they would still accept (estimate — you rarely know this precisely)
-- **ZOPA exists?**: If your reservation point and theirs overlap, a deal is possible. If they don't, no amount of negotiation skill will produce an agreement — redirect to improving BATNAs or changing the terms.
-- **ZOPA size**: A large ZOPA means more room to create value. A narrow ZOPA means the negotiation will be tense and positional.
+- **Your reservation point**: Worst deal you'd still accept (just above your BATNA).
+- **Their reservation point**: Worst deal they'd still accept (estimate).
+- **ZOPA exists?**: Overlap → deal possible. No overlap → no skill produces agreement; redirect to improving BATNAs or changing terms.
+- **ZOPA size**: Large = room to create value. Narrow = tense and positional.
 
-If no ZOPA exists, say so directly. Do not waste preparation time on a deal that cannot close.
+If no ZOPA, say so. Don't waste prep time on a deal that can't close.
 
 ### Step 5: Find Value Creation Opportunities
 
-Before dividing the pie, expand it. Look for asymmetric trades — things that cost one party little but are worth a lot to the other:
+Expand the pie before dividing it. Look for asymmetric trades — cheap to one side, valuable to the other:
 
-- **Differences in valuation**: What do you value more than they do? What do they value more than you?
-- **Differences in time preference**: Does one party value speed while the other values certainty?
-- **Differences in risk tolerance**: Can risk be shifted to the party that minds it less?
-- **Bundling opportunities**: Can multiple issues be linked to create package deals?
-- **Contingent agreements**: Where parties disagree about the future, "if X then Y" clauses let both sides bet on their prediction.
+- **Differences in valuation**: What do you value more than they? Vice versa?
+- **Differences in time preference**: One values speed, other values certainty?
+- **Differences in risk tolerance**: Shift risk to the party that minds it less?
+- **Bundling**: Link issues into package deals?
+- **Contingent agreements**: "If X then Y" lets each side bet on its prediction when futures disagree.
 
-Each asymmetric trade identified is leverage. The more trades you find, the more likely a deal that exceeds both parties' expectations.
+Each asymmetric trade is leverage.
 
 ### Step 6: Design the Opening Strategy
 
-Plan how to begin the negotiation:
-
-- **Anchor**: Set the first number or frame if you have good information about the range. Anchors pull the negotiation toward them. If you lack information, let them anchor and adjust from there.
-- **Frame**: How you describe the negotiation shapes what feels fair. "Splitting the difference" vs. "paying for value delivered" vs. "market rate" each create different reference points.
-- **Sequence**: Which issues to raise first? Start with issues where agreement is likely (builds momentum) or with the most important issue (prevents concessions on small items that constrain the big one)?
-- **Opening offer**: Ambitious but defensible. An opening that can be justified by reference to objective criteria is harder to dismiss than one that looks arbitrary.
+- **Anchor**: First number/frame pulls the negotiation. Anchor if you have good info; let them anchor if you don't.
+- **Frame**: "Splitting the difference" vs. "paying for value delivered" vs. "market rate" create different reference points.
+- **Sequence**: Easy issues first (momentum) or biggest issue first (avoid concessions that constrain it)?
+- **Opening offer**: Ambitious but defensible — justifiable by objective criteria, not arbitrary.
 
 ### Step 7: Plan Concessions and Contingencies
 
-Map out your negotiation path beyond the opening:
-
-- **Concession plan**: What are you willing to give, in what order, and at what pace? Concessions should get smaller over time — this signals you are approaching your limit.
-- **Trade list**: For each concession you make, what do you ask for in return? Never concede unilaterally.
-- **If they stall**: What moves re-start momentum? (reframe, introduce new issues, take a break, bring in new information)
-- **If trust breaks down**: What protections can you build into the agreement? (escrow, milestones, audit rights, termination clauses)
-- **If emotions escalate**: When emotional stakes, power asymmetry, or relationship risk exceed what interest-based negotiation can handle, escalate to difficult-conversations. Feed the interest map, BATNA assessment, relationship assessment, and sticking points to difficult-conversations via Contract D.
+- **Concession plan**: What you'll give, in what order, at what pace. Concessions get smaller over time — signals approaching limit.
+- **Trade list**: For each concession, what you ask in return. Never concede unilaterally.
+- **If they stall**: Reframe, introduce new issues, take a break, bring new info.
+- **If trust breaks down**: Build protections into the agreement (escrow, milestones, audit rights, termination).
+- **If emotions escalate**: When emotional stakes/power asymmetry/relationship risk exceed what interest-based negotiation handles, escalate to difficult-conversations via Contract D (interest map, BATNA, relationship assessment, sticking points).
 
 ### Step 8: Assess Relationship Dynamics
 
-The relationship context changes the entire strategy:
-
-- **One-shot interaction**: Maximize value in this deal. Reputation matters less. Hard tactics are more viable (but still risky if your community is small).
-- **Repeated interaction**: Cooperate. Build trust. Leave value on the table if it strengthens the relationship. Today's concession is tomorrow's goodwill.
-- **Power asymmetry**: If you have less power, focus on legitimacy (objective criteria, precedent, fairness norms). If you have more power, use it sparingly — resentful compliance is fragile.
-- **Cultural factors**: Negotiation norms vary across cultures, organizations, and individuals. Directness, formality, pace, and the role of relationships all differ. Adapt.
+- **One-shot**: Maximize this deal. Hard tactics more viable (still risky in small communities).
+- **Repeated**: Cooperate. Build trust. Today's concession = tomorrow's goodwill.
+- **Power asymmetry**: Less power → focus on legitimacy (criteria, precedent, fairness norms). More power → use sparingly; resentful compliance is fragile.
+- **Cultural factors**: Directness, formality, pace, role of relationships vary. Adapt.
 
 ---
 
 ## Output Format
 
 ### 🎯 Negotiation Overview
-- **Situation**: [brief description of the negotiation]
-- **Parties**: [who is involved, who influences]
+- **Situation**: [brief description]
+- **Parties**: [who's involved, who influences]
 - **Relationship type**: One-shot / Repeated / Long-term partnership
-- **Timeline pressures**: [deadlines, urgency factors]
+- **Timeline pressures**: [deadlines, urgency]
 
 ### 📋 Interest Map
 
 | Party | Positions (stated) | Interests (underlying) |
 |-------|-------------------|----------------------|
-| You | [what you're asking for] | [why — the real needs] |
-| Them | [what they're asking for] | [why — the real needs] |
-| Shared | — | [interests both parties share] |
+| You | [what you ask] | [why — real needs] |
+| Them | [what they ask] | [why — real needs] |
+| Shared | — | [interests both share] |
 
 ### ⚖️ BATNA Assessment
 
 | Party | BATNA | Strength | Confidence |
 |-------|-------|----------|------------|
-| You | [your walkaway option] | Strong/Moderate/Weak | High/Med/Low |
-| Them | [their walkaway option] | Strong/Moderate/Weak | High/Med/Low |
+| You | [walkaway option] | Strong/Mod/Weak | H/M/L |
+| Them | [walkaway option] | Strong/Mod/Weak | H/M/L |
 
-- **ZOPA estimate**: [range where deal is possible, or "No ZOPA — redirect"]
+- **ZOPA estimate**: [range, or "No ZOPA — redirect"]
 
 ### 📊 Value Creation Opportunities
 
 | Asymmetric Trade | You Value | They Value | Trade Design |
 |-----------------|-----------|-----------|--------------|
-| [item] | Low / Med / High | Low / Med / High | [proposed exchange] |
+| [item] | L/M/H | L/M/H | [exchange] |
 
 ### 🏆 Recommended Strategy
-- **Opening**: [anchor, frame, and sequence]
+- **Opening**: [anchor, frame, sequence]
 - **Key trades to propose**: [value-creating exchanges]
 - **Concession sequence**: [what to give, in what order]
 - **Contingency plan**: [if stalled, if trust breaks, if emotional]
 
 ### ⚠️ Risks and Watchpoints
-- **Their likely tactics**: [what to expect and how to respond]
-- **Your vulnerabilities**: [where your position is weakest]
-- **Escalation trigger**: [conditions under which to escalate to difficult-conversations via Contract D]
+- **Their likely tactics**: [expect and respond]
+- **Your vulnerabilities**: [weakest position]
+- **Escalation trigger**: [conditions for handoff to difficult-conversations via Contract D]
 
 ### 👥 Relationship Considerations
-- **Tone to strike**: [collaborative / firm / exploratory]
+- **Tone**: collaborative / firm / exploratory
 - **Relationship investments**: [concessions worth making for long-term value]
-- **Post-agreement**: [how to close in a way that preserves the relationship]
+- **Post-agreement**: [closing approach that preserves relationship]
 
 ---
 
 ## Common Traps
 
-- **Positional bargaining** — arguing over positions instead of exploring interests. When the negotiation becomes a tug of war over numbers, step back and ask "why do you need that?"
-- **Anchoring to the wrong reference** — letting their first offer set the frame when you have better information. Anchor first if you can justify it.
-- **Conceding without trading** — giving something away to build goodwill without getting anything in return. Goodwill is not a concession — trades are.
-- **BATNA inflation** — overestimating your walkaway option because admitting it's weak is uncomfortable. A realistic weak BATNA leads to better strategy than a fictional strong one.
-- **Winner's curse** — getting your first offer accepted means you left value on the table. If they say yes immediately, you anchored too low.
-- **Neglecting the relationship** — winning the deal but poisoning the relationship. In repeated interactions, how you negotiate matters as much as what you negotiate.
-- **Negotiating when there's nothing to negotiate** — sometimes the situation is a take-it-or-leave-it decision, not a negotiation. If both parties' BATNAs are clear and no trades exist, the skill to apply is decision-synthesis, not negotiation-strategy.
+- **Positional bargaining** — tug-of-war over numbers. Step back, ask "why do you need that?"
+- **Anchoring to wrong reference** — letting their first offer set the frame when you have better info. Anchor first if you can justify.
+- **Conceding without trading** — giving for goodwill without return. Goodwill isn't a concession — trades are.
+- **BATNA inflation** — overestimating your walkaway because admitting weakness is uncomfortable. Realistic-weak beats fictional-strong.
+- **Winner's curse** — first offer accepted = you left value on the table. Yes too quickly = anchored too low.
+- **Neglecting the relationship** — winning the deal, poisoning the relationship. In repeated games, *how* matters as much as *what*.
+- **Negotiating with nothing to negotiate** — sometimes it's take-it-or-leave-it. Both BATNAs clear, no trades exist → use decision-synthesis, not this skill.
 
 ---
 
 ## Thinking Triggers
 
 - *"What do they need that I can give cheaply?"*
-- *"If this deal falls through, what do I actually do next — and how good is that option really?"*
-- *"Am I negotiating over positions or have I uncovered their real interests?"*
+- *"If this deal falls through, what do I actually do — and how good is it really?"*
+- *"Am I negotiating positions, or have I uncovered real interests?"*
 - *"What would make this a deal they want to tell their boss about?"*
-- *"Is the emotional intensity here proportional to the stakes, or is something else going on?"*
+- *"Is the emotional intensity proportional to the stakes, or is something else going on?"*

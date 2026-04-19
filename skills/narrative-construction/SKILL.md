@@ -5,17 +5,17 @@ description: "Apply narrative-construction whenever the user needs to turn analy
 
 # Narrative Construction
 
-**Core principle**: Data persuades the rational mind; stories move people to act. Narrative construction transforms analytical output into structured stories that create emotional engagement, build understanding, and drive action. The best stories make the audience feel what the data shows.
+Data persuades the rational mind; stories move people to act. Transform analytical output into structured stories that engage emotionally and drive action.
 
 ---
 
-## When to Use This Skill
+## When to Use
 
-- The user has analysis, data, or recommendations that need to reach a broader audience
+- Analysis or recommendations need to reach a broader audience
 - Content creation: blog posts, case studies, talks, product narratives, thought leadership
-- An argument-craft output needs to be wrapped in a story for maximum impact
-- The user's message is technically sound but fails to engage or persuade
-- Presentations that need to hold attention beyond the first slide
+- argument-craft output needs story-wrapping for impact
+- Technically sound message that fails to engage
+- Presentations needing attention beyond slide one
 
 ---
 
@@ -23,77 +23,71 @@ description: "Apply narrative-construction whenever the user needs to turn analy
 
 ### Step 1: Define the Narrative Brief
 
-Establish the foundation before writing a single word.
-
-- **Audience**: Who is this for? What do they already know? What do they care about?
-- **Purpose**: What should the audience think, feel, or do after encountering this narrative?
-- **Core message**: Compress the entire narrative into one sentence. If you cannot, the narrative lacks focus.
-- **Medium**: Blog post, presentation, case study, video script, executive memo, conference talk? Each has different pacing and structure constraints.
-- **Constraints**: Word count, tone requirements, brand voice, technical depth ceiling.
+- **Audience**: who, what they know, what they care about
+- **Purpose**: what should they think, feel, or do after?
+- **Core message**: one sentence — if you can't, the narrative lacks focus
+- **Medium**: blog, deck, case study, video script, memo, talk — each has distinct pacing
+- **Constraints**: word count, tone, brand voice, technical depth ceiling
 
 ### Step 2: Identify Character and Stakes
 
-Every narrative needs a protagonist and something at risk.
+Every narrative needs a protagonist with something at risk.
 
-- **Protagonist**: Who is the "hero" of this story? It could be a person, a team, a company, or even an idea. The audience must be able to identify with or root for the protagonist.
-- **Stakes**: What happens if the protagonist fails? What do they stand to gain or lose? Higher stakes create more engagement.
-- **Antagonist/obstacle**: What force opposes the protagonist? A competitor, a systemic problem, a misconception, the status quo, time pressure.
+- **Protagonist**: person, team, company, or idea — audience must identify with or root for them
+- **Stakes**: what happens if they fail? Higher stakes = more engagement
+- **Antagonist/obstacle**: competitor, systemic problem, misconception, status quo, time pressure
 
-Do not skip this step for "dry" topics. A financial analysis becomes a story when the protagonist is a CFO who must choose between two paths with the company's future at stake.
+Don't skip this for "dry" topics. A financial analysis becomes a story when the protagonist is a CFO choosing between two paths with the company's future at stake.
 
 ### Step 3: Select the Narrative Arc
 
-Choose the structure that best serves the core message.
+| Arc | Structure | Best for |
+|-----|-----------|----------|
+| **Problem-Solution** | Setup pain, escalate, deliver solution | Product narratives, case studies |
+| **Before-After-Bridge** | Old world, new world, how to get there | Transformation stories |
+| **Hero's Journey** | Ordinary world → call → trials → transformation → return with insight | Thought leadership, keynotes |
+| **Mystery-Reveal** | Puzzle → tension via investigation → insight | Blog posts, talks |
+| **In Medias Res** | Start mid-action, fill in context | Crowded channels, attention grabs |
 
-- **Problem-Solution**: Setup the pain point, escalate it, deliver the solution. Best for product narratives and case studies.
-- **Before-After-Bridge**: Show the old world, show the new world, explain how to get there. Best for transformation stories.
-- **Hero's Journey (simplified)**: Ordinary world, call to adventure, trials, transformation, return with insight. Best for thought leadership and keynotes.
-- **Mystery-Reveal**: Present a puzzle or surprising question, build tension through investigation, deliver the insight. Best for blog posts and talks.
-- **In Medias Res**: Start in the middle of the action, then fill in context. Best for grabbing attention in crowded channels.
-
-Match the arc to both the medium and the audience's patience. A Slack post uses Problem-Solution. A 20-minute talk can sustain a Hero's Journey.
+Match arc to medium and audience patience. A Slack post = Problem-Solution. A 20-min talk can sustain Hero's Journey.
 
 ### Step 4: Design the Hook
 
-The first 30 seconds — or the first paragraph — determines whether the audience stays.
+First 30 seconds — or first paragraph — determines whether they stay.
 
-Craft the hook using one of these patterns:
+Patterns:
+- **Surprising fact**: violates expectations ("98% of strategies fail before execution")
+- **Question**: poses a mystery ("Why did the best-funded team lose?")
+- **Vivid scene**: drops reader into a moment ("It's 2am and the pager fires for the third time")
+- **Counterintuitive claim**: "The most dangerous risk is the one everyone agrees on"
+- **Stakes declaration**: "This decision determines whether the product ships or dies"
 
-- **Surprising fact**: A data point that violates expectations ("98% of strategies fail before execution begins")
-- **Question the audience needs answered**: Pose a mystery ("Why did the best-funded team lose?")
-- **Vivid scene**: Drop the reader into a specific moment ("It's 2am and the pager fires for the third time")
-- **Counterintuitive claim**: Challenge conventional wisdom ("The most dangerous risk is the one everyone agrees on")
-- **Stakes declaration**: Make the consequences immediate ("This decision will determine whether the product ships or dies")
-
-Generate 2-3 hook options. The strongest one creates a question in the audience's mind that only the rest of the narrative can answer.
+Generate 2-3 options. The strongest one creates a question only the rest of the narrative can answer.
 
 ### Step 5: Build the Beat-by-Beat Outline
 
-Map the narrative as a sequence of beats — each beat is a unit of information or emotion that advances the story.
+Each beat = unit of information or emotion advancing the story.
 
-For each beat, specify:
-- **What happens**: The information or event in this beat
-- **What the audience feels**: The emotional shift this beat creates (curiosity, tension, surprise, relief, urgency)
-- **Transition**: How this beat connects to the next (cause-effect, contrast, escalation, pivot)
+For each beat: **what happens**, **what audience feels**, **transition** to next.
 
-**Tension management rules**:
-- Escalate before resolving. Premature resolution kills engagement.
-- Complicate the problem at least once after introducing it. The first answer should not be the final answer.
-- Place the most important insight at the peak of tension, not after the resolution.
-- End with transformation, not summary. Show what changed, not what was covered.
+**Tension rules**:
+- Escalate before resolving — premature resolution kills engagement
+- Complicate the problem at least once after introducing it
+- Place the most important insight at peak tension, not after resolution
+- End with transformation, not summary
 
 ### Step 6: Anchor in Concrete Details
 
-Replace every abstraction with a specific, sensory detail.
+Replace abstractions with specific, sensory details.
 
 | Abstract (weak) | Concrete (strong) |
 |---|---|
 | "Significant cost savings" | "Saved $2.3M in the first quarter" |
 | "The team struggled" | "Three engineers quit in the same week" |
-| "Improved performance" | "Response time dropped from 4 seconds to 200ms" |
+| "Improved performance" | "Response time dropped from 4s to 200ms" |
 | "A large company" | "A 10,000-person logistics company in Rotterdam" |
 
-Identify 3-5 key moments in the outline where a concrete detail will anchor the narrative. These are the moments the audience will remember and retell.
+Identify 3-5 key moments where a concrete detail anchors the story. These are what audiences remember and retell.
 
 ---
 
@@ -114,27 +108,27 @@ Identify 3-5 key moments in the outline where a concrete detail will anchor the 
 
 ### 📋 Story Spine
 
-| Beat | Arc phase | What happens | Audience feels | Transition to next |
-|------|-----------|-------------|----------------|-------------------|
-| 1 | [Setup/Tension/Resolution/Transformation] | [event or info] | [emotion] | [link to next beat] |
+| Beat | Arc phase | What happens | Audience feels | Transition |
+|------|-----------|-------------|----------------|------------|
+| 1 | [Setup/Tension/Resolution/Transformation] | [event] | [emotion] | [link to next] |
 | 2 | ... | ... | ... | ... |
 
 ### 🎣 Hook Options
 
-1. [Hook option A — type: surprising fact / question / scene / counterintuitive / stakes]
-2. [Hook option B — type]
-3. [Hook option C — type]
+1. [Option A — type: surprising fact / question / scene / counterintuitive / stakes]
+2. [Option B — type]
+3. [Option C — type]
 
-**Recommended**: [which hook and why]
+**Recommended**: [which and why]
 
 ### 🏆 Arc Selection
 
 - **Arc**: [Problem-Solution / Before-After / Hero's Journey / Mystery-Reveal / In Medias Res]
-- **Rationale**: [why this arc fits the audience, medium, and message]
+- **Rationale**: [why this fits audience, medium, message]
 
 ### 📝 Key Concrete Details
 
-- Beat [N]: [specific detail to include and why it anchors the narrative]
+- Beat [N]: [specific detail and why it anchors]
 - Beat [N]: [specific detail]
 - Beat [N]: [specific detail]
 
@@ -142,10 +136,10 @@ Identify 3-5 key moments in the outline where a concrete detail will anchor the 
 
 ## Thinking Triggers
 
-- *"If the audience remembers only one thing from this, what should it be?"*
-- *"Where does the tension peak — and am I resolving it too early?"*
-- *"Who is the protagonist, and would the audience root for them?"*
-- *"Can I replace this abstraction with a number, a name, or a scene?"*
+- *"If they remember only one thing, what should it be?"*
+- *"Where does tension peak — am I resolving too early?"*
+- *"Who's the protagonist, and would the audience root for them?"*
+- *"Can I replace this abstraction with a number, name, or scene?"*
 - *"What question does my hook plant that only the full narrative answers?"*
 - *"Would I keep reading after the first paragraph?"*
 
@@ -155,11 +149,11 @@ Identify 3-5 key moments in the outline where a concrete detail will anchor the 
 
 | Trap | What goes wrong |
 |------|----------------|
-| **Data dump with a title** | Listing facts without narrative structure. Information is not a story. |
-| **Premature resolution** | Presenting the solution before the audience feels the problem. No tension means no engagement. |
-| **Missing protagonist** | Abstract narratives about "the industry" or "the market" without a character to root for. |
-| **Abstract language** | Generalizations ("significant impact") instead of concrete details ("saved 14 hours per week"). |
-| **Burying the hook** | Starting with background context instead of the moment that grabs attention. |
-| **Tension without resolution** | Building up a problem without delivering a satisfying answer — leaves the audience frustrated, not engaged. |
-| **Narrative as evidence** | A compelling story is not proof. If the underlying analysis is weak, a strong narrative makes it harder to challenge — which is a bug, not a feature. Verify the substance before polishing the delivery. |
-| **Selective detail** | Choosing only the concrete details that support the desired conclusion while omitting inconvenient ones. Anchor details should be representative, not cherry-picked. |
+| **Data dump with a title** | Listing facts without structure. Information is not a story. |
+| **Premature resolution** | Solution before audience feels the problem. No tension = no engagement. |
+| **Missing protagonist** | Abstract narratives about "the industry" with no character to root for. |
+| **Abstract language** | Generalizations ("significant impact") instead of concrete details ("saved 14 hours/week"). |
+| **Burying the hook** | Background context before the moment that grabs attention. |
+| **Tension without resolution** | Build-up without satisfying answer leaves audience frustrated. |
+| **Narrative as evidence** | A compelling story is not proof. If analysis is weak, a strong narrative makes it harder to challenge — a bug, not a feature. Verify substance before polishing delivery. |
+| **Selective detail** | Cherry-picking concrete details that support the conclusion while omitting inconvenient ones. Anchors should be representative. |
