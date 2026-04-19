@@ -12,37 +12,34 @@ description: Apply Theory of Constraints (TOC) whenever the user asks why a syst
 ## The 5 Focusing Steps
 
 ### Step 1: Identify the Constraint
-Find the single bottleneck — the resource, process, or step with the least capacity relative to demand.
+The single bottleneck — the resource/process/step with least capacity relative to demand.
 
 **How to find it:**
-- Where does work **pile up**? (queue buildup = upstream of the constraint)
-- Where is there **idle time**? (downstream of the constraint — starved for input)
-- What does everyone **wait on**? (the constraint is often "that one person" or "that one step")
+- Where does work **pile up**? (queue buildup = upstream of constraint)
+- Where is there **idle time**? (downstream — starved for input)
+- What does everyone **wait on**? (often "that one person" or "that one step")
 - What's the **longest step** in the value stream?
 
-Signal: *The constraint is where WIP accumulates and where delays originate.*
+Signal: *Constraint = where WIP accumulates and delays originate.*
 
 ### Step 2: Exploit the Constraint
-Get maximum throughput from the constraint **without spending money or making major changes first.**
+Maximize throughput **without spending money or major changes first.**
 
-**Tactics:**
-- Eliminate waste at the constraint (don't let it sit idle, don't let it process low-value work)
-- Protect it with a buffer upstream (so it's never starved)
-- Remove it from non-constraint work (free it up to do only what only it can do)
-- Reduce defects feeding into it (rework at the constraint is doubly expensive)
+- Eliminate waste at the constraint (no idle time, no low-value work)
+- Buffer upstream (never starved)
+- Offload non-constraint work
+- Reduce defects feeding in (rework at the constraint is doubly expensive)
 
 ### Step 3: Subordinate Everything Else
-Make all non-constraint steps **serve the constraint**, not optimize themselves.
+Non-constraint steps **serve the constraint**, not optimize themselves. A non-constraint at 100% is harmful if it floods the constraint with WIP.
 
-This is counterintuitive: a non-constraint running at 100% is harmful if it floods the constraint with WIP.
-
-**Key shift**: Stop measuring local efficiency. Measure **constraint throughput** as the system metric.
+**Shift**: Stop measuring local efficiency. Measure **constraint throughput**.
 
 ### Step 4: Elevate the Constraint
-If steps 2–3 aren't enough, now invest: add capacity, add people, add tooling — but only at the constraint.
+If 2–3 insufficient, invest: capacity, people, tooling — only at the constraint.
 
 ### Step 5: Repeat
-Once the constraint is resolved, it moves. Find the new one. Never let inertia become the constraint.
+Constraint moves once resolved. Find the new one. Don't let inertia become the constraint.
 
 ---
 
