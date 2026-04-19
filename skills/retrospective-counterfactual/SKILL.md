@@ -5,69 +5,59 @@ description: Apply retrospective and counterfactual reasoning whenever something
 
 # Retrospective & Counterfactual Reasoning
 
-**Core principle**: Looking backwards is not about blame — it's about extracting signal. A well-run retrospective or post-mortem separates what was predictable from what was genuinely unforeseeable, identifies what conditions made failure likely, and generates changes that prevent the same failure mode from recurring under different surface conditions.
-
-Counterfactual reasoning — "what would have happened if we'd done X?" — is the backward-looking complement to the forward-looking pre-mortem. Both require the same discipline: rigorous causal thinking, not narrative construction after the fact.
+Looking backwards extracts signal, not blame. Separate predictable from unforeseeable, identify conditions that made failure likely, generate changes that prevent the same failure mode from recurring under different surface conditions. Counterfactual reasoning ("what would have happened if we'd done X?") is the backward-looking complement to the pre-mortem — both require rigorous causal thinking, not post-hoc narrative.
 
 ---
 
 ## Two Modes
 
 ### Mode 1: Post-Mortem / Retrospective
-*Something happened. What caused it and what do we change?*
-
-Focus: Causal reconstruction, systemic learning, forward-looking change.
+*Something happened. What caused it, what do we change?* Focus: causal reconstruction, systemic learning, forward-looking change.
 
 ### Mode 2: Counterfactual Analysis
-*What would have happened if we'd made a different decision?*
-
-Focus: Decision quality assessment, calibration, learning from near-misses and successes.
+*What would have happened with a different decision?* Focus: decision quality, calibration, learning from near-misses and successes.
 
 ---
 
 ## Mode 1: Post-Mortem Process
 
 ### Step 1: Reconstruct the Timeline
-Before analyzing, establish what actually happened — in sequence, with timestamps where possible:
-- What was the state before the event?
-- What were the triggering conditions?
-- What was the sequence of events?
-- What was the decision point (if any) where the outcome could have diverged?
+Establish what happened in sequence with timestamps where possible:
+- State before the event
+- Triggering conditions
+- Sequence of events
+- Decision points where the outcome could have diverged
 
-**Separate facts from interpretations** at this stage. "The deployment failed at 14:32" is a fact. "The team didn't notice in time" is an interpretation — needs evidence.
+**Separate facts from interpretations**. "Deployment failed at 14:32" is a fact. "Team didn't notice in time" is interpretation — needs evidence.
 
 ### Step 2: Identify Contributing Causes
-Use layered causal analysis:
-- **Immediate cause**: The direct trigger (the thing that "broke")
-- **Enabling conditions**: What made the system vulnerable to that trigger
-- **Root causes**: The systemic conditions that produced the enabling conditions
-- **Contributing factors**: Context that increased probability or severity
+Layered causal analysis:
+- **Immediate cause**: the direct trigger
+- **Enabling conditions**: what made the system vulnerable
+- **Root causes**: systemic conditions that produced the enabling conditions
+- **Contributing factors**: context that increased probability/severity
 
-Avoid stopping at the immediate cause — it's almost always the least actionable finding.
+Don't stop at immediate cause — it's almost always the least actionable finding.
 
-**Avoid blame by design**: Replace "person X failed to do Y" with "the system didn't ensure Y happened." People operate within systems. The question is what in the system failed.
+**Avoid blame by design**: Replace "person X failed to do Y" with "the system didn't ensure Y happened." People operate within systems.
 
 ### Step 3: Classify What Was Knowable
-For each contributing cause, ask:
-- **Predictable**: Was this foreseeable given available information? Was it foreseen by anyone?
-- **Detectable**: Could monitoring or process have surfaced this earlier?
-- **Preventable**: Was there a plausible intervention that would have avoided this?
-- **Unforeseeable**: Genuinely novel or outside reasonable expectation?
+For each cause:
+- **Predictable**: foreseeable given available information? Foreseen by anyone?
+- **Detectable**: could monitoring/process have surfaced this earlier?
+- **Preventable**: was there a plausible intervention?
+- **Unforeseeable**: genuinely novel or outside reasonable expectation?
 
-This classification determines the quality of the corrective actions:
+Classification determines corrective action quality:
 - Predictable + Preventable = highest-priority systemic fix
-- Predictable + Not Prevented = process or incentive problem
+- Predictable + Not Prevented = process/incentive problem
 - Detectable but Not Detected = monitoring/observability problem
-- Genuinely Unforeseeable = resilience and recovery design problem
+- Genuinely Unforeseeable = resilience/recovery design problem
 
 ### Step 4: Generate Corrective Actions
-For each systemic finding:
-- What specifically changes?
-- What does "done" look like?
-- Who owns it?
-- How do we verify it worked?
+For each systemic finding: what changes, what "done" looks like, who owns it, how to verify it worked.
 
-**Corrective action quality test**: If the same team, same system, same situation — does this change prevent the same failure? If yes only for this exact scenario, the action is too narrow.
+**Quality test**: Same team, same system, same situation — does this change prevent the same failure? If yes only for this exact scenario, the action is too narrow.
 
 ---
 
@@ -76,31 +66,32 @@ For each systemic finding:
 ### The Core Question
 *"What would have happened if decision D had been different?"*
 
-This requires:
+Requires:
 1. Identifying the specific decision or condition to vary
 2. Reasoning about the causal chain that would have followed
-3. Being honest about uncertainty — counterfactuals are inherently speculative
+3. Honesty about uncertainty — counterfactuals are inherently speculative
 
 ### Counterfactual Validity Rules
-A useful counterfactual is:
-- **Tractable**: The alternative decision was actually available (not hindsight-only)
-- **Isolated**: Only one factor is varied at a time (otherwise you're comparing incomparables)
-- **Causal**: The alternative path follows from the changed decision through a plausible causal mechanism
+Useful counterfactual:
+- **Tractable**: alternative was actually available (not hindsight-only)
+- **Isolated**: one factor varied at a time
+- **Causal**: alternative path follows from the changed decision through a plausible mechanism
 
-A poor counterfactual:
-- Assumes information that wasn't available at decision time
+Poor counterfactual:
+- Assumes information unavailable at decision time
 - Changes multiple things simultaneously
-- Is constructed to justify a preferred conclusion
+- Constructed to justify a preferred conclusion
 
 ### Decision Quality vs. Outcome Quality
-A critical distinction:
 
-**Bad decision, good outcome**: Survivorship bias risk. "It worked" doesn't validate the decision process.
-**Good decision, bad outcome**: The process was right; the outcome was unlucky. Don't over-update on this.
-**Bad decision, bad outcome**: The outcome was predictable.
-**Good decision, bad outcome (systematically)**: The model of the world was wrong — update the model.
+| Decision | Outcome | Lesson |
+|----------|---------|--------|
+| Bad | Good | Survivorship bias risk. "It worked" doesn't validate the process. |
+| Good | Bad | Process right, outcome unlucky. Don't over-update. |
+| Bad | Bad | Outcome was predictable. |
+| Good | Bad (systematic) | Model of the world was wrong — update the model. |
 
-Evaluate decisions by the quality of reasoning *at the time*, not by the outcome.
+Evaluate decisions by quality of reasoning *at the time*, not by outcome.
 
 ---
 
@@ -149,17 +140,12 @@ For each decision point worth examining:
 
 ## Anti-Patterns to Avoid
 
-**Hindsight bias**: "We should have known" — without asking whether the information was actually available and acted on at the time.
-
-**Blame focus**: Naming people as causes rather than the systemic conditions that made their actions likely.
-
-**Single-cause narrative**: Incidents almost always have multiple contributing causes. A single neat story is usually incomplete.
-
-**Action theater**: Generating long lists of corrective actions, few of which get done. Better: 2–3 high-quality, owned, verified changes.
-
-**Success blindness**: Only running retrospectives on failures. Successes with good outcomes due to luck are as worth examining as failures.
-
-**Stopping at the immediate cause**: Fixing the last link in the chain without addressing the conditions that made the chain possible.
+- **Hindsight bias**: "We should have known" — without asking whether the information was actually available and acted on.
+- **Blame focus**: Naming people as causes rather than systemic conditions that made their actions likely.
+- **Single-cause narrative**: Incidents have multiple contributing causes. A neat single story is usually incomplete.
+- **Action theater**: Long lists of corrective actions, few of which get done. Better: 2–3 high-quality, owned, verified changes.
+- **Success blindness**: Only running retros on failures. Lucky successes are as worth examining as failures.
+- **Stopping at immediate cause**: Fixing the last link without addressing what made the chain possible.
 
 ---
 
