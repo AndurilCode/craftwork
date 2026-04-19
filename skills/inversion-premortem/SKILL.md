@@ -3,9 +3,9 @@ name: inversion-premortem
 description: Apply inversion and pre-mortem thinking whenever the user asks to evaluate a plan, strategy, architecture, feature, or decision before execution — or when they want to stress-test something that already exists. Triggers on phrases like "is this a good idea?", "what could go wrong?", "review this plan", "should we do this?", "are we missing anything?", "stress-test this", "what are the risks?", or any request to validate a decision or design. Use this skill proactively — if the user is about to commit to something, this skill should be consulted even if they don't ask for it explicitly.
 ---
 
-# Inversion & Pre-mortem Skill
+# Inversion & Pre-mortem
 
-**Core principle**: Instead of asking "how do we make this succeed?", ask "how does this definitely fail?" — then work backwards. Surfaces hidden assumptions, fragile dependencies, and blind spots that forward-thinking analysis misses.
+**Core principle**: Instead of asking "how do we make this succeed?", ask "how does this definitely fail?" — then work backwards. Surfaces hidden assumptions, fragile dependencies, and blind spots forward analysis misses.
 
 ---
 
