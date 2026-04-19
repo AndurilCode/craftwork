@@ -5,18 +5,18 @@ description: "Apply financial modeling whenever the user needs quantitative rigo
 
 # Financial Modeling
 
-**Core principle**: Every business decision has a financial structure that can be made explicit. Decompose the decision into revenue drivers, cost drivers, and timing — then stress-test the assumptions that swing the outcome. The model is not the answer; the sensitivity analysis is.
+**Core principle**: Decompose the decision into revenue drivers, cost drivers, and timing — then stress-test the assumptions that swing the outcome. The model isn't the answer; the sensitivity analysis is.
 
 ---
 
 ## When to Use This Skill
 
-- The user is evaluating whether to invest in a project, product, or initiative
+- Evaluating whether to invest in a project, product, or initiative
 - A pricing decision needs analytical backing
-- Someone asks "is this profitable?" or "what's the ROI?" without a structured model
+- "Is this profitable?" or "what's the ROI?" without a structured model
 - A decision-synthesis analysis needs financial criteria and scores
-- A fermi-estimation output needs to be refined into a rigorous financial model
-- The user is comparing options with different cost structures or revenue timelines
+- A fermi-estimation output needs refining into a rigorous model
+- Comparing options with different cost structures or revenue timelines
 
 ---
 
@@ -24,94 +24,94 @@ description: "Apply financial modeling whenever the user needs quantitative rigo
 
 ### Step 1: Frame the Financial Question
 
-Define precisely what financial outcome is being evaluated and for whom.
+- What's the decision? (invest/don't, A vs. B, price X vs. Y)
+- Time horizon? (match to decision's natural lifecycle)
+- Who bears costs, who captures value?
+- Discount rate? (cost of capital, opportunity cost, or stated hurdle rate)
 
-- What is the decision? (invest/don't invest, option A vs. B, price at X vs. Y)
-- What is the time horizon? (months, years — match to the decision's natural lifecycle)
-- Who bears the costs and who captures the value?
-- What discount rate is appropriate? (cost of capital, opportunity cost, or a stated hurdle rate)
-
-If the inputs are rough estimates, accept them from `fermi-estimation` via Contract M and flag which ones need validation.
+If inputs are rough, accept them from `fermi-estimation` via Contract M and flag what needs validation.
 
 ### Step 2: Map Unit Economics
 
-Decompose to the smallest repeatable economic unit — per customer, per transaction, per unit sold, per API call.
+Decompose to the smallest repeatable economic unit — per customer, transaction, unit sold, API call.
 
 - **Revenue per unit**: price × volume, or recurring revenue × retention
-- **Cost per unit**: direct costs (COGS, marginal cost) + allocated indirect costs
-- **Contribution margin**: revenue per unit minus cost per unit
-- **Break-even volume**: fixed costs divided by contribution margin
+- **Cost per unit**: direct (COGS, marginal) + allocated indirect
+- **Contribution margin**: revenue − cost per unit
+- **Break-even volume**: fixed costs / contribution margin
 
-If the business model does not have clean unit economics (e.g., platform with network effects), identify the value driver (e.g., users, transactions, data volume) and model economics around that driver.
+If clean unit economics don't exist (e.g., platform with network effects), identify the value driver (users, transactions, data volume) and model around it.
 
 ### Step 3: Build the Cost-Benefit Table
 
-Enumerate all costs and benefits explicitly. Categorize each:
+Enumerate explicitly. Categorize each:
 
 - **Direct costs**: engineering time, infrastructure, licensing, materials
-- **Indirect costs**: opportunity cost of the team, coordination overhead, technical debt
+- **Indirect costs**: opportunity cost, coordination overhead, technical debt
 - **Direct benefits**: revenue, cost savings, efficiency gains
-- **Indirect benefits**: option value (enables future moves), learning value, strategic positioning
+- **Indirect benefits**: option value, learning, strategic positioning
 
-Discount future values to present using the rate from Step 1. Compute:
-- **NPV** (Net Present Value): sum of discounted net cash flows
-- **IRR** (Internal Rate of Return): the discount rate at which NPV = 0
+Discount future to present using Step 1's rate. Compute:
+- **NPV**: sum of discounted net cash flows
+- **IRR**: discount rate at which NPV = 0
 - **Payback period**: when cumulative net cash flow turns positive
 
 ### Step 4: Model Scenarios
 
-Build three cases by varying key assumptions:
+Three cases by varying key assumptions:
 
-- **Base case**: most likely values for each assumption
-- **Upside case**: optimistic but plausible values (not best-case fantasy)
-- **Downside case**: pessimistic but plausible values (not worst-case catastrophe)
+- **Base**: most likely
+- **Upside**: optimistic but plausible (not best-case fantasy)
+- **Downside**: pessimistic but plausible (not worst-case catastrophe)
 
-For each scenario, recompute NPV, payback, and contribution margin. The spread between upside and downside is itself informative — a wide spread means high uncertainty and lower confidence.
+Recompute NPV, payback, contribution margin per scenario. Wide upside-downside spread = high uncertainty, lower confidence.
 
 ### Step 5: Run Sensitivity Analysis
 
 Identify which assumption, if wrong, changes the decision.
 
-- Vary each key assumption independently by +/- 25% and +/- 50%
-- Record which assumption produces the largest swing in NPV
-- That assumption is the **key financial risk** — it deserves the most validation effort
+- Vary each key assumption ±25% and ±50%
+- Record the largest NPV swing
+- That's the **key financial risk** — deserves the most validation effort
 
-If two assumptions interact (e.g., price and volume are correlated), model the interaction explicitly rather than treating them as independent.
+If two assumptions interact (e.g., price and volume), model the interaction explicitly.
 
 ### Step 6: Produce Financial Criteria for Decision-Synthesis
 
-When this analysis feeds into `decision-synthesis` via Contract G, translate the financial findings into decision criteria:
+Feeding `decision-synthesis` via Contract G, translate findings into criteria:
 
-- Convert financial thresholds into must-have or want-to-have criteria (e.g., "NPV > $0" is must-have; "payback < 18 months" is want-to-have)
-- Score each option on a 1-5 scale based on financial performance
-- Flag the key financial risk and the scenario spread as confidence modifiers
-- Assign weight suggestions based on how financially dominant the decision is
+- Convert thresholds to must-have or want-to-have ("NPV > $0" must-have; "payback < 18 months" want-to-have)
+- Score each option 1-5 on financial performance
+- Flag key financial risk and scenario spread as confidence modifiers
+- Suggest weights based on how financially dominant the decision is
 
 ---
 
 ## Output Format
 
 ### 🎯 Decision Under Evaluation
-- **Decision**: [what is being decided]
+- **Decision**: [what's being decided]
 - **Time horizon**: [N years/months]
 - **Discount rate**: [X% — with justification]
 
 ### 📋 Key Financial Assumptions
+
 | Assumption | Value | Source | Confidence |
 |-----------|-------|--------|------------|
-| [e.g., Monthly active users Y1] | [value] | [fermi-estimation / market data / internal] | [H/M/L] |
-| [e.g., Price per unit] | [value] | [source] | [H/M/L] |
-| [e.g., Infrastructure cost per user] | [value] | [source] | [H/M/L] |
+| [Monthly active users Y1] | [value] | [fermi/market/internal] | H/M/L |
+| [Price per unit] | [value] | [source] | H/M/L |
+| [Infra cost per user] | [value] | [source] | H/M/L |
 
 ### 📊 Unit Economics
 - **Revenue per unit**: [value]
 - **Cost per unit**: [value]
-- **Contribution margin**: [value] ([percentage]%)
+- **Contribution margin**: [value] ([%])
 - **Break-even volume**: [value]
 
 ### ⚖️ Cost-Benefit Summary
-| Category | Item | Year 1 | Year 2 | Year 3 | NPV |
-|----------|------|--------|--------|--------|-----|
+
+| Category | Item | Y1 | Y2 | Y3 | NPV |
+|----------|------|----|----|----|-----|
 | Cost | [item] | [value] | [value] | [value] | [value] |
 | Benefit | [item] | [value] | [value] | [value] | [value] |
 | **Net** | | [value] | [value] | [value] | **[NPV]** |
@@ -120,26 +120,28 @@ When this analysis feeds into `decision-synthesis` via Contract G, translate the
 - **Payback period**: [N months/years]
 
 ### 📊 Scenario Analysis
+
 | Scenario | NPV | Payback | Key Assumption Changed |
 |----------|-----|---------|----------------------|
-| Downside | [value] | [value] | [assumption at pessimistic value] |
+| Downside | [value] | [value] | [assumption at pessimistic] |
 | Base | [value] | [value] | Most likely values |
-| Upside | [value] | [value] | [assumption at optimistic value] |
+| Upside | [value] | [value] | [assumption at optimistic] |
 
 ### ⚠️ Sensitivity Analysis
+
 | Assumption | -50% | -25% | Base | +25% | +50% | NPV Swing |
 |-----------|------|------|------|------|------|-----------|
-| [key assumption 1] | [NPV] | [NPV] | [NPV] | [NPV] | [NPV] | [max-min] |
-| [key assumption 2] | [NPV] | [NPV] | [NPV] | [NPV] | [NPV] | [max-min] |
+| [key 1] | [NPV] | [NPV] | [NPV] | [NPV] | [NPV] | [max-min] |
+| [key 2] | [NPV] | [NPV] | [NPV] | [NPV] | [NPV] | [max-min] |
 
 - **Key financial risk**: [the assumption that, if wrong, changes the answer]
 
 ### 🏆 Recommendation
-- **Financial verdict**: [invest / do not invest / conditional on validating X]
-- **Confidence**: [High / Medium / Low — informed by scenario spread and sensitivity]
+- **Financial verdict**: [invest / don't / conditional on validating X]
+- **Confidence**: H/M/L — informed by scenario spread and sensitivity
 - **Decision-synthesis criteria** (Contract G):
-  - [criterion, e.g., "NPV > $X over 3 years"] — type: [must-have/want-to-have], weight suggestion: [N]
-  - [criterion, e.g., "Payback < 18 months"] — type: [must-have/want-to-have], weight suggestion: [N]
+  - ["NPV > $X over 3 years"] — type: must/want, weight: [N]
+  - ["Payback < 18 months"] — type: must/want, weight: [N]
 - **Financial scores per option** (if comparing):
   - Option A: NPV = $X, payback = Y months, score = [1-5]
   - Option B: NPV = $X, payback = Y months, score = [1-5]
@@ -148,24 +150,24 @@ When this analysis feeds into `decision-synthesis` via Contract G, translate the
 
 ## Common Traps
 
-**False precision**: Reporting NPV to the dollar when inputs are order-of-magnitude estimates. Match output precision to input precision — if costs are +/- 50%, the NPV is too.
+**False precision**: Reporting NPV to the dollar when inputs are order-of-magnitude. Match output precision to input precision.
 
-**Ignoring opportunity cost**: Comparing an investment to zero instead of to the next-best use of the same resources. The baseline is not "do nothing" — it is "do the next-best thing."
+**Ignoring opportunity cost**: Comparing investment to zero instead of next-best use of the same resources. The baseline is "do the next-best thing," not "do nothing."
 
-**Hockey stick projections**: Revenue grows exponentially while costs stay flat. Challenge any model where margins improve dramatically over time without a structural reason.
+**Hockey stick projections**: Revenue grows exponentially, costs stay flat. Challenge any model where margins improve dramatically without a structural reason.
 
-**Sunk cost inclusion**: Including already-spent costs in forward-looking analysis. Only future cash flows matter for the decision. Past spending is irrelevant to whether continuing is worthwhile.
+**Sunk cost inclusion**: Already-spent costs in forward-looking analysis. Only future cash flows matter.
 
-**Single-scenario thinking**: Presenting only the base case. Without upside/downside, stakeholders cannot assess risk. The scenario spread is as important as the point estimate.
+**Single-scenario thinking**: Only the base case. Without upside/downside, stakeholders can't assess risk.
 
-**Trusting LLM arithmetic**: An LLM applying this skill will structure the model correctly but may compute NPV, IRR, or sensitivity figures inaccurately. Always verify calculations in a spreadsheet or calculator. Use this skill for structure, assumptions, and logic — not as a replacement for a real financial model.
+**Trusting LLM arithmetic**: An LLM applying this skill structures the model correctly but may compute NPV/IRR/sensitivity inaccurately. Verify in a spreadsheet. Use this skill for structure, assumptions, and logic — not as a real financial model replacement.
 
 ---
 
 ## Thinking Triggers
 
-- *"What are the unit economics of this at the atomic level?"*
+- *"What are the unit economics at the atomic level?"*
 - *"Which single assumption, if wrong by 2x, flips this decision?"*
-- *"What is the opportunity cost — what else could these resources do?"*
-- *"Does the upside-downside spread change my confidence in the recommendation?"*
-- *"Am I modeling what I hope will happen, or what is most likely to happen?"*
+- *"What's the opportunity cost — what else could these resources do?"*
+- *"Does the upside-downside spread change my confidence?"*
+- *"Am I modeling what I hope, or what's most likely?"*

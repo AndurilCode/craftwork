@@ -5,18 +5,18 @@ description: "Apply architecture evaluation whenever the user faces a system des
 
 # Architecture Evaluation
 
-**Core principle**: Every architecture decision is a trade-off between quality attributes — optimizing for one degrades another. Make the trade-offs explicit, document the decision in an ADR, and assess how reversible the choice is. The best architecture is not the most elegant; it is the one whose trade-offs the team can live with.
+**Core principle**: Every architecture decision trades quality attributes — optimizing one degrades another. Make trade-offs explicit, document in an ADR, and assess reversibility. The best architecture is the one whose trade-offs the team can live with.
 
 ---
 
 ## When to Use This Skill
 
-- The user is choosing between system architectures or technology stacks
-- A design review needs structured evaluation rather than opinion
-- Someone is about to make a commitment (database, messaging pattern, deployment model) without documenting trade-offs
-- An Architecture Decision Record (ADR) needs to be produced
-- The user asks "should we use X?" where X is an architecture pattern or technology
-- A `systems-thinking` analysis has surfaced structural concerns that need architecture-level resolution
+- Choosing between system architectures or technology stacks
+- Design review needs structured evaluation, not opinion
+- About to commit (database, messaging pattern, deployment model) without documenting trade-offs
+- An ADR needs to be produced
+- "Should we use X?" where X is an architecture pattern or technology
+- A `systems-thinking` analysis surfaced structural concerns needing architecture-level resolution
 
 ---
 
@@ -24,85 +24,83 @@ description: "Apply architecture evaluation whenever the user faces a system des
 
 ### Step 1: Establish Decision Context
 
-Define what is being decided, why now, and what constrains the decision.
-
-- **Decision scope**: What specific architecture choice is on the table? (e.g., "monolith vs. microservices for the order system" — not "system design" in general)
-- **Decision driver**: Why is this decision being made now? (new requirement, scaling problem, tech debt, team growth)
-- **Constraints**: What is non-negotiable? Budget ceiling, team size and skills, compliance requirements, existing infrastructure that must be preserved, timeline
-- **Stakeholders**: Who is affected by this decision? (engineering, ops, product, security, finance)
+- **Decision scope**: Specific choice on the table (e.g., "monolith vs. microservices for the order system" — not "system design" generally)
+- **Decision driver**: Why now? (new requirement, scaling problem, tech debt, team growth)
+- **Constraints**: Non-negotiables — budget, team size and skills, compliance, existing infra to preserve, timeline
+- **Stakeholders**: engineering, ops, product, security, finance
 
 ### Step 2: Assess Quality Attributes
 
-For each quality attribute relevant to the system, assess the current state and how each option affects it.
+For each relevant attribute, assess current state and how each option affects it.
 
-Key quality attributes (evaluate only those relevant — not every system cares about all of these):
-- **Scalability**: Can the system handle 10x load? What is the scaling unit?
-- **Reliability**: What is the failure mode? What is the blast radius of a component failure?
+Key attributes (evaluate only those relevant):
+- **Scalability**: 10x load? Scaling unit?
+- **Reliability**: Failure mode? Blast radius?
 - **Performance**: Latency, throughput, resource efficiency under expected and peak load
-- **Security**: Attack surface, data protection, authentication/authorization boundaries
-- **Maintainability**: How easy is it to change? How many teams need to coordinate for a typical change?
+- **Security**: Attack surface, data protection, auth boundaries
+- **Maintainability**: Change effort? How many teams must coordinate for a typical change?
 - **Operability**: Deployment complexity, observability, incident response, on-call burden
-- **Cost**: Infrastructure cost, development cost, operational cost over the time horizon
+- **Cost**: Infra, development, operational over the time horizon
 
-Rate each option against each relevant attribute. Use a simple scale: Strong / Adequate / Weak — with a one-sentence justification for each rating.
+Rate each option per attribute: Strong / Adequate / Weak — with one-sentence justification.
 
 ### Step 3: Map Trade-Offs
 
-Identify which quality attributes are in tension for this decision. Architecture trade-offs are rarely "good vs. bad" — they are "more of X means less of Y."
+Architecture trade-offs are rarely "good vs. bad" — they are "more X = less Y."
 
-Common trade-off pairs:
-- Consistency vs. availability (CAP theorem)
+Common pairs:
+- Consistency vs. availability (CAP)
 - Simplicity vs. flexibility
 - Performance vs. maintainability
 - Development speed vs. operational complexity
 - Cost vs. reliability
 
-For each trade-off, state which direction each option leans and why. This is the core of architecture evaluation — surfacing the tensions that make the decision hard.
+For each, state which way each option leans and why. This is the core of the evaluation.
 
 ### Step 4: Evaluate Architecture Options
 
-For each candidate architecture, assess:
+For each candidate:
+- **Fit to constraints**: Satisfies all non-negotiables from Step 1?
+- **Quality attribute profile**: Strong/weak where (from Step 2)?
+- **Adoption preconditions**: What must be true to succeed? (microservices need CI/CD maturity, observability, team autonomy)
+- **Migration path**: Incremental or big-bang cutover?
 
-- **Fit to constraints**: Does it satisfy all non-negotiables from Step 1?
-- **Quality attribute profile**: Where is it strong and where is it weak (from Step 2)?
-- **Adoption preconditions**: What must be true for this option to succeed? (e.g., microservices require CI/CD maturity, observability tooling, team autonomy)
-- **Migration path**: If replacing an existing system, what does the migration look like? Can it be incremental or does it require a big-bang cutover?
-
-Eliminate options that violate constraints. For remaining options, the comparison is between their quality attribute profiles and trade-off positions.
+Eliminate options that violate constraints. Compare remaining via attribute profiles and trade-off positions.
 
 ### Step 5: Assess Evolutionary Characteristics
 
-Evaluate how this decision ages over time — what gets locked in and what stays flexible.
+How does this decision age?
 
-- **Reversibility**: How hard is it to change this decision in 1 year? 3 years? What is the cost of switching?
-- **Lock-in vectors**: Vendor lock-in, data model lock-in, API contract lock-in, team knowledge lock-in
-- **Migration cost**: If the decision proves wrong, what does unwinding it cost in time and money?
-- **Optionality**: Does this option open or close future architectural moves? Prefer options that preserve optionality when the decision is uncertain
+- **Reversibility**: Hard to change in 1 year? 3 years? Switching cost?
+- **Lock-in vectors**: Vendor, data model, API contract, team knowledge
+- **Migration cost if wrong**: Time and money to unwind
+- **Optionality**: Does this open or close future moves? Prefer optionality-preserving when uncertain
 
 ### Step 6: Write the Architecture Decision Record
 
-Produce a structured ADR that serves as both documentation and handoff to `execution-planning` via Contract E.
+Produce an ADR — also serves as handoff to `execution-planning` via Contract E.
 
-The ADR follows a standard format:
-- **Title**: Short, descriptive name for the decision
+Standard format:
+- **Title**: Short, descriptive
 - **Status**: Proposed / Accepted / Deprecated / Superseded
-- **Context**: The situation, constraints, and forces driving the decision (from Steps 1-3)
-- **Decision**: The chosen option and the primary reasons for choosing it
-- **Consequences**: What follows from this decision — both positive and negative. Include operational implications, team implications, and known risks
-- **Alternatives rejected**: What was considered and why it was not chosen
+- **Context**: Situation, constraints, forces (Steps 1-3)
+- **Decision**: Chosen option + primary reasons
+- **Consequences**: Positive, negative, operational, team, known risks
+- **Alternatives rejected**: What was considered, why not chosen
 
 ---
 
 ## Output Format
 
 ### 🎯 Decision Context
-- **Decision**: [what is being decided]
-- **Driver**: [why this decision is being made now]
-- **Constraints**: [non-negotiables — budget, team, compliance, timeline, existing systems]
+- **Decision**: [what's being decided]
+- **Driver**: [why now]
+- **Constraints**: [non-negotiables]
 
 ### ⚖️ Quality Attribute Assessment
-| Quality Attribute | Option A | Option B | Option C |
-|------------------|----------|----------|----------|
+
+| Attribute | Option A | Option B | Option C |
+|-----------|----------|----------|----------|
 | Scalability | [Strong/Adequate/Weak — reason] | [rating — reason] | [rating — reason] |
 | Reliability | [rating — reason] | [rating — reason] | [rating — reason] |
 | Maintainability | [rating — reason] | [rating — reason] | [rating — reason] |
@@ -110,57 +108,58 @@ The ADR follows a standard format:
 | Cost | [rating — reason] | [rating — reason] | [rating — reason] |
 
 ### ⚖️ Trade-Off Map
+
 | Trade-Off | Option A leans toward | Option B leans toward |
 |-----------|----------------------|----------------------|
-| [e.g., Simplicity vs. Flexibility] | [direction + why] | [direction + why] |
-| [e.g., Cost vs. Reliability] | [direction + why] | [direction + why] |
+| [Simplicity vs. Flexibility] | [direction + why] | [direction + why] |
+| [Cost vs. Reliability] | [direction + why] | [direction + why] |
 
 ### 📋 Architecture Decision Record
-- **Title**: [ADR-NNN: Decision title]
-- **Status**: [Proposed / Accepted]
-- **Context**: [situation, forces, constraints — from Steps 1-3]
-- **Decision**: [chosen option + primary reasons]
+- **Title**: [ADR-NNN: title]
+- **Status**: Proposed / Accepted
+- **Context**: [from Steps 1-3]
+- **Decision**: [chosen option + reasons]
 - **Consequences**:
   - Positive: [what improves]
-  - Negative: [what degrades or becomes harder]
-  - Operational: [deployment, monitoring, on-call implications]
+  - Negative: [what degrades]
+  - Operational: [deployment, monitoring, on-call]
 - **Alternatives rejected**:
-  - [Option name]: rejected because [reason]
+  - [Option]: rejected because [reason]
 
 ### 🔄 Evolutionary Assessment
-- **Reversibility**: [Easy / Moderate / Difficult — with justification]
+- **Reversibility**: Easy / Moderate / Difficult — [justification]
 - **Lock-in risks**: [vendor, data model, API, team knowledge]
-- **Migration cost if wrong**: [estimated effort to switch]
-- **Optionality**: [what future moves does this enable or foreclose?]
+- **Migration cost if wrong**: [estimated effort]
+- **Optionality**: [future moves enabled or foreclosed]
 
 ### 📋 Execution-Planning Handoff (Contract E)
-- **Decision**: [the architecture decision from the ADR]
-- **Constraints**: [non-negotiable quality attributes, budget, team size, compliance]
-- **Lock-in risks**: [from evolutionary assessment — what is hard to change later]
-- **Migration requirements**: [if replacing existing architecture, what must be migrated]
-- **Sequencing hints**: [what should be built first based on dependencies]
+- **Decision**: [from ADR]
+- **Constraints**: [non-negotiable attributes, budget, team, compliance]
+- **Lock-in risks**: [from evolutionary assessment]
+- **Migration requirements**: [if replacing existing]
+- **Sequencing hints**: [build-first based on dependencies]
 - **Known risks**: [from inversion-premortem stress test, if run]
 
 ---
 
 ## Common Traps
 
-**Resume-Driven Architecture**: Choosing a technology because the team wants to learn it, not because it fits the problem. Microservices, Kubernetes, and event sourcing are powerful — and unnecessary for most systems.
+**Resume-Driven Architecture**: Choosing tech because the team wants to learn it, not because it fits. Microservices, Kubernetes, event sourcing are powerful — and unnecessary for most systems.
 
-**Ignoring adoption preconditions**: Microservices require CI/CD maturity, observability, and team autonomy. Event-driven architecture requires idempotency discipline and debugging tooling. Evaluate whether the team can operate the architecture, not just build it.
+**Ignoring adoption preconditions**: Microservices need CI/CD, observability, team autonomy. Event-driven needs idempotency discipline and debugging tooling. Evaluate whether the team can *operate* it, not just build it.
 
-**Optimizing for the wrong attribute**: Designing for millions of users when you have hundreds. Scalability is not the most important quality attribute for most systems — maintainability and operability usually matter more.
+**Optimizing for the wrong attribute**: Designing for millions when you have hundreds. Maintainability and operability usually matter more than scalability.
 
-**Irreversibility blindness**: Treating all decisions as equally weighted. A database choice locks in for years; a caching strategy can be changed in a sprint. Spend evaluation effort proportional to reversibility cost.
+**Irreversibility blindness**: Treating all decisions as equally weighted. Database choice locks in for years; caching strategy changes in a sprint. Spend evaluation effort proportional to reversibility cost.
 
-**Comparison without constraints**: Evaluating options in the abstract instead of against the specific constraints of this team, this budget, and this timeline. The best architecture in theory is irrelevant if the team cannot build or operate it.
+**Comparison without constraints**: Evaluating in the abstract instead of against this team, this budget, this timeline. The best architecture in theory is irrelevant if the team can't build or operate it.
 
 ---
 
 ## Thinking Triggers
 
-- *"What quality attributes are in tension here, and which side are we choosing?"*
-- *"What must be true about our team and infrastructure for this option to succeed?"*
-- *"How hard is it to reverse this decision in two years?"*
-- *"Am I choosing this because it fits the problem, or because it is intellectually interesting?"*
-- *"What does the migration path look like — incremental or big-bang?"*
+- *"What quality attributes are in tension, and which side are we choosing?"*
+- *"What must be true about our team and infra for this option to succeed?"*
+- *"How hard is it to reverse this in two years?"*
+- *"Am I choosing this because it fits the problem, or because it's intellectually interesting?"*
+- *"Migration path — incremental or big-bang?"*

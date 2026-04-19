@@ -9,8 +9,8 @@ description: Build automation scripts and pipelines that use coding-agent CLIs (
 
 Pick the category before the tool:
 
-1. **Local execution** — agent runs on your machine or CI runner against cwd. Synchronous, output to stdout, you decide what happens. For anything that produces artifacts other than PRs (reports, JSON, edits, batch transforms).
-2. **Delegated cloud execution** — dispatch to a cloud agent that works asynchronously and opens a PR. For ticket/issue/webhook-triggered "implement this and open a PR" workflows.
+1. **Local execution** — agent runs on your machine or CI runner, synchronous, output to stdout. For artifacts other than PRs (reports, JSON, edits, batch transforms).
+2. **Delegated cloud execution** — dispatch to a cloud agent that opens a PR asynchronously. For ticket/issue/webhook-triggered "implement and open a PR" workflows.
 
 | CLI | Headless invocation | Reference |
 |-----|--------------------|-----------|
@@ -20,23 +20,23 @@ Pick the category before the tool:
 | GitHub Copilot CLI | `copilot -p "<prompt>" --allow-all-tools --autopilot` | `references/copilot.md` |
 | `gh agent-task` (cloud) | `gh agent-task create "<description>" --base main` | `references/github-agent-task.md` |
 
-The two can be combined — `gh agent-task` opens the PR, a local CLI reviews it (see cookbook). **Default to Claude Code** unless the user names another. Load the relevant reference when you commit to a CLI.
+Combinable — `gh agent-task` opens the PR, a local CLI reviews it (see cookbook). **Default to Claude Code** unless the user names another. Load the reference when you commit to a CLI.
 
 ## Non-negotiable flags (the checklist)
 
 **Local execution (`claude` / `codex` / `gemini` / `copilot`):**
 
-- [ ] **Deterministic auto mode.** Claude: `acceptEdits` / `dontAsk` / `bypassPermissions`. Codex: `--sandbox <read-only|workspace-write|danger-full-access>`. Gemini: `--approval-mode auto_edit` or `yolo`. Copilot: `--autopilot` + `--allow-all-tools` + `--no-ask-user`. See the auto-mode menu below for the full comparison.
-- [ ] **`--allowedTools` narrow allowlist — the real safety boundary.** Auto mode means "don't pause for approval"; the allowlist defines what the agent can do. Read-only? `"Read,Grep,Glob"`. Dev? `"Read,Edit,Bash(npm test*)"`.
+- [ ] **Deterministic auto mode.** Claude: `acceptEdits` / `dontAsk` / `bypassPermissions`. Codex: `--sandbox <read-only|workspace-write|danger-full-access>`. Gemini: `--approval-mode auto_edit` or `yolo`. Copilot: `--autopilot` + `--allow-all-tools` + `--no-ask-user`. See auto-mode menu below.
+- [ ] **`--allowedTools` narrow allowlist — the real safety boundary.** Auto mode = "don't pause for approval"; the allowlist defines what the agent *can* do. Read-only: `"Read,Grep,Glob"`. Dev: `"Read,Edit,Bash(npm test*)"`.
 - [ ] **`--output-format json`** when the next step is a shell pipeline. Never parse `text` with regex/grep/sed.
-- [ ] **Structured-output constraint** (`--json-schema` for Claude, `--output-schema` for Codex) when output feeds downstream code. Stops the model from drifting into prose / invalid enums so your `jq` pipeline can't silently break.
+- [ ] **Structured-output constraint** (`--json-schema` Claude, `--output-schema` Codex) when output feeds downstream code. Stops drift into prose/invalid enums so `jq` can't silently break.
 - [ ] **Verify success in the JSON** (`is_error`, `subtype`, `errors[]`, `permission_denials[]`), not just exit code. All four CLIs can exit 0 on recoverable failures.
 
 **Delegated cloud execution (`gh agent-task`):**
 
-- [ ] **Explicit `--base <branch>`.** A PR opened against `develop` when you meant `main` wastes a review cycle.
-- [ ] **`create` exit 0 = "dispatched," not "succeeded" and not "merged."** The agent runs after the command returns. Pair dispatch with a completion watcher (`gh pr list`, `pull_request.opened` webhook, or `--follow` in the foreground).
-- [ ] **`--repo <owner/name>`** when targeting another repo. One dispatcher can address any repo you have access to without cloning.
+- [ ] **Explicit `--base <branch>`.** A PR against `develop` when you meant `main` wastes a review cycle.
+- [ ] **`create` exit 0 = "dispatched," not "succeeded" and not "merged."** The agent runs after the command returns. Pair with a completion watcher (`gh pr list`, `pull_request.opened` webhook, or `--follow`).
+- [ ] **`--repo <owner/name>`** when targeting another repo. One dispatcher addresses any accessible repo without cloning.
 - [ ] **Long ticket bodies via `-F <file>` / stdin**, never inlined as argv. Avoids quoting bugs and arg-length limits.
 
 ## The five canonical shapes
@@ -45,7 +45,7 @@ Shapes 1-4 are local execution; shape 5 is cloud delegation.
 
 ### 1. Single-turn, extract to JSON
 
-Classification, extraction, summarization, triage. Script gets a structured answer it can parse.
+Classification, extraction, summarization, triage. Script gets a parseable structured answer.
 
 ```bash
 result=$(claude -p "Classify the severity of this error: $(cat error.log)" \
@@ -57,7 +57,7 @@ result=$(claude -p "Classify the severity of this error: $(cat error.log)" \
 severity=$(echo "$result" | jq -r '.structured_output.severity')
 ```
 
-No edit tool in the allowlist ⇒ no writes happen, regardless of permission mode. That's how you scope "read-only" in a script.
+No edit tool in the allowlist ⇒ no writes happen, regardless of permission mode. That's how you scope "read-only."
 
 ### 2. Agentic loop on a codebase
 
@@ -71,11 +71,11 @@ claude -p "Run the test suite and fix any failures. Report which tests you chang
   --output-format json > run.json
 ```
 
-`acceptEdits` auto-approves writes. `dontAsk` is stricter (deny-by-default) — better for locked-down CI. The real scope control is still the allowlist.
+`acceptEdits` auto-approves writes. `dontAsk` is stricter (deny-by-default) — better for locked-down CI. Real scope control is still the allowlist.
 
 ### 3. Multi-turn agentic (chained calls sharing state)
 
-Discrete steps with checkpoints — review, decide, act — each seeing prior context.
+Discrete checkpointed steps — review, decide, act — each seeing prior context.
 
 ```bash
 session_id=$(claude -p "Audit the auth module for security issues" \
@@ -94,7 +94,7 @@ First two steps are read-only via narrow tools. `--resume <id>` is explicit and 
 
 ### 4. Parallel fan-out
 
-Same operation against N files/PRs/tickets. Fan out via `xargs -P` or background jobs; collect into a directory, then reduce.
+Same operation across N files/PRs/tickets. Fan out via `xargs -P` or background jobs; collect into a directory, then reduce.
 
 ```bash
 mkdir -p out
@@ -109,11 +109,11 @@ find . -name '*.py' -print0 | xargs -0 -P 4 -I {} bash -c '
 jq -s 'map({file: .session_id, summary: .result})' out/*.json > summary.json
 ```
 
-Bound parallelism (`-P 4`) to dodge rate limits. `timeout` per worker stops one runaway from stalling the batch.
+Bound parallelism (`-P 4`) to dodge rate limits. Per-worker `timeout` stops one runaway from stalling the batch.
 
 ### 5. Delegate to a cloud agent (async PR)
 
-Output = a pull request, no synchronous control needed. Local CLI is a dispatcher.
+Output = a PR, no synchronous control needed. Local CLI is a dispatcher.
 
 ```bash
 # Dispatch into current repo
@@ -137,18 +137,18 @@ gh agent-task create -F ticket.md --base main --follow
 
 ## Principles that save you later
 
-- **Auto-mode menu** — tool restriction, not a plan mode, is how you scope capability in a script:
+- **Auto-mode menu** — tool restriction, not plan mode, is how you scope capability in a script:
 
-  | CLI | Auto + read-only (via tools) | Auto + edits | Auto + unrestricted | Never use in scripts |
-  |-----|-----------------------------|--------------|---------------------|----------------------|
+  | CLI | Auto + read-only (via tools) | Auto + edits | Auto + unrestricted | Never in scripts |
+  |-----|-----------------------------|--------------|---------------------|------------------|
   | Claude | `acceptEdits` + `--allowedTools "Read,Grep,Glob"` | `acceptEdits` / `dontAsk` + edit allowlist | `bypassPermissions` | `plan` / `default` / `auto` |
   | Codex | `--sandbox read-only` | `--full-auto` / `--sandbox workspace-write` | `--sandbox danger-full-access` | — (the flag is the posture) |
   | Gemini | `--approval-mode auto_edit` + read-only policy | `--approval-mode auto_edit` | `--approval-mode yolo` | `plan` / `default` |
   | Copilot | `--autopilot` + narrow `--allow-tool` list | `--autopilot` + `--allow-all-tools` + `--no-ask-user` | `--yolo` / `--allow-all` | `--plan` / `--mode interactive` |
 
-- **Repo context auto-loads** (CLAUDE.md, AGENTS.md, skills, MCP) — usually *why* the agent is competent here, so keep it. Strip via per-CLI config overrides + minimal `--allowedTools` only for reproducibility or adversarial input. Per-CLI details in the references.
+- **Repo context auto-loads** (CLAUDE.md, AGENTS.md, skills, MCP) — usually *why* the agent is competent here. Keep it. Strip via per-CLI config + minimal `--allowedTools` only for reproducibility or adversarial input. Details in references.
 
-- **Capture session IDs for chained calls.** Claude/Gemini: `.session_id`; Codex: `.thread_id` (in `thread.started` when `--json` is on). Stash it early — `--continue` / `--last` / `-r latest` break under shared cwd or parallelism.
+- **Capture session IDs for chained calls.** Claude/Gemini: `.session_id`; Codex: `.thread_id` (in `thread.started` when `--json` is on). Stash early — `--continue` / `--last` / `-r latest` break under shared cwd or parallelism.
 
 - **Stream for progress, JSON to parse.** `--output-format stream-json --verbose --include-partial-messages` for live feedback; plain `json` for `jq`.
 
@@ -156,13 +156,13 @@ gh agent-task create -F ticket.md --base main --follow
 
 - **Quote prompts aggressively.** `$`, backticks, quotes, newlines. Heredocs (`<<'EOF'`) or `--append-system-prompt-file` avoid shell-expansion bugs.
 
-- **Hygiene wrappers.** `trap 'git stash -u' ERR` to rescue a partial agentic run; `timeout <N>s ...` around every unattended invocation to cap infinite loops, network stalls, or agents that won't stop.
+- **Hygiene wrappers.** `trap 'git stash -u' ERR` to rescue a partial agentic run; `timeout <N>s ...` around every unattended invocation to cap infinite loops, stalls, or agents that won't stop.
 
 ## Anti-patterns
 
-- **Untrusted input straight into `-p`.** Prompt-injection surface. Wrap user-controlled content in clearly-delimited blocks (`<user_input>...</user_input>`) with instructions to treat it as data.
+- **Untrusted input straight into `-p`.** Prompt-injection surface. Wrap user-controlled content in delimited blocks (`<user_input>...</user_input>`) with instructions to treat as data.
 - **`--continue` in parallel jobs.** Races itself — resolves to "most recent session in this cwd." Use explicit session IDs.
-- **One script targeting every CLI.** The headless models differ meaningfully. Pick one, commit to its idioms; only abstract if runtime provider choice is a real requirement.
+- **One script targeting every CLI.** Headless models differ meaningfully. Pick one, commit to its idioms; only abstract if runtime provider choice is a real requirement.
 
 ## When to load what
 
@@ -178,4 +178,4 @@ gh agent-task create -F ticket.md --base main --follow
 
 ## Delivering the script
 
-Include a header with: usage + required env vars; permission posture (read-only / edits / shell) and the `--allowedTools` list that enforces it; tunable flags (model, dir, timeout).
+Header with: usage + required env vars; permission posture (read-only / edits / shell) and the `--allowedTools` list that enforces it; tunable flags (model, dir, timeout).
