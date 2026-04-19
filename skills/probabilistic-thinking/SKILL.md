@@ -5,128 +5,120 @@ description: Apply probabilistic and Bayesian thinking whenever the user needs t
 
 # Probabilistic & Bayesian Thinking
 
-**Core principle**: Most real decisions happen under uncertainty. Probabilistic thinking replaces vague confidence with calibrated estimates. Bayesian thinking adds the discipline of *updating* those estimates as new evidence arrives — neither clinging to prior beliefs nor overreacting to new data.
+**Core principle**: Probabilistic thinking replaces vague confidence with calibrated estimates. Bayesian thinking updates those estimates as evidence arrives — neither clinging to priors nor overreacting to new data.
 
 ---
 
 ## Core Concepts
 
 ### Probability as Degree of Belief
-Probability isn't just for coin flips. It's a measure of how confident we are in any claim, given current evidence.
-
-- "This will probably work" → What probability? 60%? 90%? The difference matters.
-- Forcing a number exposes vague confidence and creates a baseline for updating.
+"Will probably work" → 60%? 90%? Forcing a number exposes vague confidence and creates a baseline for updating.
 
 ### Base Rates
-Before estimating the probability of a specific event, find the **base rate** — how often does this type of event occur in a reference class?
+Find the **base rate** before estimating a specific event — how often does this event type occur in a reference class?
 
 *"Will this feature succeed?"* → What % of similar features in similar products succeeded?
 
-Ignoring base rates (the **base rate fallacy**) is one of the most common reasoning errors.
+Ignoring base rates (**base rate fallacy**) is a top reasoning error.
 
 ### Bayesian Updating
-When new evidence arrives, update beliefs proportionally — not by ignoring prior beliefs, and not by overwriting them entirely.
+Update proportionally — not by ignoring priors, not by overwriting them.
 
 ```
 New Belief = Prior Belief × Weight of New Evidence
 ```
 
-Key questions:
-- **Prior**: What did we believe before this evidence?
-- **Likelihood**: How probable is this evidence if the hypothesis is true? If it's false?
-- **Posterior**: What should we believe now?
+- **Prior**: belief before evidence
+- **Likelihood**: P(evidence | hypothesis true) vs. false
+- **Posterior**: belief after evidence
 
 ### Expected Value
-When choosing between options under uncertainty, compare expected values:
 ```
-EV = Probability of outcome × Value of outcome
+EV = Probability × Value
 ```
-A 10% chance of +€100 (EV = €10) is better than a 90% chance of +€5 (EV = €4.50).
+A 10% chance of +€100 (EV = €10) beats a 90% chance of +€5 (EV = €4.50).
 
 ### Confidence Intervals
-Point estimates are almost always wrong. Ranges are more honest.
-- Instead of "this will take 4 weeks" → "this will take 3–7 weeks (80% confidence)"
-- Wide intervals are not weakness — they're calibration. Narrow intervals on uncertain things are overconfidence.
+Point estimates are usually wrong. Ranges are honest.
+- "4 weeks" → "3–7 weeks (80% confidence)"
+- Wide intervals on uncertain things = calibration, not weakness.
 
 ---
 
 ## Output Format
 
-### 📊 Probability Estimates
-For each key claim or outcome:
-| Claim | Prior probability | Evidence | Updated probability | Confidence |
-|-------|-----------------|----------|-------------------|------------|
+### Probability Estimates
+| Claim | Prior | Evidence | Updated | Confidence |
+|-------|-------|----------|---------|------------|
 | "Feature will succeed" | 30% (base rate) | Strong user signal | 55% | Medium |
-| "This will ship on time" | 40% (historical) | Team is experienced | 50% | Low |
+| "Will ship on time" | 40% (historical) | Experienced team | 50% | Low |
 
-### 🔢 Base Rate Check
-- What is the reference class for this situation?
-- What is the historical base rate for this type of outcome?
-- How does this specific case differ from the base rate (and does that justify adjusting up or down)?
+### Base Rate Check
+- Reference class for this situation?
+- Historical base rate for this outcome?
+- How does this case differ from base rate (and does that justify adjustment)?
 
-### 🔄 Bayesian Update
-When new evidence has arrived:
-- **Prior belief**: What did we think before?
-- **New evidence**: What do we now know?
-- **Likelihood ratio**: Is this evidence more consistent with the hypothesis being true or false?
-- **Posterior belief**: What should we believe now?
-- **Update size**: Did this evidence move the needle significantly? (Strong evidence = large update. Weak evidence = small update.)
+### Bayesian Update
+- **Prior**: belief before
+- **New evidence**: what we now know
+- **Likelihood ratio**: more consistent with hypothesis true or false?
+- **Posterior**: belief now
+- **Update size**: did evidence move the needle? (Strong evidence → large; weak → small.)
 
-### ⚖️ Expected Value Comparison
-When choosing between options:
-| Option | Probability | Value if succeeds | Value if fails | Expected Value |
-|--------|------------|------------------|----------------|----------------|
-| Option A | 70% | +€50k | -€10k | +€32k |
-| Option B | 30% | +€200k | -€20k | +€46k |
+### Expected Value Comparison
+| Option | Probability | Value if succeeds | Value if fails | EV |
+|--------|------------|------------------|----------------|----|
+| A | 70% | +€50k | -€10k | +€32k |
+| B | 30% | +€200k | -€20k | +€46k |
 
-### 📏 Confidence Ranges
-Replace point estimates with ranges:
-- **Optimistic case** (10th percentile): [value]
-- **Expected case** (50th percentile): [value]
-- **Pessimistic case** (90th percentile): [value]
-- **Black swan scenario**: [What happens in the tail?]
+### Confidence Ranges
+- **Optimistic** (10th pct): [value]
+- **Expected** (50th pct): [value]
+- **Pessimistic** (90th pct): [value]
+- **Black swan**: [tail scenario]
 
-### ⚠️ Probability Hygiene Flags
-- Are any probabilities being treated as certainties (0% or 100%)? Almost nothing is certain.
-- Is base rate being ignored in favor of the specific case?
-- Is new evidence causing overreaction (anchoring to latest data)?
-- Is there a conjunction fallacy? (P(A and B) < P(A) always — the more specific the scenario, the lower its probability)
+### Probability Hygiene Flags
+- Probabilities treated as certainties (0%/100%)? Almost nothing is certain.
+- Base rate ignored for the specific case?
+- Overreaction to latest evidence (anchoring)?
+- Conjunction fallacy? (P(A and B) < P(A) — more specific = lower probability)
 
 ---
 
 ## Calibration Heuristics
 
-**Fermi Estimation** — For unknown quantities, break into smaller estimable parts:
-- Instead of "how many users will we get?" → estimate: market size × awareness % × conversion % × retention %
+**Fermi Estimation** — break unknowns into estimable parts:
+- "How many users?" → market size × awareness % × conversion % × retention %
 
-**Reference Class Forecasting** — Use historical data from similar projects:
-- "This type of feature took 4–8 weeks for 80% of teams in our reference class"
+**Reference Class Forecasting** — historical data from similar projects:
+- "This feature type took 4–8 weeks for 80% of teams in our class"
 
 **Outside View vs. Inside View**:
-- **Inside view**: "Our situation is special, we'll beat the average"
-- **Outside view**: "What does the data say for projects like this?"
-- Default to the outside view. Adjust only with specific, strong evidence.
+- Inside: "We're special, we'll beat the average"
+- Outside: "What does the data say for projects like this?"
+- Default outside. Adjust only with specific, strong evidence.
 
 **Pre-commit to what would change your mind**:
-- "If we see X, I will update my probability from 60% to below 30%"
-- This prevents post-hoc rationalization of new evidence
+- "If we see X, I'll move probability from 60% to below 30%"
+- Prevents post-hoc rationalization.
 
 ---
 
 ## Thinking Triggers
 
-- *"What's the base rate for this?"*
-- *"Are we treating a 70% probability like a certainty?"*
-- *"What's the expected value of each option, not just the upside?"*
-- *"How much should this new evidence actually move our belief?"*
-- *"What would we need to see to change our mind significantly?"*
+- *"What's the base rate?"*
+- *"Are we treating 70% like certainty?"*
+- *"What's the EV of each option, not just the upside?"*
+- *"How much should this evidence actually move our belief?"*
+- *"What would change our mind significantly?"*
 - *"Are we in the reference class we think we're in?"*
-- *"What's the downside scenario, and are we weighting it correctly?"*
+- *"What's the downside, and are we weighting it correctly?"*
 
 ---
 
 ## Example Applications
-- **"Should we build this feature?"** → What % of similar features drove meaningful retention? What's the cost if it fails?
-- **"This A/B test showed a lift"** → Is the sample size sufficient? What's the prior for this type of change?
-- **"We'll ship in 2 weeks"** → What's the historical distribution for similar tasks? What's the 80th percentile?
-- **"The agent failed once — is it a bug?"** → What's the base rate of one-off failures? What evidence would confirm it's systematic?
+
+- **"Should we build this?"** → % of similar features that drove retention? Cost if it fails?
+- **"A/B test showed a lift"** → Sample size sufficient? Prior for this change type?
+- **"We'll ship in 2 weeks"** → Historical distribution? 80th percentile?
+- **"Agent failed once — bug?"** → Base rate of one-off failures? Evidence that would confirm systematic?

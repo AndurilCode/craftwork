@@ -5,36 +5,31 @@ description: Apply scenario planning whenever the user is making long-term decis
 
 # Scenario Planning
 
-**Core principle**: The future is uncertain. Scenario planning doesn't try to predict which future will happen — it maps a set of plausible futures and tests strategies against each. A robust strategy performs reasonably well across multiple scenarios. A fragile strategy only works if one specific future occurs.
+**Core principle**: The future is uncertain. Don't predict which future happens — map plausible futures and test strategies against each. Robust strategies perform reasonably across multiple scenarios. Fragile strategies only work if one specific future occurs.
 
 ---
 
 ## The Core Process
 
 ### Step 1: Define the Decision or Strategy
-What are we planning for?
-- What time horizon? (6 months / 2 years / 5 years)
-- What decision needs to be made now?
-- What would "good" look like across different futures?
+- Time horizon (6 months / 2 years / 5 years)?
+- Decision needed now?
+- What does "good" look like across futures?
 
 ### Step 2: Identify Key Uncertainties
-What are the 2–3 most important factors that are both:
+The 2–3 factors that are both:
 - **Highly uncertain** (we genuinely don't know how they'll unfold)
-- **Highly impactful** (they would significantly change what the right strategy is)
+- **Highly impactful** (they'd significantly change the right strategy)
 
-These are the **scenario axes** — the dimensions along which futures differ most.
-
-Avoid certainties (things that will definitely happen) and minor factors. Focus on the pivotal unknowns.
+These are the **scenario axes**. Skip certainties and minor factors.
 
 ### Step 3: Build the Scenarios
-From the key uncertainties, construct 3–4 distinct, internally consistent futures. Each scenario should be:
-- **Plausible**: Not science fiction — could actually happen
-- **Distinct**: Each scenario is meaningfully different from the others
-- **Challenging**: At least one scenario is uncomfortable for the current plan
+3–4 distinct, internally consistent futures. Each:
+- **Plausible**: not science fiction
+- **Distinct**: meaningfully different from the others
+- **Challenging**: at least one uncomfortable for the current plan
 
-**Common scenario structures:**
-
-*Two-axis matrix (for two key uncertainties):*
+**Two-axis matrix** (two key uncertainties):
 ```
          High market adoption
               |
@@ -43,95 +38,94 @@ Slow tech  ──┼── Fast tech
               |
          Low market adoption
 ```
-This generates 4 quadrant scenarios.
+→ 4 quadrant scenarios.
 
-*Three narrative scenarios:*
-- **Expected**: The future most people are implicitly planning for
-- **Optimistic**: Key uncertainties resolve favorably
-- **Pessimistic**: Key uncertainties resolve adversarially
-- **Wild card**: A low-probability, high-impact disruption
+**Three narrative scenarios**:
+- **Expected**: the future most are implicitly planning for
+- **Optimistic**: uncertainties resolve favorably
+- **Pessimistic**: uncertainties resolve adversarially
+- **Wild card**: low-probability, high-impact disruption
 
 ### Step 4: Stress-Test the Strategy
 For each scenario:
-- Does the current strategy work well / adequately / poorly?
-- What would need to change in the strategy for it to work in this scenario?
-- What's the cost of being wrong about which scenario occurs?
+- Current strategy: well / adequately / poorly?
+- What would need to change to work in this scenario?
+- Cost of being wrong about which scenario occurs?
 
 ### Step 5: Identify Robust Actions
-Find actions that perform well across *multiple* scenarios — these are the highest-confidence moves regardless of which future occurs.
+Actions that perform well across *multiple* scenarios — highest-confidence regardless of future.
 
-Also find **hedging options** — small bets that preserve flexibility and cost little in the expected scenario but pay off in unlikely ones.
+Plus **hedging options** — small bets that preserve flexibility, cost little in expected case, pay off in unlikely ones.
 
 ---
 
 ## Output Format
 
-### 🌐 Key Uncertainties
-| Uncertainty | Why it matters | Range of outcomes |
-|------------|----------------|------------------|
-| [Factor 1] | [Impact on strategy] | [From X to Y] |
-| [Factor 2] | [Impact on strategy] | [From A to B] |
+### Key Uncertainties
+| Uncertainty | Why it matters | Range |
+|------------|----------------|-------|
+| [Factor 1] | [Strategy impact] | [X to Y] |
+| [Factor 2] | [Strategy impact] | [A to B] |
 
-### 📖 The Scenarios
+### The Scenarios
 
-For each scenario (3–4 total):
+For each (3–4 total):
 
-**Scenario Name** *(give it a memorable name)*
-- **Description**: 2–3 sentences painting the picture of this future
-- **Key conditions**: What's true in this world?
-- **Probability estimate**: Rough likelihood (should sum to ~100% across scenarios)
-- **Key signals**: What early indicators would tell us we're in this scenario?
+**Scenario Name** *(memorable)*
+- **Description**: 2–3 sentences
+- **Key conditions**: what's true here?
+- **Probability estimate**: rough (sum to ~100%)
+- **Key signals**: early indicators we're in this scenario
 
-### 🧪 Strategy Stress Test
+### Strategy Stress Test
+| Scenario | Strategy performs | Why | What must change |
+|----------|------------------|-----|------------------|
+| A | Well | [Reason] | Nothing |
+| B | Adequately | [Reason] | [Adjustment] |
+| C | Poorly | [Reason] | [Major pivot] |
+| D | Catastrophically | [Reason] | [Fundamental rethink] |
 
-| Scenario | Current strategy performs... | Why | What must change |
-|----------|---------------------------|-----|------------------|
-| Scenario A | Well | [Reason] | Nothing |
-| Scenario B | Adequately | [Reason] | [Adjustment] |
-| Scenario C | Poorly | [Reason] | [Major pivot] |
-| Scenario D | Catastrophically | [Reason] | [Fundamental rethink] |
+### Robust Actions
+Cross-scenario actions:
+- [Action 1] — works because [cross-scenario reason]
+- [Action 2] — works because [cross-scenario reason]
 
-### 🏆 Robust Actions
-Actions that make sense across most or all scenarios:
-- [Action 1] — works because [reason across scenarios]
-- [Action 2] — works because [reason across scenarios]
+### Scenario-Specific Actions
+| Scenario | Trigger signal | Response |
+|----------|---------------|----------|
+| B | [Leading indicator] | [Action] |
+| C | [Leading indicator] | [Action] |
 
-### 🎯 Scenario-Specific Actions
-If a particular scenario becomes likely, what additional actions should be taken?
-| Scenario | Trigger signal | Response action |
-|----------|---------------|----------------|
-| Scenario B | [Leading indicator] | [Action to take] |
-| Scenario C | [Leading indicator] | [Action to take] |
-
-### 🚨 Fragility Assessment
-- Which scenario would the current plan handle worst?
-- What's the single assumption the plan most depends on?
-- What's the cheapest hedge against the worst scenario?
+### Fragility Assessment
+- Worst-handled scenario for current plan?
+- Single assumption the plan most depends on?
+- Cheapest hedge against the worst scenario?
 
 ---
 
-## Scenario Planning Pitfalls
+## Pitfalls
 
-- **Too many scenarios**: 3–4 is ideal. More becomes unmanageable.
-- **Scenarios too similar**: Each must be meaningfully distinct — different enough to require different strategies.
-- **Anchoring on the expected scenario**: Give real attention to uncomfortable scenarios, not just the comfortable one.
-- **No early warning signals**: Every scenario needs leading indicators — how do we know we're in it before it's too late to adapt?
-- **Planning for the scenario, not the strategy**: The goal isn't to predict which scenario occurs. It's to build a strategy resilient enough to handle whichever one does.
+- **Too many scenarios**: 3–4 is ideal.
+- **Scenarios too similar**: each must require different strategies.
+- **Anchoring on the expected**: give real attention to uncomfortable ones.
+- **No early warning signals**: every scenario needs leading indicators.
+- **Planning for the scenario, not the strategy**: goal is resilience, not prediction.
 
 ---
 
 ## Thinking Triggers
 
-- *"What are we implicitly assuming about the future in this plan?"*
-- *"What's the world where this strategy fails completely — and how likely is it?"*
+- *"What are we implicitly assuming about the future?"*
+- *"What's the world where this strategy fails completely — how likely?"*
 - *"What would we do differently if we knew we were in Scenario C?"*
-- *"What are the early signals that would tell us which future we're heading into?"*
-- *"What's the cheapest move that protects us in the bad scenarios without sacrificing the good ones?"*
+- *"What signals tell us which future we're heading into?"*
+- *"What's the cheapest move that protects us in bad scenarios without sacrificing good ones?"*
 
 ---
 
 ## Example Applications
-- **Product roadmap**: What if AI commoditizes our core feature? What if regulation changes the market? What if a major platform shifts behavior?
-- **Architecture decision**: What if traffic grows 10x? What if the third-party API sunsets? What if the team doubles?
-- **Business strategy**: What if the funding environment tightens? What if the key competitor undercuts pricing? What if adoption is 5x faster than projected?
-- **Agent pipeline design**: What if LLM costs drop 90%? What if context windows become unlimited? What if a single agent becomes capable enough to replace the pipeline?
+
+- **Product roadmap**: AI commoditizes the core feature? Regulation shifts? Major platform behavior change?
+- **Architecture**: Traffic 10x? Third-party API sunsets? Team doubles?
+- **Business strategy**: Funding tightens? Competitor undercuts? Adoption 5x faster?
+- **Agent pipeline**: LLM costs drop 90%? Unlimited context? Single agent replaces pipeline?
