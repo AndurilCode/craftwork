@@ -5,50 +5,50 @@ description: Entry point for professional skills — architecture, communication
 
 # Professional Orchestrator
 
-**This skill routes — it does not reason.** Read the user's intent, match it to an entry point below, then execute that skill's SKILL.md.
+**Routes — does not reason.** Match user intent to an entry point, then execute that skill's SKILL.md.
 
 ---
 
-## Step 1 — Match the User's Intent
+## Step 1 — Match Intent
 
-Read what the user wants to do and match it to the closest entry below. If ambiguous, ask one clarifying question.
+If ambiguous, ask one clarifying question.
 
 | User wants to... | Start with | Then |
 |---|---|---|
 | **Architecture & Engineering** | | |
 | Evaluate or choose between architectures | `architecture-evaluation` | → `execution-planning` |
-| Debug a software failure systematically | `debugging-methodology` | → `casual-inference` if root cause is causal |
+| Debug a software failure systematically | `debugging-methodology` | → `casual-inference` if causal |
 | Design or run an experiment | `experimental-design` | → `casual-inference` after results |
 | Review code or a PR | `code-review-amplifier` | done |
-| Find incremental improvements, tech debt, or code hygiene issues | `kaizen` | → `execution-planning` or `process-design` |
+| Find incremental improvements, tech debt, code hygiene | `kaizen` | → `execution-planning` or `process-design` |
 | Understand why code is the way it is, audit undocumented fixes | `kintsugi` | → `knowledge-architect` or `technical-writing` |
 | **Planning & Execution** | | |
 | Break a decision into an action plan | `execution-planning` | done |
 | Design or improve a workflow/process | `process-design` | → `execution-planning` |
 | Build a financial model or business case | `financial-modeling` | → `argument-craft` |
 | **Writing & Communication** | | |
-| Write an RFC, design doc, ADR, runbook, postmortem, one-pager, or announcement | `technical-writing` | → `narrative-construction` if storytelling needed |
-| Summarize a document, article, transcript, or meeting notes | `summarizer` | → `technical-writing` or `argument-craft` if needed |
-| Structure a recommendation or argument | `argument-craft` | → `technical-writing` to write it up |
+| Write an RFC, design doc, ADR, runbook, postmortem, one-pager, announcement | `technical-writing` | → `narrative-construction` if storytelling |
+| Summarize a document, article, transcript, meeting notes | `summarizer` | → `technical-writing` or `argument-craft` if needed |
+| Structure a recommendation or argument | `argument-craft` | → `technical-writing` to write up |
 | Tell a compelling story from analysis | `narrative-construction` | → `presentation-craft` if presenting |
-| Create, structure, or improve a presentation, talk, or pitch | `presentation-craft` | done |
+| Create, structure, or improve a presentation/talk/pitch | `presentation-craft` | done |
 | Prepare for a negotiation | `negotiation-strategy` | → `difficult-conversations` if high stakes |
 | Navigate a difficult conversation | `difficult-conversations` | done |
 | Design a meeting or workshop | `facilitation-design` | done |
 | **People & Organizations** | | |
 | Map stakeholder influence and blockers | `stakeholder-power-mapping` | → `negotiation-strategy` or `difficult-conversations` |
 | Ramp up on a new domain | `learning-strategy` | → `topic-explainer` for specific concepts |
-| Understand or learn a concept, technology, or idea | `topic-explainer` | → `technical-writing` to document it |
+| Understand or learn a concept, technology, idea | `topic-explainer` | → `technical-writing` to document |
 | **Ethics & Fairness** | | |
-| Surface moral implications of a decision | `ethical-reasoning` | → `fairness-auditing` if systemic concerns |
-| Audit a system for equitable outcomes | `fairness-auditing` | → `argument-craft` to present findings |
+| Surface moral implications of a decision | `ethical-reasoning` | → `fairness-auditing` if systemic |
+| Audit a system for equitable outcomes | `fairness-auditing` | → `argument-craft` to present |
 | Determine causation vs correlation | `casual-inference` | done |
 | **Knowledge Management** | | |
-| Capture a decision, learning, or piece of tribal knowledge | `knowledge-architect` | → `technical-writing` if formal doc needed |
+| Capture a decision, learning, or tribal knowledge | `knowledge-architect` | → `technical-writing` if formal doc needed |
 | Set up or improve a team's knowledge system | `knowledge-architect` | done (produces architecture) |
-| Someone is leaving / joining the team | `knowledge-architect` | detect mode for departures, audit for joiners |
+| Someone is leaving / joining | `knowledge-architect` | detect mode for departures, audit for joiners |
 | **Meta** | | |
-| Scan all skills to find the right one(s) for a request | `skill-router` | → matched skill(s) |
+| Scan all skills to find the right one(s) | `skill-router` | → matched skill(s) |
 
 ---
 
@@ -56,60 +56,48 @@ Read what the user wants to do and match it to the closest entry below. If ambig
 
 1. Read `skills/[skill-name]/SKILL.md`
 2. Apply that skill's full methodology
-3. When the skill completes, check the "Then" column above for potential follow-ups
+3. Check the "Then" column for follow-ups
 
 ## Step 3 — Propose Next Steps
 
-Do NOT auto-execute the "Then" skill. Instead, propose it to the user:
+Do NOT auto-execute. Propose:
 
 ```
 Based on [what the skill produced], a natural next step would be:
-→ [skill-name]: [1-sentence reason this would help]
+→ [skill-name]: [1-sentence reason]
 
-Want me to continue with that, or is this what you needed?
+Want me to continue, or is this what you needed?
 ```
 
-If multiple follow-ups are relevant, list them as options. The user chooses — the orchestrator does not chain automatically.
+Multiple follow-ups → list as options. User chooses.
 
 ---
 
 ## Canonical Chains
 
 **Architecture decision:**
-```
-architecture-evaluation → argument-craft → execution-planning
-```
-Use when making and implementing a system design choice.
+`architecture-evaluation → argument-craft → execution-planning`
+Making and implementing a system design choice.
 
 **Building a business case:**
-```
-financial-modeling → argument-craft → execution-planning
-```
-Use when you need numbers, then narrative, then action.
+`financial-modeling → argument-craft → execution-planning`
+Numbers → narrative → action.
 
 **Navigating organizational resistance:**
-```
-stakeholder-power-mapping → negotiation-strategy → difficult-conversations
-```
-Use when people are blocking progress and you need to understand why and how to move them.
+`stakeholder-power-mapping → negotiation-strategy → difficult-conversations`
+People blocking progress; understand why and how to move them.
 
 **Process improvement:**
-```
-process-design → execution-planning
-```
-Use when a workflow is slow or broken.
+`process-design → execution-planning`
+Workflow is slow or broken.
 
 **Documenting a technical decision:**
-```
-architecture-evaluation → technical-writing (ADR or RFC)
-```
-Use when an architecture decision needs to be written up for review or posterity.
+`architecture-evaluation → technical-writing (ADR or RFC)`
+Architecture decision needs write-up.
 
 **Ethics review:**
-```
-ethical-reasoning → fairness-auditing → argument-craft
-```
-Use when a system needs moral and equity analysis, then communication of findings.
+`ethical-reasoning → fairness-auditing → argument-craft`
+Moral and equity analysis, then communication of findings.
 
 ---
 
@@ -135,10 +123,10 @@ Use when a system needs moral and equity analysis, then communication of finding
 | `learning-strategy` | Build structured plans for closing knowledge gaps |
 | `casual-inference` | Distinguish causation from correlation |
 | `technical-writing` | Write RFCs, design docs, ADRs, runbooks, postmortems, announcements |
-| `topic-explainer` | Explain concepts, technologies, or ideas using the best style for the topic |
-| `summarizer` | Summarize documents, articles, transcripts, or multi-source content |
-| `presentation-craft` | Create presentation scripts with narrative arc, slide visuals, and speaker notes |
-| `kaizen` | Continuous improvement audit: find waste, unevenness, and overburden in code |
-| `kintsugi` | Repair visibility audit: find undocumented fixes and add context gold |
-| `skill-router` | Exhaustive skill scan and composition planning for any request |
-| `knowledge-architect` | Capture decisions, context, and learnings; design team knowledge systems |
+| `topic-explainer` | Explain concepts, technologies, ideas using the best style |
+| `summarizer` | Summarize documents, articles, transcripts, multi-source content |
+| `presentation-craft` | Presentation scripts: narrative arc, slide visuals, speaker notes |
+| `kaizen` | Continuous improvement audit: waste, unevenness, overburden |
+| `kintsugi` | Repair visibility audit: undocumented fixes, context gold |
+| `skill-router` | Exhaustive skill scan and composition planning |
+| `knowledge-architect` | Capture decisions, context, learnings; design team knowledge systems |
