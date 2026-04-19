@@ -5,7 +5,7 @@ description: Apply causal inference whenever the user is interpreting metrics, d
 
 # Causal Inference
 
-**Core principle**: Correlation is not causation — but also, correlation is sometimes causation, and knowing which matters enormously. This skill provides the tools to ask "did X actually cause Y?" rigorously — using counterfactuals, confounders, and causal structure before acting on data.
+**Core principle**: Correlation is not causation — but sometimes it is, and knowing which matters enormously. Use counterfactuals, confounders, and causal structure to ask "did X actually cause Y?" rigorously before acting on data.
 
 ---
 
@@ -14,8 +14,8 @@ description: Apply causal inference whenever the user is interpreting metrics, d
 **Correlation**: X and Y move together.
 **Causation**: Changing X changes Y — and we know *why*.
 
-The difference matters because:
-- Intervening on a correlate with no causal path wastes effort and money
+Why it matters:
+- Intervening on a correlate with no causal path wastes effort
 - Missing a confounder leads to attributing effects to the wrong cause
 - Acting on spurious correlation can make things worse
 
@@ -24,79 +24,77 @@ The difference matters because:
 ## Key Concepts
 
 ### Counterfactual Reasoning
-The fundamental question of causation:
+The fundamental question:
 > *"What would have happened to Y if X had been different, all else equal?"*
 
-This is harder than it sounds — you never observe both the treated and untreated state of the same unit at the same time. This is the **fundamental problem of causal inference**.
-
-Every causal claim is implicitly a counterfactual claim. Make it explicit.
+You never observe both the treated and untreated state of the same unit at the same time — the **fundamental problem of causal inference**. Every causal claim is implicitly counterfactual; make it explicit.
 
 ### Confounders
-A confounder is a third variable Z that causally affects both X and Y, creating a correlation between them that isn't a direct causal path.
+A third variable Z that causally affects both X and Y, creating correlation between them without a direct causal path.
 
 ```
 Z → X
 Z → Y
 ```
-X and Y are correlated, but X doesn't cause Y. Intervening on X does nothing.
 
-**Example**: Ice cream sales and drowning rates are correlated. Confounder: hot weather → more ice cream AND more swimming → more drowning. Banning ice cream doesn't reduce drowning.
+X and Y correlate, but X doesn't cause Y. Intervening on X does nothing.
+
+**Example**: Ice cream sales and drowning rates correlate. Confounder: hot weather → more ice cream AND more swimming → more drowning. Banning ice cream doesn't reduce drowning.
 
 **Common confounders in product/engineering work**:
-- Seasonality (both feature adoption and engagement move together)
-- Selection bias (users who adopt a feature are already more engaged)
-- External events (a competitor shut down the same week you shipped the feature)
-- Time trends (both metrics were already moving before the intervention)
+- Seasonality (feature adoption and engagement move together)
+- Selection bias (users who adopt are already more engaged)
+- External events (a competitor shut down the same week you shipped)
+- Time trends (both metrics were already moving before intervention)
 
 ### Mediators vs. Confounders
-A mediator is *on the causal path* — X → M → Y. Blocking a mediator blocks the effect.
-A confounder is *upstream of both* — you should control for it.
+A mediator is *on the causal path* — X → M → Y. Blocking it blocks the effect.
+A confounder is *upstream of both* — control for it.
 
-Confusing them leads to overcorrection (controlling for a mediator removes the effect you're looking for).
+Confusing them causes overcorrection (controlling for a mediator removes the effect you're looking for).
 
 ### Simpson's Paradox
-An observed trend can reverse when data is aggregated. A treatment can appear harmful in aggregate but beneficial in every subgroup (or vice versa), due to unequal group sizes.
+An observed trend can reverse when data is aggregated. A treatment can appear harmful in aggregate but beneficial in every subgroup (or vice versa) due to unequal group sizes.
 
-**Always ask**: Does disaggregating the data change the conclusion?
+**Always ask**: Does disaggregating change the conclusion?
 
 ---
 
 ## Tools for Establishing Causation
 
 ### Randomized Controlled Experiment (Gold Standard)
-Randomly assign units to treatment and control. Randomization eliminates confounding by making treatment independent of all other variables.
+Random assignment eliminates confounding by making treatment independent of all other variables.
 
-**In product work**: A/B tests are RCTs. Their validity depends on:
+**In product work**: A/B tests are RCTs. Validity depends on:
 - Random assignment (not self-selection)
 - Sufficient sample size (statistical power)
 - Single treatment change (no simultaneous changes)
 - No interference between units (SUTVA)
-- Correct metric selection (measuring the right thing)
+- Correct metric selection
 
 **A/B test failure modes**:
 - Novelty effect: early lift decays as users habituate
 - Sample Ratio Mismatch: unequal group sizes indicating randomization failure
-- Multiple comparisons: testing 20 metrics gives 1 false positive by chance at p=0.05
+- Multiple comparisons: 20 metrics gives 1 false positive by chance at p=0.05
 - Peeking: stopping early when results look good inflates false positive rate
 
 ### Difference-in-Differences (DiD)
-Compare the change in an outcome for a treated group vs. a control group over time.
+Compare the change for a treated group vs. control over time.
 
 ```
 Effect = (Treated_after - Treated_before) - (Control_after - Control_before)
 ```
 
-**Assumes**: In the absence of treatment, both groups would have followed parallel trends.
-
-**When to use**: When you have pre/post data and a natural control group but couldn't randomize.
+**Assumes**: Without treatment, both groups would have followed parallel trends.
+**Use when**: You have pre/post data and a natural control group but couldn't randomize.
 
 ### Natural Experiments
-Look for situations where external factors created quasi-random variation in treatment — policy changes, geographic boundaries, system outages, feature rollouts by cohort.
+External factors create quasi-random treatment variation — policy changes, geographic boundaries, system outages, cohort-based rollouts.
 
-**Example**: Feature rolled out to users by sign-up date — early users are treatment, later users are control (if no self-selection bias in timing).
+**Example**: Feature rolled out by sign-up date — early users are treatment, later users are control (if no self-selection in timing).
 
 ### Causal Graph (DAG)
-Draw the Directed Acyclic Graph — map all variables and their causal relationships. This makes confounders and mediators explicit and determines what to control for.
+Map all variables and their causal relationships. Makes confounders and mediators explicit and determines what to control for.
 
 ```
 [Confounder Z] → [Treatment X] → [Mediator M] → [Outcome Y]
@@ -110,18 +108,18 @@ Reading the DAG: control for Z (confounder), don't control for M (mediator).
 ## Output Format
 
 ### 🔍 Causal Claim Under Examination
-- **Stated claim**: [What is being asserted caused what]
+- **Stated claim**: [What is asserted to cause what]
 - **Reformulated as counterfactual**: *"Would Y have been different if X had not occurred, all else equal?"*
 
 ### 🕸️ Causal Structure
 Sketch the causal graph:
-- What are the proposed causal paths?
-- What are the potential confounders?
-- What are the mediators (variables on the causal path)?
-- What are the colliders (variables caused by both X and Y — controlling for these opens spurious paths)?
+- Proposed causal paths?
+- Potential confounders?
+- Mediators (on the causal path)?
+- Colliders (caused by both X and Y — controlling opens spurious paths)?
 
 ### ⚠️ Threats to Causal Interpretation
-For each threat, assess: **Present / Possible / Unlikely**
+For each: **Present / Possible / Unlikely**
 
 | Threat | Present? | Evidence | Impact on Conclusion |
 |--------|----------|----------|---------------------|
@@ -137,7 +135,7 @@ For each threat, assess: **Present / Possible / Unlikely**
 - **Design used**: [RCT / DiD / Natural experiment / Observational]
 - **Evidence strength**: [Strong / Moderate / Weak]
 - **Key assumptions**: [What must be true for the design to be valid]
-- **Assumption violations**: [Any signs the assumptions don't hold]
+- **Assumption violations**: [Any signs assumptions don't hold]
 
 ### 🎯 Conclusion
 - **Causal claim warranted?**: [Yes / Probably / Unclear / No]
@@ -147,7 +145,7 @@ For each threat, assess: **Present / Possible / Unlikely**
 
 ### 🔬 Next Steps
 - What experiment would establish causation most efficiently?
-- What natural variation exists in the data that could be exploited?
+- What natural variation in the data could be exploited?
 - What confounders should be measured and controlled for?
 
 ---
@@ -157,12 +155,12 @@ For each threat, assess: **Present / Possible / Unlikely**
 Before trusting a result:
 - [ ] Was assignment truly random? Check Sample Ratio Mismatch.
 - [ ] Was only one thing changed?
-- [ ] Is the sample size sufficient for the expected effect size?
-- [ ] Was the test run for a full weekly cycle (day-of-week effects)?
-- [ ] Is the primary metric pre-specified? (Not chosen after seeing results)
-- [ ] Are there secondary metrics that should move if the hypothesis is right — and do they?
+- [ ] Is sample size sufficient for the expected effect?
+- [ ] Was the test run for a full weekly cycle?
+- [ ] Is the primary metric pre-specified?
+- [ ] Do secondary metrics that should move actually move?
 - [ ] Is there a plausible mechanism explaining *why* X would cause Y?
-- [ ] Is the effect consistent across segments? (Check for Simpson's Paradox)
+- [ ] Is the effect consistent across segments? (Check Simpson's Paradox)
 
 ---
 
@@ -170,7 +168,7 @@ Before trusting a result:
 
 - *"What's the counterfactual? What would have happened without this change?"*
 - *"What else changed at the same time that could explain this?"*
-- *"Are the users/units we're comparing actually comparable?"*
+- *"Are the units we're comparing actually comparable?"*
 - *"Is there a third variable that could explain the correlation?"*
 - *"Does the mechanism make sense — why would X cause Y?"*
 - *"Does disaggregating the data change the conclusion?"*
