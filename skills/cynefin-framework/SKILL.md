@@ -5,95 +5,55 @@ description: Apply the Cynefin framework whenever the user is deciding how to ap
 
 # Cynefin Framework
 
-**Core principle**: Before applying any solution, classify the problem domain. The right action in one domain is the wrong action in another. Misclassifying the domain is one of the most common causes of failed interventions.
+**Core**: Classify the problem domain before applying any solution. The right action in one domain is wrong in another. Misclassification is one of the most common causes of failed interventions.
 
 ---
 
 ## The Five Domains
 
 ### 1. 🟢 Clear (formerly "Simple")
-**Relationship**: Cause and effect are obvious to everyone.
-**Nature**: Best practices exist and are well-known.
-**Approach**: **Sense → Categorize → Respond**
-- Apply the known best practice
-- Automate where possible
-- Don't over-complicate it
-
-**Signs you're here**: The answer is obvious. Anyone competent would do the same thing.
-
-**Danger**: Complacency. Clear domains can suddenly become chaotic if conditions change and nobody noticed.
-
-**Examples**: Resetting a password, deploying a known-working config, following a checklist.
-
----
+- **Cause/effect**: Obvious to everyone.
+- **Approach**: **Sense → Categorize → Respond.** Apply known best practice. Automate.
+- **Signs**: Answer is obvious; any competent person would do the same.
+- **Danger**: Complacency — Clear can shift to Chaotic if conditions change unnoticed.
+- **Examples**: Resetting a password, deploying a known-working config, following a checklist.
 
 ### 2. 🔵 Complicated
-**Relationship**: Cause and effect exist but require analysis or expertise to see.
-**Nature**: Multiple right answers exist; good practice (not best practice).
-**Approach**: **Sense → Analyze → Respond**
-- Bring in experts or do analysis
-- Evaluate trade-offs between valid options
-- Allow time for assessment before acting
-
-**Signs you're here**: You need an expert, but once they analyze it, the answer becomes clear. There's a knowable right answer.
-
-**Danger**: Expert overconfidence. Experts can mistake complicated for clear and stop questioning assumptions.
-
-**Examples**: Software architecture decisions, performance tuning, medical diagnosis, legal strategy.
-
----
+- **Cause/effect**: Exists but requires analysis or expertise.
+- **Approach**: **Sense → Analyze → Respond.** Engage experts; evaluate trade-offs between valid options.
+- **Signs**: Need an expert, but once analyzed, the answer becomes clear. There's a knowable right answer.
+- **Danger**: Expert overconfidence — mistaking Complicated for Clear.
+- **Examples**: Software architecture, performance tuning, medical diagnosis, legal strategy.
 
 ### 3. 🟡 Complex
-**Relationship**: Cause and effect are only visible **in retrospect**. You can't predict outcomes.
-**Nature**: Emergent practice — no "right answer" exists in advance.
-**Approach**: **Probe → Sense → Respond**
-- Run safe-to-fail experiments (small, reversible, parallel)
-- Amplify what works, dampen what doesn't
-- Expect and embrace emergence
-- Don't plan for a single outcome
-
-**Signs you're here**: Experts disagree. Past data is unreliable. The system involves human behavior, social dynamics, or high interconnectedness.
-
-**Danger**: Applying complicated or clear approaches (best practices, expert analysis, big-bang solutions) to complex problems. This is the most common mistake.
-
-**Examples**: Product-market fit discovery, organizational culture change, user behavior patterns, AI system behavior, team dynamics.
-
----
+- **Cause/effect**: Visible only **in retrospect**. Outcomes unpredictable.
+- **Approach**: **Probe → Sense → Respond.** Run safe-to-fail experiments (small, reversible, parallel). Amplify what works, dampen what doesn't. Embrace emergence.
+- **Signs**: Experts disagree. Past data unreliable. Human behavior, social dynamics, high interconnectedness.
+- **Danger**: Applying Clear/Complicated approaches (best practices, big-bang plans) — the most common mistake.
+- **Examples**: Product-market fit, culture change, user behavior, AI behavior, team dynamics.
 
 ### 4. 🔴 Chaotic
-**Relationship**: No discernible cause and effect. The system is in crisis.
-**Nature**: Novel practice — act first to stabilize.
-**Approach**: **Act → Sense → Respond**
-- Take immediate action to reduce harm and establish order
-- Don't wait for analysis — the situation is changing faster than analysis can help
-- Move to complex or complicated once stability is achieved
+- **Cause/effect**: None discernible. System in crisis.
+- **Approach**: **Act → Sense → Respond.** Immediate stabilizing action. Don't wait for analysis. Move to Complex/Complicated once stable.
+- **Signs**: Crisis. Active failure. No time for deliberation.
+- **Danger**: Staying in chaotic mode too long.
+- **Examples**: Production outage, security breach, public crisis, team breakdown.
 
-**Signs you're here**: Crisis. System is actively failing. No time for deliberation.
-
-**Danger**: Staying in chaotic mode too long. Once the crisis is contained, move to a more deliberate approach.
-
-**Examples**: Production outage, security breach, public crisis, team breakdown.
-
----
-
-### 5. ⚫ Disorder (the center)
-**Relationship**: Unknown. You don't know which domain you're in.
-**Approach**: Break the situation into parts and classify each one.
-- Multiple people will interpret the situation through their own domain lens (causing conflict)
-- Get clarity before acting
+### 5. ⚫ Disorder (center)
+You don't know which domain you're in. Break the situation into parts and classify each. Multiple people will interpret it through their own domain lens — get clarity before acting.
 
 ---
 
 ## Output Format
 
 ### 🗺️ Domain Classification
-- **Assessed domain**: Clear / Complicated / Complex / Chaotic / Disorder
+- **Domain**: Clear / Complicated / Complex / Chaotic / Disorder
 - **Confidence**: High / Medium / Low
-- **Key signals** that led to this classification
-- **Alternative interpretation**: Could this be misclassified? What would that imply?
+- **Key signals** for this classification
+- **Alternative interpretation**: Could it be misclassified? Implications?
 
 ### ⚠️ Domain Mismatch Check
-Is the user (or current plan) applying an approach from the **wrong domain**?
+Is the current plan applying a **wrong-domain** approach?
 
 | Current approach | Actual domain | Mismatch risk |
 |-----------------|---------------|---------------|
@@ -102,30 +62,27 @@ Is the user (or current plan) applying an approach from the **wrong domain**?
 | Experiments / probing | Clear | Waste of time |
 
 ### 🎯 Recommended Approach
-Based on the domain:
-- **Clear**: Apply best practice [name it]. Consider automating.
-- **Complicated**: Engage expert analysis. Evaluate trade-offs between [option A] and [option B].
-- **Complex**: Design 2–3 safe-to-fail experiments. Define what "amplify" and "dampen" signals look like.
-- **Chaotic**: Act immediately on [specific stabilizing action]. Reassess domain once stable.
+- **Clear**: Apply best practice [name]. Consider automating.
+- **Complicated**: Engage experts. Evaluate trade-offs between [A] and [B].
+- **Complex**: Design 2–3 safe-to-fail experiments. Define amplify/dampen signals.
+- **Chaotic**: Act immediately on [stabilizing action]. Reassess once stable.
 
-### 🔁 Domain Transitions to Watch
-- Is this domain **shifting**? (e.g., a complicated situation becoming complex due to new uncertainty)
-- What would cause the situation to move into **chaos**?
-- What's the path toward **clear** once this is resolved?
+### 🔁 Domain Transitions
+Is the domain **shifting**? What pushes it to chaos? Path back to clear?
 
 ---
 
-## Practical Heuristics
+## Heuristics
 
-- **If experts disagree** → probably Complex, not Complicated
-- **If it involves people and behavior at scale** → probably Complex
-- **If it's urgent and breaking** → probably Chaotic; act first
-- **If there's a known playbook** → probably Clear or Complicated
-- **If past solutions stopped working** → domain may have shifted
+- Experts disagree → probably Complex
+- People and behavior at scale → probably Complex
+- Urgent and breaking → probably Chaotic; act first
+- Known playbook → probably Clear or Complicated
+- Past solutions stopped working → domain may have shifted
 
 ---
 
 ## The Most Common Mistake
-Treating a **Complex** problem as **Complicated**: hiring a consultant to define "the right answer" and then executing a big plan — when the system is actually emergent and unpredictable. The result: the plan doesn't work, more consultants are hired, the plan gets bigger, it still doesn't work.
+Treating **Complex** as **Complicated**: hire a consultant, define "the right answer", execute a big plan — when the system is emergent. Plan fails, more consultants, bigger plan, still fails.
 
-**Fix**: Run small experiments instead. Let patterns emerge. Amplify what works.
+**Fix**: Run small experiments. Let patterns emerge. Amplify what works.

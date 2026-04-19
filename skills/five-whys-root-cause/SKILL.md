@@ -5,34 +5,29 @@ description: Apply 5 Whys and root cause analysis whenever a problem keeps recur
 
 # 5 Whys & Root Cause Analysis
 
-**Core principle**: Every visible problem is a symptom. The root cause is the systemic condition that makes the symptom inevitable. Fix the symptom and it returns. Fix the root cause and the symptom disappears — along with related ones you haven't noticed yet.
+**Core**: Visible problems are symptoms. The root cause is the systemic condition that makes the symptom inevitable. Fix the symptom and it returns. Fix the root cause and the symptom (plus related ones) disappears.
 
 ---
 
 ## The 5 Whys Method
 
-Start with the problem statement. Ask "why did this happen?" Keep asking why until you reach a cause you can actually fix — one that is **actionable**, **systemic**, and **doesn't have another why behind it**.
-
-### The Process
+State the problem. Ask "why?" Keep asking until you reach a cause that is **actionable**, **systemic**, and has no further "why" behind it.
 
 ```
-Problem: [State clearly and specifically]
+Problem: [Specific statement]
   Why 1: [Immediate cause]
     Why 2: [Cause of the cause]
       Why 3: [Deeper cause]
         Why 4: [Systemic cause]
-          Why 5: [Root cause — systemic, actionable]
+          Why 5: [Root cause]
 ```
 
-**Stop when you reach a cause that is:**
-- Actionable (you can actually change it)
-- Systemic (fixing it prevents recurrence)
-- Not just another symptom
+**Stop when** the cause is actionable, systemic, and not another symptom.
 
-**Don't stop when:**
-- The answer is "human error" (that's a symptom — why did human error occur?)
-- The answer is "bad luck" (luck is not a root cause)
-- The answer blames a person (people operate within systems — blame the system)
+**Don't stop at:**
+- "Human error" — why did it occur?
+- "Bad luck" — luck is not a root cause
+- Personal blame — people operate within systems; blame the system
 
 ---
 
@@ -40,30 +35,26 @@ Problem: [State clearly and specifically]
 
 | Category | Examples |
 |----------|---------|
-| **Process gap** | No process existed, process was unclear, process wasn't followed |
-| **Knowledge gap** | Team didn't know X, information wasn't shared, no documentation |
-| **Tooling gap** | Wrong tool, missing tool, tool not configured correctly |
-| **Incentive misalignment** | Rewards and desired behavior point in different directions |
+| **Process gap** | No process, unclear process, process not followed |
+| **Knowledge gap** | Team didn't know X, no documentation |
+| **Tooling gap** | Wrong/missing tool, misconfigured |
+| **Incentive misalignment** | Rewards point away from desired behavior |
 | **Feedback loop missing** | No signal that something was going wrong |
 | **Assumption failure** | A belief about the system was wrong |
-| **Capacity constraint** | Not enough time, people, or resources to do it right |
+| **Capacity constraint** | Not enough time/people/resources to do it right |
 | **Communication failure** | Decision made without relevant parties knowing |
 
 ---
 
 ## Multi-Branch Analysis
 
-The 5 Whys often reveals **multiple root causes** (not one). Use branching when you hit a "why" with more than one answer:
+5 Whys often reveals **multiple root causes**. Branch when a "why" has more than one answer:
 
 ```
 Problem: Deployment failed
   Why? → Tests didn't catch the bug
-    Branch A: Why? → Test coverage was insufficient
-      Why? → No policy requiring coverage thresholds
-        Root cause A: No coverage gate in CI pipeline
-    Branch B: Why? → Test environment differed from production
-      Why? → Config was not environment-parity checked
-        Root cause B: No config parity validation step
+    A: → Test coverage insufficient → No coverage policy → No CI coverage gate
+    B: → Test env differed from prod → No parity check → No config parity step
 ```
 
 Each branch may have a different fix.
@@ -73,74 +64,61 @@ Each branch may have a different fix.
 ## Output Format
 
 ### 🔍 Problem Statement
-Restate the problem **specifically and observably**:
-- What happened?
-- When? How often?
-- What's the impact?
-- What did *not* happen (that should have)?
+What happened? When/how often? Impact? What did *not* happen that should have?
 
-### 🪢 The Why Chain(s)
-Present the full chain(s) from symptom to root cause. Use branching if multiple causes exist.
+### 🪢 Why Chain(s)
+Full chain(s) from symptom to root cause. Branch if multiple causes.
 
-### 🎯 Root Cause(s) Identified
-For each root cause:
-- **Statement**: Clear, systemic description
+### 🎯 Root Cause(s)
+For each:
+- **Statement**: Clear, systemic
 - **Category**: Process / Knowledge / Tooling / Incentive / Feedback / Assumption / Capacity / Communication
-- **Recurrence risk**: How likely is this to cause the same or similar problem again without a fix?
+- **Recurrence risk**: Likelihood of repeat without fix
 
 ### 🚫 Rejected Explanations
-List causes that were considered but rejected, and why:
-- "Human error" → Why did it occur? What enabled it?
-- "One-off event" → Why was the system vulnerable to it?
-- Personal blame → Replaced with systemic explanation
+- "Human error" → why did it occur, what enabled it?
+- "One-off" → why was the system vulnerable?
+- Personal blame → replaced with systemic explanation
 
 ### 🛠️ Corrective Actions
-For each root cause, a specific countermeasure:
-- **Action**: What exactly changes?
-- **Owner**: Who is responsible?
-- **Verification**: How do we know the fix worked?
-- **Timeline**: When?
+For each root cause: **Action**, **Owner**, **Verification**, **Timeline**.
 
 ### 📊 Recurrence Prevention
-- What monitoring/alerting detects this root cause activating again?
-- What review process catches this category of problem in the future?
-- Is this root cause related to any other known issues? (often one root cause explains multiple symptoms)
+Monitoring/alerting that detects this root cause again. Review process to catch this category. Related known issues (one root cause often explains multiple symptoms).
 
 ---
 
-## Quality Checks for Root Causes
+## Quality Checks
 
-Before accepting a root cause, verify:
-- ✅ **Reversibility test**: If we fixed this, would the problem go away?
-- ✅ **Recurrence test**: If this root cause is present, does the problem reliably occur?
-- ✅ **Actionability test**: Can we actually change this?
-- ✅ **Systemic test**: Does this explain the pattern, not just the one incident?
-- ❌ **Blame test**: If the answer names a person as the root cause, keep asking why
+- ✅ **Reversibility**: If fixed, would the problem go away?
+- ✅ **Recurrence**: If this cause is present, does the problem reliably occur?
+- ✅ **Actionability**: Can we change it?
+- ✅ **Systemic**: Explains the pattern, not just one incident?
+- ❌ **Blame**: Names a person → keep asking why
 
 ---
 
-## Common Traps to Avoid
+## Common Traps
 
-- **Stopping too early**: "The developer made a mistake" is not a root cause
+- **Stopping too early**: "Developer made a mistake" is not a root cause
 - **Single-cause bias**: Most failures have 2–4 contributing root causes
 - **Hindsight framing**: "They should have known" — why didn't the system make it knowable?
-- **Fixing the last step**: Catching the bug in prod is not the fix; preventing the condition that allowed it is
-- **Symptom substitution**: Fixing one symptom without the root cause → a different symptom appears
+- **Fixing the last step**: Catching a bug in prod isn't the fix; preventing the condition is
+- **Symptom substitution**: Fix one symptom without root cause → different symptom appears
 
 ---
 
-## Example Walk-Through
+## Example
 
-**Problem**: The agent pipeline produced incorrect output on 30% of runs last week.
+**Problem**: Agent pipeline produced incorrect output on 30% of runs last week.
 
-| Level | Why? | Answer |
-|-------|------|--------|
-| Why 1 | Why incorrect output? | Agent used stale context from prior step |
-| Why 2 | Why stale context? | Context was not cleared between runs |
-| Why 3 | Why not cleared? | No reset mechanism in handoff protocol |
-| Why 4 | Why no reset mechanism? | Handoff spec was never formalized |
-| Why 5 | Why never formalized? | No process requires handoff specs before agent goes to production |
+| Why | Answer |
+|-----|--------|
+| 1. Why incorrect? | Stale context from prior step |
+| 2. Why stale? | Context not cleared between runs |
+| 3. Why not cleared? | No reset mechanism in handoff protocol |
+| 4. Why no mechanism? | Handoff spec never formalized |
+| 5. Why? | No process requires handoff specs before production |
 
 **Root cause**: No policy requiring formalized handoff specs before production deployment.
-
-**Fix**: Add handoff spec requirement to the agent deployment checklist.
+**Fix**: Add handoff spec to the agent deployment checklist.

@@ -5,126 +5,112 @@ description: Apply cognitive bias detection whenever the user (or Claude itself)
 
 # Cognitive Bias Detection
 
-**Core principle**: Human (and AI) reasoning is systematically distorted by cognitive biases — predictable errors in judgment that operate below conscious awareness. The most dangerous analyses are the ones that *feel* most certain. This skill audits the reasoning process itself, not just the conclusions.
+**Core**: Reasoning is systematically distorted by predictable errors operating below conscious awareness. The most dangerous analyses are the ones that *feel* most certain. This skill audits the reasoning process, not just conclusions.
 
 ---
 
-## The Most Impactful Biases to Check
+## Highest-Impact Biases
 
-### Evaluation & Decision Biases
+### Evaluation & Decision
 
-**Confirmation Bias**
-Seeking, interpreting, and remembering information that confirms existing beliefs. Disconfirming evidence is dismissed or reframed.
-- *Signal*: "The data confirms what we suspected." / Evidence against the conclusion gets less attention than evidence for it.
-- *Fix*: Actively seek the strongest case *against* the conclusion. Assign someone to argue the opposite.
+**Confirmation Bias** — Seeking/interpreting/remembering info that confirms existing beliefs; disconfirming evidence is dismissed.
+- *Signal*: "The data confirms what we suspected." Counter-evidence underweighted.
+- *Fix*: Seek the strongest case *against*. Assign someone to argue opposite.
 
-**Anchoring**
-Over-weighting the first number, estimate, or framing encountered.
-- *Signal*: Estimates cluster around an initial figure. Comparisons are made relative to a reference point that was never validated.
-- *Fix*: Generate estimates independently before seeing others. Ask "what would this look like if the anchor didn't exist?"
+**Anchoring** — Overweighting the first number/estimate/framing.
+- *Signal*: Estimates cluster around an initial figure; comparisons against an unvalidated reference.
+- *Fix*: Generate estimates independently first. "What would this look like without the anchor?"
 
-**Availability Heuristic**
-Overweighting recent, memorable, or vivid events when estimating likelihood.
-- *Signal*: "We just had an incident like this" leads to overestimating its probability. Quiet failures are underweighted.
-- *Fix*: Use base rates. Ask "how often does this actually happen over a long period?"
+**Availability Heuristic** — Overweighting recent/vivid events.
+- *Signal*: "We just had this incident" → overestimating its probability. Quiet failures ignored.
+- *Fix*: Use base rates. "How often does this happen over a long period?"
 
-**Sunk Cost Fallacy**
-Continuing a course of action because of past investment, not future value.
-- *Signal*: "We've already put 6 months into this." / Reluctance to abandon despite evidence it's not working.
-- *Fix*: Ask "if we hadn't invested anything yet, would we start this today?"
+**Sunk Cost Fallacy** — Continuing because of past investment, not future value.
+- *Signal*: "We've put 6 months into this." Reluctance to abandon despite evidence.
+- *Fix*: "If we hadn't invested anything, would we start this today?"
 
-**Planning Fallacy**
-Systematic underestimation of time, cost, and risk — even when we know past projects ran over.
-- *Signal*: Estimates feel optimistic. No buffer for unknowns. Past projects are treated as exceptions.
-- *Fix*: Use reference class forecasting: how long did similar projects actually take?
+**Planning Fallacy** — Systematic underestimation of time/cost/risk.
+- *Signal*: Optimistic estimates, no buffer, past overruns treated as exceptions.
+- *Fix*: Reference class forecasting — how long did similar projects actually take?
 
-### Social & Group Biases
+### Social & Group
 
-**Groupthink**
-Desire for group harmony overrides realistic appraisal. Dissent is suppressed.
-- *Signal*: Everyone agrees quickly. No one plays devil's advocate. Contrarian views are dismissed socially.
-- *Fix*: Assign a formal devil's advocate. Ask people to write independent opinions before group discussion.
+**Groupthink** — Group harmony overrides realistic appraisal; dissent suppressed.
+- *Signal*: Quick agreement, no devil's advocate, contrarian views dismissed socially.
+- *Fix*: Assign formal devil's advocate. Independent written opinions before discussion.
 
-**Authority Bias**
-Overweighting the opinion of someone perceived as an authority, independent of their actual expertise.
-- *Signal*: "The CTO/senior person thinks X, so it must be right." Analysis stops when authority speaks.
-- *Fix*: Evaluate the argument on its merits, not its source. Ask "what's the evidence, separate from who said it?"
+**Authority Bias** — Overweighting authority's opinion independent of actual expertise.
+- *Signal*: "The CTO thinks X, so it must be right." Analysis stops when authority speaks.
+- *Fix*: Evaluate argument on merits. "What's the evidence, separate from who said it?"
 
-**In-group Bias**
-Favoring people, ideas, and solutions associated with one's own group.
-- *Signal*: Solutions from the team are evaluated more generously than identical solutions from outside.
-- *Fix*: Blind evaluation where possible. Ask "would we accept this if a competitor proposed it?"
+**In-group Bias** — Favoring own group's people/ideas/solutions.
+- *Signal*: Internal solutions evaluated more generously than identical external ones.
+- *Fix*: Blind evaluation. "Would we accept this from a competitor?"
 
-### Framing & Perception Biases
+### Framing & Perception
 
-**Framing Effect**
-The same information leads to different decisions depending on how it's presented (gain vs. loss framing).
-- *Signal*: "90% success rate" vs. "10% failure rate" trigger different reactions to the same fact.
-- *Fix*: Reframe every option in multiple ways before deciding. Check if the decision changes.
+**Framing Effect** — Same info → different decisions based on presentation (gain vs. loss).
+- *Signal*: "90% success" vs. "10% failure" trigger different reactions.
+- *Fix*: Reframe every option multiple ways. Does the decision change?
 
-**Survivorship Bias**
-Drawing conclusions from visible successes while ignoring invisible failures.
-- *Signal*: "Company X did Y and succeeded" — but how many companies did Y and failed?
-- *Fix*: Actively seek the failure cases. Ask "what don't we see because they didn't survive?"
+**Survivorship Bias** — Conclusions from visible successes, ignoring invisible failures.
+- *Signal*: "Company X did Y and succeeded" — but how many tried Y and failed?
+- *Fix*: Seek failure cases. "What don't we see because they didn't survive?"
 
-**Dunning-Kruger Effect**
-Low competence in a domain produces overconfidence; high competence produces underconfidence.
-- *Signal*: Extreme certainty in a novel or complex domain. Or excessive hedging from a genuine expert.
-- *Fix*: Calibrate confidence against demonstrated track record in this specific domain.
+**Dunning-Kruger** — Low competence → overconfidence; high competence → underconfidence.
+- *Signal*: Extreme certainty in novel/complex domain, or excessive expert hedging.
+- *Fix*: Calibrate confidence against demonstrated track record in this domain.
 
-**Recency Bias**
-Overweighting recent data and underweighting long-term patterns.
-- *Signal*: Last quarter's results dominate the analysis. Historical base rates are ignored.
-- *Fix*: Extend the time window. Look at multi-year trends, not just recent performance.
+**Recency Bias** — Overweighting recent data, underweighting long-term patterns.
+- *Signal*: Last quarter dominates analysis; historical base rates ignored.
+- *Fix*: Extend the time window. Multi-year trends, not just recent.
 
 ---
 
 ## Output Format
 
-### 🔍 Bias Scan Results
-For each bias checked:
+### 🔍 Bias Scan
 | Bias | Present? | Signal Observed | Severity |
 |------|----------|----------------|----------|
-| Confirmation Bias | Yes / Possible / No | [Evidence] | Low/Med/High |
-| Sunk Cost | Yes / Possible / No | [Evidence] | Low/Med/High |
+| Confirmation | Y/Possible/N | [Evidence] | L/M/H |
+| Sunk Cost | Y/Possible/N | [Evidence] | L/M/H |
 | ... | | | |
 
 ### ⚠️ High-Risk Findings
-For each high-severity bias detected:
-- **Bias**: Name and brief description
-- **How it's showing up**: Specific evidence in the reasoning or decision
-- **What it's distorting**: What conclusion or estimate is being skewed, and in which direction?
-- **Debiasing move**: Concrete action to correct or validate
+For each high-severity bias:
+- **Bias**: Name + brief description
+- **How it shows up**: Specific evidence
+- **What it distorts**: Conclusion/estimate skewed, in which direction
+- **Debiasing move**: Concrete corrective action
 
 ### 🧹 Debiased Re-evaluation
-After flagging biases, offer a corrected version of the analysis:
-- What changes if we remove the bias?
+- What changes if the bias is removed?
 - What evidence is actually strong vs. inflated by bias?
 - Does the conclusion still hold?
 
 ### 🎯 Confidence Calibration
-- What is the actual confidence level warranted by the evidence, absent bias?
-- What would need to be true to justify higher confidence?
-- What's the most important thing to validate before committing?
+- Actual warranted confidence absent bias?
+- What needs to be true for higher confidence?
+- Most important thing to validate before committing?
 
 ---
 
 ## Meta-Check: Is Claude Biased Here?
 
-This skill also applies to Claude's own analysis. When generating evaluations, check:
-- Am I confirming what the user wants to hear? (sycophancy / confirmation bias)
-- Am I anchoring to the first framing the user gave me?
-- Am I overweighting the most vivid or recent example?
-- Am I assuming the user's group/team/approach is better without evidence?
+When generating evaluations, check:
+- Confirming what the user wants to hear? (sycophancy / confirmation)
+- Anchoring to the user's first framing?
+- Overweighting most vivid/recent example?
+- Assuming user's group/team/approach is better without evidence?
 
-If yes to any — flag it and correct.
+If yes — flag and correct.
 
 ---
 
-## Thinking Triggers
+## Triggers
 
-- *"How would this analysis look if we had concluded the opposite from the start?"*
+- *"How would this look if we'd concluded the opposite from the start?"*
 - *"What's the strongest evidence against the current conclusion?"*
 - *"Are we continuing because it's right, or because we've invested too much to stop?"*
-- *"Who benefits from this conclusion, and are they also the ones evaluating it?"*
+- *"Who benefits from this conclusion, and are they evaluating it?"*
 - *"If a stranger reviewed this reasoning, what would they say we're missing?"*
