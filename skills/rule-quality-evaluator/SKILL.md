@@ -5,14 +5,14 @@ description: "Evaluate the quality of existing agent instruction rule sets — C
 
 # Rule Quality Evaluator
 
-**Core principle**: A rule that cannot be violated cannot be followed. Most instruction files fail not because they're too short or too long, but because they're full of unfalsifiable guidance, redundant noise, and implicit knowledge that never made it to paper. This skill scores rules against seven measurable properties, identifies structural weaknesses, and optionally verifies behavior with live coding tasks.
+A rule that cannot be violated cannot be followed. Most instruction files fail because of unfalsifiable guidance, redundant noise, and implicit knowledge that never made it to paper. Score rules against seven properties, identify structural weaknesses, optionally verify with live tasks.
 
 ## Two-Phase Overview
 
-- **Phase 1 — Static Critic** (always run): Read the rules, score each against the Seven Properties, detect structural issues, produce a scorecard. No agent execution required.
-- **Phase 2 — Behavioral Test** (opt-in): Generate coding tasks that touch the rules, derive testable assertions, hand off to context-eval, synthesize the combined report.
+- **Phase 1 — Static Critic** (always): Read rules, score against Seven Properties, detect structural issues, produce scorecard. No agent execution.
+- **Phase 2 — Behavioral Test** (opt-in): Generate coding tasks, derive assertions, hand off to context-eval, synthesize report.
 
-**Interview-only fallback**: If no instruction file is accessible (chat-only context, no filesystem), ask the user to paste the rules directly. Flag at the end: "I can't verify codebase alignment — code pattern checks will need manual verification."
+**Interview-only fallback**: If no instruction file accessible, ask user to paste rules. Flag at end: "I can't verify codebase alignment — code pattern checks need manual verification."
 
 ---
 
@@ -20,40 +20,36 @@ description: "Evaluate the quality of existing agent instruction rule sets — C
 
 ### Step 1: Ingest
 
-Read the instruction file(s). Detect the format (Markdown prose, structured rules list, YAML front matter, fenced sections). Parse into individual rules — one rule = one discrete behavioral instruction. When in doubt, split on bullet points, numbered items, or paragraph breaks that each start an imperative.
+Read instruction file(s). Detect format (Markdown prose, structured rules list, YAML front matter, fenced sections). Parse into individual rules — one rule = one discrete behavioral instruction. Split on bullets, numbered items, or paragraph breaks starting an imperative.
 
-Optionally scan the codebase for linter configs (`.eslintrc`, `pyproject.toml`, `ruff.toml`), type system configs (`tsconfig.json`), and CI configs (`.github/workflows/`). This enables redundancy detection in Step 3.
+Optionally scan codebase for linter configs (`.eslintrc`, `pyproject.toml`, `ruff.toml`), type configs (`tsconfig.json`), CI configs (`.github/workflows/`). Enables redundancy detection.
 
 ### Step 2: Score Each Rule — The Seven Properties
 
-Score each rule 0–7 by counting which of the Seven Properties it satisfies (each is binary: 0 = absent, 1 = present).
+Score 0–7 by counting properties satisfied (each binary).
 
-| Property | ID | Score 0 Example | Score 1 Example |
+| Property | ID | Score 0 | Score 1 |
 |---|---|---|---|
 | Specific and falsifiable | P1 | "Write clean code" | "Every API handler must return `Result<T, AppError>`, never throw" |
-| Encodes the WHY | P2 | "Don't use console.log" | "Don't use console.log — use `src/lib/logger.ts`. Bypasses correlation IDs, breaks Datadog traces" |
-| Born from a real failure | P3 | "Handle errors carefully" | "Never add indexes to `reservations` without DBA approval — compound index locked table 47 min in Q2 2024" |
-| Scoped to the right level | P4 | Rule about billing API in root file | Same rule in `src/billing/CLAUDE.md` |
+| Encodes WHY | P2 | "Don't use console.log" | "Don't use console.log — use `src/lib/logger.ts`. Bypasses correlation IDs, breaks Datadog traces" |
+| Born from real failure | P3 | "Handle errors carefully" | "Never add indexes to `reservations` without DBA approval — compound index locked table 47 min in Q2 2024" |
+| Scoped to right level | P4 | Rule about billing API in root file | Same rule in `src/billing/CLAUDE.md` |
 | Points to canonical example | P5 | "Follow our API patterns" | "New endpoints follow `src/api/reservations/create.ts` — handler → validation → service → response" |
-| Includes the anti-pattern | P6 | "Use the service layer" | "We do NOT use the repository pattern. Each service calls Prisma directly" |
+| Includes anti-pattern | P6 | "Use the service layer" | "We do NOT use the repository pattern. Each service calls Prisma directly" |
 | Token-efficient | P7 | "When writing tests, please make sure to always use Vitest and not Jest" | "Tests: Vitest, never Jest. Config: `vitest.config.ts`" |
 
-**Flag rules with score ≤ 2 as weak** — candidates for rewrite or removal.
-**Flag rules where P1 = 0 as noise** — if the agent can't verify compliance, the rule cannot steer behavior.
+**Score ≤ 2 = weak** — rewrite/remove candidate.
+**P1 = 0 = noise** — agent can't verify, can't steer.
 
 ### Step 3: Structural Analysis
 
-**Redundancy detection**: Flag rules that duplicate enforcement already handled by:
-- Linter (ESLint, Ruff, Pylint, etc.)
-- Type system (TypeScript strict mode, mypy, etc.)
-- CI checks (test requirements, build gates, etc.)
-Redundant rules waste the token budget and dilute the signal of the rules that matter.
+**Redundancy**: Flag rules duplicating linter (ESLint, Ruff, Pylint), type system (TypeScript strict, mypy), or CI (test gates, build gates). Redundant rules waste budget and dilute signal.
 
-**Scope assessment**: Apply the scope test to each rule: "Does this rule apply to ALL code the agent will see in this directory?" Flag:
-- **Over-scoped**: rule is specific to a package/module but lives in the root file
-- **Under-scoped**: identical rules duplicated across subdirectory files that should move up
+**Scope**: "Does this rule apply to ALL code agent will see in this directory?" Flag:
+- **Over-scoped**: package-specific rule in root file
+- **Under-scoped**: identical rules duplicated across subdirs that should move up
 
-**Coverage mapping**: Map rules to the nine context categories:
+**Coverage** — map to nine categories:
 - C1 Architecture & Boundaries
 - C2 Domain Model & Business Rules
 - C3 Conventions & Patterns
@@ -64,27 +60,26 @@ Redundant rules waste the token budget and dilute the signal of the rules that m
 - C8 Performance Constraints
 - C9 Historical Decisions & Tech Debt
 
-Mark each as `●` (covered), `◐` (partial), or `○` (missing).
+Mark `●` (covered), `◐` (partial), `○` (missing).
 
-**Token budget check**: Count tokens (or characters) and compare against limits:
-- Claude Code: root file < 4,000 tokens, subdirectory < 1,000 tokens
-- Copilot: root file < 1,000 lines, first 4,000 chars are read per code review
+**Token budget**:
+- Claude Code: root <4,000 tokens, subdir <1,000
+- Copilot: root <1,000 lines, first 4,000 chars read per code review
 - Cursor / Windsurf / AGENTS.md: similar to Claude Code
 
 ### Step 4: Produce Scorecard
 
-Output this structured scorecard, then ask the user whether they want Phase 2.
+Output, then ask whether to run Phase 2.
 
 ---
 
-#### 📊 Rule Scorecard — `[file path]`
+#### Rule Scorecard — `[file path]`
 
 | Rule (truncated) | Score | Weakest Property | Flags |
 |---|---|---|---|
 | "…" | N/7 | P? | weak / noise / redundant / over-scoped |
-| … | | | |
 
-#### 📋 Summary Stats
+#### Summary Stats
 
 - Total rules: N
 - Mean score: X.X / 7
@@ -93,36 +88,36 @@ Output this structured scorecard, then ask the user whether they want Phase 2.
 - Redundant with linter/CI/types: N
 - Over-scoped: N | Under-scoped: N
 
-#### 🗺️ Coverage Map
+#### Coverage Map
 
 ```
 C1[●] C2[○] C3[●] C4[○] C5[◐] C6[●] C7[○] C8[○] C9[○]
 ● covered  ◐ partial  ○ missing
 ```
 
-#### ⚖️ Token Budget
+#### Token Budget
 
 - Current: ~N tokens / N chars
-- Limit: [system-appropriate limit]
+- Limit: [system-appropriate]
 - Headroom: [remaining / over by N]
 
-#### 🔍 Top 3 Improvements
+#### Top 3 Improvements
 
-1. [Most impactful change — which rule, which property, what to add]
-2. [Second most impactful change]
-3. [Third most impactful change]
+1. [Most impactful — which rule, which property, what to add]
+2. [Second]
+3. [Third]
 
-#### 🏆 Phase 1 Verdict
+#### Phase 1 Verdict
 
 | Threshold | Verdict |
 |---|---|
-| Mean score ≥ 5 | **STRONG** — rules are specific, grounded, and efficient |
-| Mean score 3–4 | **ADEQUATE** — rules are usable but have meaningful gaps |
-| Mean score < 3 | **WEAK** — rules will not reliably steer agent behavior |
+| Mean ≥ 5 | **STRONG** — specific, grounded, efficient |
+| Mean 3–4 | **ADEQUATE** — usable but with gaps |
+| Mean < 3 | **WEAK** — won't reliably steer behavior |
 
 ---
 
-**Would you like Phase 2 — Behavioral Testing?** It generates real coding tasks from your rules and measures whether the rules actually change agent behavior. Required: context-eval skill available.
+**Run Phase 2 — Behavioral Testing?** Generates real coding tasks, measures whether rules change agent behavior. Requires context-eval.
 
 ---
 
@@ -130,20 +125,20 @@ C1[●] C2[○] C3[●] C4[○] C5[◐] C6[●] C7[○] C8[○] C9[○]
 
 ### Step 5: Generate Coding Tasks
 
-Generate 3 coding tasks derived from the rule set. Each task must:
-- Be approximately 50 lines of code to produce
-- Touch 2 or more rules simultaneously (to make grading discriminating)
-- Prioritize rules where behavioral confirmation adds the most value: rules scoring 3-5 (uncertain quality), rules covering C7 Security or C2 Domain (high-stakes areas), and rules born from incidents (P3 = 1)
+Generate 3 coding tasks. Each:
+- ~50 lines of code to produce
+- Touches 2+ rules (discriminating grading)
+- Prioritize: rules scoring 3-5 (uncertain), C7 Security or C2 Domain (high-stakes), incident-born rules (P3 = 1)
 
-For each task, record which rules it exercises and what correct behavior looks like.
+Per task: which rules exercised, what correct behavior looks like.
 
 ### Step 6: Generate Assertions
 
-Derive one testable assertion per rule. The assertion must be:
-- Observable in agent output (checkable without running the code)
-- Phrased as a pass/fail check
+One testable assertion per rule:
+- Observable in agent output (no execution required)
+- Pass/fail check
 
-Write assertions to `evals/evals.json` in context-eval compatible format:
+Write to `evals/evals.json`:
 
 ```json
 {
@@ -167,68 +162,57 @@ Write assertions to `evals/evals.json` in context-eval compatible format:
 
 ### Step 7: Hand Off to context-eval
 
-Invoke the `context-eval` skill with the generated `evals/evals.json`. The harness under test is the instruction file; the baseline is the same tasks without the instruction file loaded.
+Harness under test = instruction file. Baseline = same tasks without the file.
 
 ```
 → context-eval: evaluate harness at [instruction file path] using evals/evals.json
 ```
 
-context-eval will run the tasks with and without the harness, grade assertions, and compute the benefit delta.
+context-eval runs with/without harness, grades, computes benefit delta.
 
 ### Step 8: Synthesize Report
 
-Combine Phase 1 scorecard with Phase 2 results into a unified report.
-
 ---
 
-#### 📊 Combined Report
+#### Combined Report
 
-**Phase 1 Static Score**: [mean] / 7 → [STRONG / ADEQUATE / WEAK]
+**Phase 1 Static**: [mean] / 7 → [STRONG / ADEQUATE / WEAK]
 
-**Phase 2 Behavioral Delta**: +[delta] pass rate improvement over baseline
+**Phase 2 Behavioral Delta**: +[delta] pass rate over baseline
 
-#### ☑️ Per-Rule Behavioral Confirmation
+#### Per-Rule Behavioral Confirmation
 
 | Rule | P1 Verdict | P2 Delta | Confirmed? |
 |---|---|---|---|
-| "…" | score/7 | +X% | ✅ / ⚠️ / ❌ |
+| "…" | score/7 | +X% | yes / partial / no |
 
-#### 🏆 Final Verdict
+#### Final Verdict
 
 | Condition | Verdict |
 |---|---|
-| Static ≥ 5 AND delta ≥ 0.25 | **STRONG** — rules are well-formed and measurably improve behavior |
-| Static ≥ 3 AND delta ≥ 0.10 | **ADEQUATE** — rules work but have room to improve |
-| Static < 3 OR delta < 0.10 | **WEAK** — rules are not reliably changing agent behavior |
-| Delta < 0 | **HARMFUL** — rules are degrading agent performance |
+| Static ≥ 5 AND delta ≥ 0.25 | **STRONG** — well-formed, measurable improvement |
+| Static ≥ 3 AND delta ≥ 0.10 | **ADEQUATE** — works, room to improve |
+| Static < 3 OR delta < 0.10 | **WEAK** — not reliably changing behavior |
+| Delta < 0 | **HARMFUL** — degrading performance |
 
-Delta = pass-rate difference between with-rules and without-rules runs (0.0 to 1.0 scale, where 0.25 = 25 percentage points improvement).
+Delta = pass-rate diff between with-rules and without-rules (0.0–1.0; 0.25 = 25 pp).
 
-#### ⚠️ Discrepancies
+#### Discrepancies
 
-Rules that score high in Phase 1 but show no behavioral delta (or vice versa) — these are the most actionable findings. A high-scoring rule with no behavioral delta is either not reachable in the eval tasks or not being read by the agent. A low-scoring rule with high delta suggests it encodes something valuable that the scoring missed.
+Rules high in Phase 1 with no behavioral delta (or vice versa) — most actionable findings. High-score + no delta = either not reachable in eval tasks or not being read. Low-score + high delta = encodes something valuable scoring missed.
 
 ---
 
 ## Calibration Rules
 
-**1. Phase 1 always comes first.** Never jump to behavioral testing without completing the static scorecard. Phase 1 takes minutes; Phase 2 requires agent execution infrastructure. The scorecard catches the most common failures without any tooling.
-
-**2. P1 is the gatekeeper.** A rule that fails Property 1 (specific and falsifiable) cannot be improved by any other property. Fix specificity before adding WHY, examples, or anti-patterns. Unfalsifiable rules waste every other token they contain.
-
-**3. Redundancy is the easiest win.** Rules that duplicate linter, type, or CI enforcement can be deleted immediately — they don't improve agent behavior and they consume tokens that better rules could use. Always check redundancy before recommending rewrites.
-
-**4. Behavioral testing is the gold standard, not the default.** Phase 2 gives you ground truth on whether rules change agent behavior. But it requires working context-eval infrastructure and takes significantly longer. Most rule sets benefit more from targeted Phase 1 rewrites than from Phase 2 measurement of the current (weak) rules.
-
-**5. Score what you see, not what you wish.** If a rule could be interpreted charitably as specific, score it as written — not as intended. The agent reads the literal text. A rule that requires generous interpretation to seem falsifiable will fail in practice.
+1. **Phase 1 always first.** Scorecard catches most failures without tooling.
+2. **P1 is the gatekeeper.** Unfalsifiable rules can't be improved by other properties. Fix specificity first.
+3. **Redundancy is the easiest win.** Lint/type/CI duplicates can be deleted immediately.
+4. **Behavioral testing is gold standard, not default.** Phase 2 needs infrastructure and time. Most rule sets benefit more from targeted Phase 1 rewrites.
+5. **Score what you see.** Literal text, not charitable interpretation. Rules requiring generous reading fail in practice.
 
 ---
 
 ## Composes With
 
 `context-gap-analyzer` → `agent-instruction-forge` → `rule-quality-evaluator` → `context-eval`
-
-- **context-gap-analyzer first**: audit what implicit knowledge is missing from the codebase
-- **agent-instruction-forge next**: create rules that fill the identified gaps
-- **rule-quality-evaluator**: verify the created rules are well-formed and will steer agent behavior
-- **context-eval downstream**: measure whether the rules produce better outcomes over time
